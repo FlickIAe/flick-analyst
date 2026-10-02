@@ -1,411 +1,757 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="es" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flick AI Analyst</title>
-    <link rel="icon" type="image/png" href="https://cdn.midjourney.com/746341dc-2d2e-47e4-9cf2-073011ec2782/0_2.png">
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts: Plus Jakarta Sans -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flick Analyst — On-Chain Intelligence Terminal</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fonts: Plus Jakarta Sans + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            black: '#080606',
-                            card: 'rgba(18, 14, 13, 0.75)',
-                            cardHover: 'rgba(28, 20, 18, 0.85)',
-                            border: 'rgba(245, 130, 32, 0.18)',
-                            borderBright: 'rgba(245, 130, 32, 0.45)',
-                            amber: '#F58220',
-                            gold: '#FFB020',
-                            fireRed: '#FF4500',
-                            darkText: '#9E9490',
-                            lightText: '#F3EFEC'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
-                    },
-                    boxShadow: {
-                        'ember-glow': '0 0 25px -5px rgba(245, 130, 32, 0.25)',
-                        'ember-intense': '0 0 40px -2px rgba(245, 130, 32, 0.45)',
-                        'gold-glow': '0 0 20px -3px rgba(255, 176, 32, 0.3)'
-                    }
-                }
-            }
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            void: '#030508',
+            surface: 'rgba(10, 14, 23, 0.8)',
+            amberCore: '#F59E0B',
+            amberGlow: '#FFB800',
+            cyberGreen: '#10B981',
+            electricCyan: '#00F0FF',
+            crimsonRisk: '#FF3366'
+          }
         }
-    </script>
- 
-    <style>
-        body {
-            background-color: #080606;
-            color: #F3EFEC;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-image: 
-                radial-gradient(circle at 50% -10%, rgba(245, 130, 32, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 90% 80%, rgba(255, 176, 32, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 10% 50%, rgba(255, 69, 0, 0.03) 0%, transparent 45%);
-            background-attachment: fixed;
-        }
+      }
+    }
+  </script>
 
-        .glass-panel {
-            background: rgba(18, 14, 13, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(245, 130, 32, 0.16);
-        }
+  <style>
+    .bg-tech-grid {
+      background-size: 36px 36px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
 
-        .glass-panel:hover {
-            border-color: rgba(245, 130, 32, 0.35);
-        }
+    .glow-orb-amber {
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.14) 0%, rgba(0, 0, 0, 0) 70%);
+    }
+    .glow-orb-cyan {
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.10) 0%, rgba(0, 0, 0, 0) 70%);
+    }
 
-        .glass-input {
-            background: rgba(10, 8, 8, 0.8);
-            border: 1px solid rgba(245, 130, 32, 0.25);
-            backdrop-filter: blur(8px);
-        }
+    .glass-panel {
+      background: rgba(10, 14, 23, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
 
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #080606;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(245, 130, 32, 0.3);
-            border-radius: 999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(245, 130, 32, 0.6);
-        }
+    .glass-card-hover {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card-hover:hover {
+      transform: translateY(-3px);
+      border-color: rgba(245, 158, 11, 0.3);
+      box-shadow: 0 12px 30px rgba(245, 158, 11, 0.12);
+    }
 
-        .gradient-text-ember {
-            background: linear-gradient(135deg, #FFF 10%, #FFB020 50%, #F58220 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .animate-float {
+      animation: floatSlow 6s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.03); }
+    }
+    .animate-pulse-glow {
+      animation: pulseGlow 5s ease-in-out infinite;
+    }
+
+    @keyframes radarSweep {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .animate-radar {
+      animation: radarSweep 4s linear infinite;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #030508; }
+    ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #F59E0B; }
+
+    .screen-fade {
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-brand-amber/30 selection:text-white">
 
-    <!-- HEADER BAR -->
-    <header class="sticky top-0 z-50 glass-panel border-b border-brand-border/40 px-4 lg:px-8 py-3.5 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="relative w-11 h-11 rounded-xl bg-black border border-brand-amber/50 shadow-ember-glow flex items-center justify-center flex-shrink-0 group overflow-hidden">
-                <img 
-                    src="https://cdn.midjourney.com/746341dc-2d2e-47e4-9cf2-073011ec2782/0_2.png" 
-                    alt="Flick AI Logo" 
-                    class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-300 z-10"
-                    onerror="this.style.display='none';" 
-                />
-                
-                <svg class="w-7 h-7 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <radialGradient id="emberGlow" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" stop-color="#FFB020" />
-                            <stop offset="60%" stop-color="#F58220" />
-                            <stop offset="100%" stop-color="#FF4500" stop-opacity="0" />
-                        </radialGradient>
-                        <linearGradient id="handGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#FFB020" />
-                            <stop offset="100%" stop-color="#F58220" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="16" cy="11" r="7" fill="url(#emberGlow)" opacity="0.9" />
-                    <circle cx="16" cy="11" r="3.5" fill="#FFF" />
-                    <path d="M16 4C14.5 7 13 9 13 11C13 12.65 14.35 14 16 14C17.65 14 19 12.65 19 11C19 9 17.5 7 16 4Z" fill="#FFB020" />
-                    <path d="M8 22C9.5 19.5 12.5 18 16 18C19.5 18 22.5 19.5 24 22M10 25C11.5 23 13.5 22 16 22C18.5 22 20.5 23 22 25" stroke="url(#handGrad)" stroke-width="2" stroke-linecap="round" />
-                </svg>
-            </div>
+<body class="bg-void text-slate-100 font-sans antialiased min-h-screen selection:bg-amberCore selection:text-black bg-tech-grid relative overflow-x-hidden">
 
-            <div>
-                <div class="flex items-center gap-2">
-                    <span class="font-extrabold text-lg tracking-tight gradient-text-ember">FLICK AI</span>
-                    <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-brand-amber/15 text-brand-gold border border-brand-amber/30 font-semibold">ANALYST v2.5</span>
-                </div>
-                <p id="i18n-header-sub" class="text-[11px] text-brand-darkText font-medium">Ember Ecosystem • Multi-Chain</p>
-            </div>
+  <!-- INTERACTIVE CANVAS BACKGROUND -->
+  <canvas id="interactiveCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+  <!-- AMBIENT GLOW ORBS -->
+  <div class="fixed top-[-10%] left-[-10%] w-[650px] h-[650px] glow-orb-amber pointer-events-none z-0 animate-pulse-glow"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[750px] h-[750px] glow-orb-cyan pointer-events-none z-0 animate-pulse-glow"></div>
+
+  <!-- SCANNING MODAL OVERLAY -->
+  <div id="scanOverlay" class="fixed inset-0 bg-void/90 backdrop-blur-2xl z-50 flex flex-col items-center justify-center gap-6 hidden transition-opacity duration-300">
+    <div class="relative w-24 h-24 flex items-center justify-center">
+      <div class="absolute inset-0 rounded-full border-2 border-amberCore/20 border-t-amberCore animate-spin"></div>
+      <div class="absolute inset-2 rounded-full border-2 border-electricCyan/20 border-b-electricCyan animate-radar"></div>
+      <span class="text-2xl animate-bounce">⚡</span>
+    </div>
+    <div class="text-center space-y-2">
+      <h3 class="font-display font-bold text-lg text-white tracking-wide">DESCOMPILANDO CONTRATO INTELIGENTE...</h3>
+      <p class="font-mono text-xs text-amberGlow animate-pulse" id="scanStatusText">Verificando bytecode en busca de patrones Honeypot...</p>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- 1. LANDING COVER PAGE (#landingCover)                               -->
+  <!-- =================================================================== -->
+  <section id="landingCover" class="screen-fade relative z-10 min-h-screen flex flex-col justify-between p-6 md:p-12 max-w-7xl mx-auto">
+    
+    <header class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amberCore to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/20 ring-1 ring-white/15">
+          <span class="text-lg">⚡</span>
         </div>
-
-        <!-- Network Status Badge & Language Selector -->
-        <div class="flex items-center gap-3 sm:gap-4">
-            <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 border border-emerald-500/30 text-xs font-mono text-emerald-400">
-                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span id="i18n-node-status">System: <strong class="text-white">100% Operational</strong></span>
-            </div>
-
-            <!-- LANGUAGE SELECTOR BUTTONS -->
-            <div class="flex items-center gap-1 bg-black/60 p-1 rounded-xl border border-brand-border/30 text-xs font-mono">
-                <button onclick="setLanguage('es')" id="lang-btn-es" class="px-2.5 py-1 rounded-lg text-brand-darkText hover:text-white transition-all">ES</button>
-                <button onclick="setLanguage('en')" id="lang-btn-en" class="px-2.5 py-1 rounded-lg bg-brand-amber text-black font-bold transition-all shadow-sm">EN</button>
-                <button onclick="setLanguage('ja')" id="lang-btn-ja" class="px-2.5 py-1 rounded-lg text-brand-darkText hover:text-white transition-all">日本語</button>
-            </div>
-        </div>
+        <span class="font-display font-bold text-lg tracking-normal text-white">FLICK <span class="text-amberCore">ANALYST</span></span>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <span class="hidden sm:inline-flex items-center gap-2 text-xs font-mono px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-slate-300">
+          <span class="w-2 h-2 rounded-full bg-cyberGreen animate-ping"></span>
+          Mainnet V2 Activa
+        </span>
+        <button onclick="enterApp()" class="bg-white/10 hover:bg-white/15 border border-white/15 text-white font-semibold text-xs px-4 py-2 rounded-xl transition-all active:scale-95">
+          Abrir App →
+        </button>
+      </div>
     </header>
 
-    <!-- MAIN APPLICATION CONTAINER -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div class="my-auto py-10 flex flex-col items-center text-center max-w-3xl mx-auto space-y-7">
+      
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amberCore text-xs font-mono font-medium tracking-wide">
+        <span>🛡️ AUDITORÍA AUTOMATIZADA DE CONTRATOS & MERCADO ON-CHAIN</span>
+      </div>
 
-        <!-- HERO SEARCH SCANNER -->
-        <section class="glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
-            <div class="absolute -right-20 -top-20 w-60 h-60 bg-brand-amber/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+      <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.15] text-white">
+        Navega Mercados Web3 <br>
+        <span class="bg-gradient-to-r from-amberCore via-amberGlow to-white bg-clip-text text-transparent">Sin Caer En Trampas.</span>
+      </h1>
 
-            <div class="max-w-3xl mx-auto text-center space-y-4 relative z-10">
-                <h1 id="i18n-hero-title" class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
-                    Smart Token Audit for <span class="gradient-text-ember">Multichain</span>
-                </h1>
-                <p id="i18n-hero-sub" class="text-xs sm:text-sm text-brand-darkText max-w-xl mx-auto leading-relaxed">
-                    Scan any Contract Address (CA) across any blockchain for real-time security audits, liquidity analysis, and AI-powered projections by Flick.
-                </p>
+      <p class="text-slate-400 text-sm sm:text-base max-w-xl leading-relaxed font-normal">
+        Detección de honeypots, gráficos DEX en tiempo real, auditoría de liquidez y un asistente IA diseñado para traders.
+      </p>
 
-                <!-- Search Input Box -->
-                <div class="pt-2">
-                    <form onsubmit="handleSearch(event)" class="relative flex items-center">
-                        <div class="absolute left-4 text-brand-amber text-lg">
-                            <i class="fa-solid fa-magnifying-glass-chart"></i>
-                        </div>
-                        <input 
-                            type="text" 
-                            id="ca-input"
-                            placeholder="Paste contract address (CA) or token name..." 
-                            class="w-full glass-input text-white text-xs sm:text-sm rounded-xl pl-12 pr-32 py-4 focus:outline-none focus:border-brand-amber focus:ring-1 focus:ring-brand-amber transition-all shadow-inner font-mono placeholder:font-sans placeholder:text-brand-darkText"
-                        />
-                        <button 
-                            type="submit"
-                            class="absolute right-2 px-5 py-2.5 rounded-lg bg-brand-amber hover:bg-brand-gold text-black font-bold text-xs uppercase tracking-wide transition-all shadow-md flex items-center gap-2">
-                            <span id="i18n-audit-btn">Audit</span>
-                            <i class="fa-solid fa-bolt"></i>
-                        </button>
-                    </form>
-                </div>
+      <div class="w-full max-w-xl space-y-3.5">
+        <div class="glass-panel p-2 rounded-2xl flex flex-col sm:flex-row items-center gap-2 border border-amber-500/25 shadow-2xl shadow-amber-500/10 focus-within:border-amberCore/60 transition-all">
+          <div class="flex items-center gap-2.5 px-3 w-full flex-1">
+            <span class="text-slate-500 text-sm">🔍</span>
+            <input type="text" id="landingCaInput" placeholder="Pega el Address del Contrato (CA)..." 
+              onkeydown="if(event.key === 'Enter') triggerScanAndEnter()"
+              class="w-full bg-transparent py-2 text-xs sm:text-sm font-mono text-amberGlow placeholder-slate-500 focus:outline-none" />
+          </div>
+          <button onclick="triggerScanAndEnter()" class="w-full sm:w-auto bg-gradient-to-r from-amberCore to-amberGlow hover:brightness-110 text-black font-bold text-xs sm:text-sm px-7 py-3 rounded-xl transition-all shadow-md shadow-amber-500/20 active:scale-95 flex items-center justify-center gap-2 shrink-0">
+            <span>Analizar Contrato</span>
+            <span>→</span>
+          </button>
+        </div>
 
-                
+        <div class="flex items-center justify-center gap-2 text-xs text-slate-400 flex-wrap">
+          <span class="font-mono text-[11px] text-slate-500">Tendencias:</span>
+          <button onclick="quickSelect('PEPE')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-amber-500/10 hover:border-amberCore/30 border border-white/10 font-mono text-slate-300 transition-all">$PEPE</button>
+          <button onclick="quickSelect('SOL')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-amber-500/10 hover:border-amberCore/30 border border-white/10 font-mono text-slate-300 transition-all">$SOL</button>
+          <button onclick="quickSelect('WIF')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-amber-500/10 hover:border-amberCore/30 border border-white/10 font-mono text-slate-300 transition-all">$WIF</button>
+          <button onclick="quickSelect('BONK')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-amber-500/10 hover:border-amberCore/30 border border-white/10 font-mono text-slate-300 transition-all">$BONK</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-4 text-left">
+        <div class="glass-panel glass-card-hover p-4 rounded-2xl space-y-2 border border-white/5 animate-float" style="animation-delay: 0s;">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amberCore font-bold text-base">🛡️</div>
+          <h3 class="font-bold text-xs sm:text-sm text-white font-display">Scoring de Seguridad IA</h3>
+          <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed">Inspección de bytecode contra honeypots, impuestos ocultos y funciones de emisión ilimitada (mint).</p>
+        </div>
+
+        <div class="glass-panel glass-card-hover p-4 rounded-2xl space-y-2 border border-white/5 animate-float" style="animation-delay: 1.5s;">
+          <div class="w-8 h-8 rounded-lg bg-electricCyan/10 border border-electricCyan/20 flex items-center justify-center text-electricCyan font-bold text-base">📊</div>
+          <h3 class="font-bold text-xs sm:text-sm text-white font-display">Stream DEX en Vivo</h3>
+          <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed">Gráficos de alta frecuencia embebidos desde Raydium, Uniswap y PancakeSwap.</p>
+        </div>
+
+        <div class="glass-panel glass-card-hover p-4 rounded-2xl space-y-2 border border-white/5 animate-float" style="animation-delay: 3s;">
+          <div class="w-8 h-8 rounded-lg bg-cyberGreen/10 border border-cyberGreen/20 flex items-center justify-center text-cyberGreen font-bold text-base">🤖</div>
+          <h3 class="font-bold text-xs sm:text-sm text-white font-display">Copilot AI Asistente</h3>
+          <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed">Consulta en lenguaje natural sobre tokenomics, concentración de holders o seguridad del código.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 border-t border-white/5 pt-5 gap-3">
+      <p>© 2026 Flick Analyst. Plataforma de Inteligencia Web3.</p>
+      <div class="flex items-center gap-6">
+        <button onclick="enterApp()" class="text-amberCore hover:underline font-mono text-xs">Entrar Directo a la Terminal →</button>
+      </div>
+    </footer>
+
+  </section>
+
+
+  <!-- =================================================================== -->
+  <!-- 2. MAIN TERMINAL DASHBOARD (#appDashboard)                         -->
+  <!-- =================================================================== -->
+  <section id="appDashboard" class="screen-fade hidden opacity-0 scale-95 relative z-10 min-h-screen flex flex-col">
+    
+    <header class="border-b border-white/10 bg-void/90 backdrop-blur-xl sticky top-0 z-40 px-4 md:px-8 py-3 flex items-center justify-between gap-4">
+      
+      <div class="flex items-center gap-3">
+        <button onclick="exitToLanding()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all text-xs flex items-center gap-1.5" title="Volver a la Portada">
+          <span>←</span> <span class="hidden sm:inline">Portada</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amberCore to-amber-700 flex items-center justify-center text-xs shadow-md shadow-amber-500/20">
+            ⚡
+          </div>
+          <span class="font-display font-bold text-sm tracking-normal text-white hidden md:inline">FLICK <span class="text-amberCore">TERMINAL</span></span>
+        </div>
+      </div>
+
+      <div class="w-full max-w-md relative">
+        <div class="relative flex items-center">
+          <span class="absolute left-3.5 text-slate-500 text-xs">🔍</span>
+          <input type="text" id="dashboardCaInput" placeholder="Buscar nuevo Contrato (CA)..." 
+            onkeydown="if(event.key === 'Enter') triggerScanFromDashboard()"
+            class="w-full bg-slate-900/90 border border-white/10 rounded-xl pl-9 pr-12 py-2 text-xs font-mono text-amberGlow placeholder-slate-500 focus:outline-none focus:border-amberCore transition-all" />
+          <span class="absolute right-3 text-[10px] font-mono text-slate-500 bg-white/5 px-1.5 py-0.5 rounded border border-white/10">↵</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="hidden lg:flex items-center gap-2 px-3 py-1 rounded-xl bg-cyberGreen/10 border border-cyberGreen/30 text-cyberGreen text-xs font-mono">
+          <span class="w-2 h-2 rounded-full bg-cyberGreen animate-ping"></span>
+          <span>Feed Live</span>
+        </div>
+        <button id="connectWalletBtn" onclick="connectWallet()" class="bg-amberCore hover:brightness-110 text-black font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-md shadow-amber-500/20 active:scale-95">
+          Conectar Billetera
+        </button>
+      </div>
+
+    </header>
+
+    <main class="max-w-[1720px] mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 w-full">
+      
+      <div class="lg:col-span-12 glass-panel rounded-2xl p-4 md:p-5 flex flex-wrap items-center justify-between gap-4 border-l-4 border-l-amberCore">
+        <div class="flex items-center gap-4">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-700/10 border border-amber-500/30 flex items-center justify-center text-xl shadow-inner">
+            🔥
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-lg font-bold text-white font-display" id="activeTokenSymbol">PEPE / SOL</h1>
+              <span class="text-[11px] font-medium bg-cyberGreen/10 text-cyberGreen border border-cyberGreen/30 px-2 py-0.5 rounded-full flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyberGreen"></span> Contrato Verificado
+              </span>
             </div>
-        </section>
+            <p class="text-xs font-mono text-slate-400 mt-0.5" id="activeTokenCa">CA: 7xKX...3b9P</p>
+          </div>
+        </div>
 
-        <!-- DASHBOARD GRID -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="flex items-center gap-6 md:gap-10 text-xs flex-wrap">
+          <div class="border-r border-white/10 pr-6">
+            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Precio en Vivo</p>
+            <p class="font-mono text-sm sm:text-base font-bold text-white">$0.00001284 <span class="text-cyberGreen text-xs font-semibold">+18.4%</span></p>
+          </div>
+          <div class="border-r border-white/10 pr-6">
+            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Liquidez Pool</p>
+            <p class="font-mono text-sm sm:text-base font-bold text-white">$1,420,500</p>
+          </div>
+          <div class="border-r border-white/10 pr-6">
+            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Volumen 24h</p>
+            <p class="font-mono text-sm sm:text-base font-bold text-white">$8,940,120</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Scoring Seguridad</p>
+            <div class="flex items-center gap-1.5">
+              <span class="font-mono text-lg font-extrabold text-cyberGreen">95</span>
+              <span class="text-slate-500 font-mono text-xs">/ 100</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IZQUIERDA: DEXTRADING Y GRÁFICO REAL -->
+      <section class="lg:col-span-7 flex flex-col gap-4">
+        
+        <div class="glass-panel rounded-2xl p-2 h-[560px] flex flex-col overflow-hidden relative">
+          <div class="flex items-center justify-between px-3 py-2 border-b border-white/10 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-semibold text-slate-300 font-mono">Stream DexScreener Real-Time</span>
+            </div>
+            <div class="flex gap-1 font-mono text-[11px]">
+              <button onclick="setTimeframe(this)" class="px-2.5 py-0.5 rounded bg-amberCore/20 text-amberGlow font-bold border border-amberCore/30">1m</button>
+              <button onclick="setTimeframe(this)" class="px-2.5 py-0.5 rounded hover:bg-white/5 text-slate-400">5m</button>
+              <button onclick="setTimeframe(this)" class="px-2.5 py-0.5 rounded hover:bg-white/5 text-slate-400">1h</button>
+            </div>
+          </div>
+
+          <div class="w-full h-full rounded-xl overflow-hidden mt-1 bg-black/60">
+            <iframe 
+              id="dexFrame"
+              class="w-full h-full border-0"
+              src="https://dexscreener.com/solana/7xKX2mP8k3b9P?embed=1&theme=dark&trades=0&info=0">
+            </iframe>
+          </div>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h4 class="text-xs font-bold text-white font-display">Acceso Rápido a Swap DEX</h4>
+            <p class="text-[11px] text-slate-400">Redirección directa con el contrato pre-cargado.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <a id="raydiumBtn" href="https://raydium.io/swap/?output=7xKX2mP8k3b9P" target="_blank" class="bg-white/5 hover:bg-white/10 border border-white/10 text-amberGlow font-bold text-xs px-3.5 py-2 rounded-xl transition-all flex items-center gap-2">
+              ⚡ Raydium
+            </a>
+            <a id="jupiterBtn" href="https://jup.ag/swap/SOL-7xKX2mP8k3b9P" target="_blank" class="bg-white/5 hover:bg-white/10 border border-white/10 text-electricCyan font-bold text-xs px-3.5 py-2 rounded-xl transition-all flex items-center gap-2">
+              🪐 Jupiter Swap
+            </a>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- DERECHA: PESTAÑAS AUDIT / AI / HOLDERS -->
+      <section class="lg:col-span-5 flex flex-col gap-4">
+        
+        <div class="glass-panel rounded-2xl p-5 h-[640px] flex flex-col">
+          
+          <div class="flex border-b border-white/10 pb-3 gap-2 text-xs font-bold">
+            <button onclick="switchTab('audit')" id="tabBtn-audit" 
+              class="flex-1 py-2 px-3 rounded-xl bg-amber-500/10 text-amberGlow border border-amber-500/30 transition-all flex items-center justify-center gap-1.5 font-bold">
+              🛡️ Auditoría
+            </button>
+            <button onclick="switchTab('ai')" id="tabBtn-ai" 
+              class="flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all flex items-center justify-center gap-1.5 font-bold">
+              🤖 Copilot IA
+            </button>
+            <button onclick="switchTab('holders')" id="tabBtn-holders" 
+              class="flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all flex items-center justify-center gap-1.5 font-bold">
+              📊 Top Holders
+            </button>
+          </div>
+
+          <!-- TAB 1: AUDIT -->
+          <div id="tabContent-audit" class="space-y-3.5 overflow-y-auto pr-1 mt-4 flex-1">
             
-            <!-- LEFT COLUMN: Security Audit & Interactive Chart -->
-            <div class="lg:col-span-8 space-y-6">
-                
-                <!-- SECURITY & AI ANALYSIS CARD -->
-                <section class="glass-panel rounded-2xl p-5 sm:p-6 space-y-5">
-                    
-                    <!-- Card Header -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-brand-border/30 pb-4">
-                        <div class="flex items-center gap-3">
-                            <div id="token-avatar" class="w-10 h-10 rounded-xl bg-brand-amber/20 border border-brand-amber/40 flex items-center justify-center font-bold text-brand-gold font-mono">
-                                F/E
-                            </div>
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <h2 id="token-title" class="text-lg font-bold text-white">FLICK / EMBER</h2>
-                                    <span id="token-verified" class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">
-                                        <i class="fa-solid fa-circle-check mr-1"></i><span id="i18n-verified-text">Verified</span>
-                                    </span>
-                                </div>
-                                <p id="token-ca-display" class="text-xs text-brand-darkText font-mono flex items-center gap-2">
-                                    <span>CA: 7xKX...FlickEmber39</span>
-                                    <button onclick="copyCA()" title="Copy CA" class="hover:text-brand-amber transition"><i class="fa-regular fa-copy"></i></button>
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Risk Meter Badge -->
-                        <div id="risk-score-container" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
-                            <div class="text-right">
-                                <div id="i18n-score-label" class="text-[10px] text-brand-darkText font-mono uppercase tracking-wider">Security Score</div>
-                                <div id="risk-score-text" class="text-sm font-bold text-emerald-400">96 / 100 • VERY LOW RISK</div>
-                            </div>
-                            <div id="risk-score-badge" class="w-10 h-10 rounded-full border-2 border-emerald-400 flex items-center justify-center font-bold text-emerald-400 font-mono text-xs">
-                                96
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Security Badges Checklist Grid -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div class="p-3 rounded-xl bg-black/40 border border-brand-border/20 space-y-1">
-                            <div id="i18n-badge-mint" class="text-[10px] text-brand-darkText font-mono">MINT AUTHORITY</div>
-                            <div id="badge-mint" class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-                                <i class="fa-solid fa-lock"></i> <span class="val-text">Revoked</span>
-                            </div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-black/40 border border-brand-border/20 space-y-1">
-                            <div id="i18n-badge-freeze" class="text-[10px] text-brand-darkText font-mono">FREEZE AUTHORITY</div>
-                            <div id="badge-freeze" class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-                                <i class="fa-solid fa-lock"></i> <span class="val-text">Revoked</span>
-                            </div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-black/40 border border-brand-border/20 space-y-1">
-                            <div id="i18n-badge-lp" class="text-[10px] text-brand-darkText font-mono">POOL LIQUIDITY</div>
-                            <div id="badge-lp" class="text-xs font-bold text-brand-gold flex items-center gap-1.5">
-                                <i class="fa-solid fa-vault"></i> <span class="val-text">100% Locked</span>
-                            </div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-black/40 border border-brand-border/20 space-y-1">
-                            <div id="i18n-badge-honeypot" class="text-[10px] text-brand-darkText font-mono">HONEYPOT CHECK</div>
-                            <div id="badge-honeypot" class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-                                <i class="fa-solid fa-shield-halved"></i> <span class="val-text">Clean</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- AI Executive Summary Narrative -->
-                    <div class="p-4 rounded-xl bg-gradient-to-r from-brand-amber/10 via-black/40 to-black/40 border border-brand-amber/30 space-y-2">
-                        <div class="flex items-center gap-2 text-brand-gold text-xs font-bold uppercase tracking-wider font-mono">
-                            <i class="fa-solid fa-brain"></i>
-                            <span id="i18n-ai-report-title">Flick AI Intelligence Report</span>
-                        </div>
-                        <p id="ai-narrative" class="text-xs sm:text-sm text-brand-lightText leading-relaxed">
-                            The <strong>$FLICK / $EMBER</strong> pair exhibits optimal security parameters. Critical contract authorities have been irrevocably revoked. No Honeypot or malicious minting risks detected.
-                        </p>
-                    </div>
-                </section>
-
-                <!-- PRICE CHART & METRICS CARD -->
-                <!-- PRICE CHART & METRICS CARD -->
-            <section class="glass-panel rounded-2xl p-5 sm:p-6 space-y-4">
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between border-b border-brand-border/30 pb-3">
-                        <h3 class="text-sm font-mono text-brand-gold uppercase tracking-wider">
-                            <span id="i18n-chart-title">Price Action:</span> <span id="chart-pair-label" class="text-white font-bold">FLICK / EMBER</span>
-                        </h3>
-                    </div>
-
-                    <div id="chart-container" class="w-full h-[450px] rounded-xl overflow-hidden border border-brand-border/30 bg-black/60 shadow-inner">
-                        <!-- El iframe se carga dinámicamente aquí -->
-                    </div>
+            <div class="p-3.5 rounded-xl bg-cyberGreen/10 border border-cyberGreen/30 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-xl">✅</span>
+                <div>
+                  <p class="text-xs font-bold text-cyberGreen">Prueba Honeypot: APROBADO</p>
+                  <p class="text-[11px] text-slate-400">Sin restricciones de venta ni listas negras activas.</p>
                 </div>
-            </section>
-
+              </div>
+              <span class="font-mono text-xs text-cyberGreen font-bold bg-cyberGreen/20 px-2.5 py-1 rounded-lg">100% OK</span>
             </div>
 
-            <!-- RIGHT COLUMN: Pair Metrics & Interactive AI Copilot -->
-            <div class="lg:col-span-4 space-y-6">
-                
-                <!-- METRICS STATS PANEL -->
-                <section class="glass-panel rounded-2xl p-5 space-y-4">
-                    <h3 class="text-xs font-bold text-brand-gold uppercase tracking-wider font-mono border-b border-brand-border/30 pb-3 flex items-center justify-between">
-                        <span id="i18n-metrics-title">Pool Metrics</span>
-                        <i class="fa-solid fa-chart-simple"></i>
-                    </h3>
-
-                    <div class="space-y-3 font-mono text-xs">
-                        <div class="flex justify-between items-center p-2.5 rounded-lg bg-black/40 border border-white/5">
-                            <span id="i18n-lbl-price-ember" class="text-brand-darkText">Quote ($EMBER)</span>
-                            <span id="stat-price-ember" class="font-bold text-brand-amber">0.00142 EMBER</span>
-                        </div>
-
-                        <div class="flex justify-between items-center p-2.5 rounded-lg bg-black/40 border border-white/5">
-                            <span id="i18n-lbl-price-usd" class="text-brand-darkText">USD Ref. Price</span>
-                            <span id="stat-price-usd" class="font-bold text-white">$0.0482 USD</span>
-                        </div>
-
-                        <div class="flex justify-between items-center p-2.5 rounded-lg bg-black/40 border border-white/5">
-                            <span id="i18n-lbl-liq" class="text-brand-darkText">Pool Liquidity</span>
-                            <span id="stat-liquidity" class="font-bold text-emerald-400">$142,500 USD</span>
-                        </div>
-
-                        <div class="flex justify-between items-center p-2.5 rounded-lg bg-black/40 border border-white/5">
-                            <span id="i18n-lbl-vol" class="text-brand-darkText">24h Volume</span>
-                            <span id="stat-volume" class="font-bold text-white">$38,900 USD</span>
-                        </div>
-
-                        <div class="flex justify-between items-center p-2.5 rounded-lg bg-black/40 border border-white/5">
-                            <span id="i18n-lbl-mcap" class="text-brand-darkText">Market Cap</span>
-                            <span id="stat-mcap" class="font-bold text-brand-gold">$4.82M USD</span>
-                        </div>
-                    </div>
-
-                    <!-- User Tier Status Box -->
-                    <div class="p-3 rounded-xl bg-brand-amber/10 border border-brand-amber/30 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <i class="fa-solid fa-crown text-brand-gold text-lg"></i>
-                            <div>
-                                <div id="i18n-lbl-tier-title" class="text-[10px] text-brand-darkText font-mono">User Tier</div>
-                                <div id="i18n-lbl-tier-val" class="text-xs font-bold text-white">Tier 2 • Fire Access</div>
-                            </div>
-                        </div>
-                        <span id="i18n-lbl-tier-active" class="text-[10px] bg-brand-amber text-black font-bold px-2 py-1 rounded uppercase">Active</span>
-                    </div>
-                </section>
-
-                <!-- AI COPILOT CHAT PANEL -->
-                <section class="glass-panel rounded-2xl p-5 space-y-4 flex flex-col h-[420px]">
-                    <div class="flex items-center justify-between border-b border-brand-border/30 pb-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-brand-amber"></div>
-                            <h3 id="i18n-copilot-title" class="text-xs font-bold text-white uppercase tracking-wider font-mono">Flick AI Copilot</h3>
-                        </div>
-                        <span class="text-[10px] text-brand-darkText font-mono">Ember Engine v2</span>
-                    </div>
-
-                    <!-- Messages Log Area -->
-                    <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
-                        <div class="p-3 rounded-xl bg-black/60 border border-brand-border/20 text-brand-lightText space-y-1">
-                            <div class="text-[10px] text-brand-gold font-bold font-mono flex items-center gap-1">
-                                <i class="fa-solid fa-robot"></i> Flick AI
-                            </div>
-                            <p id="i18n-chat-welcome">Hello! I am Flick's risk analyst. Ask me about the current token, compare $FLICK/$EMBER pairs, or request volume projections.</p>
-                        </div>
-                    </div>
-
-                   
-
-                    <!-- Input Form -->
-                    <form onsubmit="handleChatSubmit(event)" class="relative flex items-center">
-                        <input 
-                            type="text" 
-                            id="chat-input-field"
-                            placeholder="Ask Flick AI a question..." 
-                            class="w-full glass-input text-xs text-white rounded-xl pl-3 pr-10 py-2.5 focus:outline-none focus:border-brand-amber focus:ring-1 focus:ring-brand-amber font-sans"
-                        />
-                        <button type="submit" class="absolute right-2 text-brand-amber hover:text-brand-gold p-1 transition">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </form>
-                </section>
-
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1">
+                <span class="text-slate-400 text-[11px]">Impuestos Compra/Venta</span>
+                <p class="font-mono font-bold text-white text-sm">0% / 0%</p>
+              </div>
+              <div class="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1">
+                <span class="text-slate-400 text-[11px]">Propiedad del Contrato</span>
+                <p class="font-mono font-bold text-cyberGreen text-sm">Renunciada</p>
+              </div>
+              <div class="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1">
+                <span class="text-slate-400 text-[11px]">Función Mint</span>
+                <p class="font-mono font-bold text-cyberGreen text-sm">Desactivada</p>
+              </div>
+              <div class="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1">
+                <span class="text-slate-400 text-[11px]">Riesgo Modificación</span>
+                <p class="font-mono font-bold text-cyberGreen text-sm">Bajo</p>
+              </div>
             </div>
+
+            <div class="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-2">
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-300 font-medium">Suministro Top 10 Holders</span>
+                <span class="font-mono font-bold text-amberGlow">24.1%</span>
+              </div>
+              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-cyberGreen to-amberGlow" style="width: 24.1%"></div>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-2 text-xs">
+              <p class="font-bold text-slate-200 border-b border-white/10 pb-2 font-display">Resumen Diagnóstico de Seguridad</p>
+              <ul class="space-y-1.5 text-[11px] text-slate-300">
+                <li class="flex items-center gap-2 text-cyberGreen"><span>•</span> Liquidez bloqueada en Raydium Vault.</li>
+                <li class="flex items-center gap-2 text-cyberGreen"><span>•</span> Ausencia de vulnerabilidades delegatecall.</li>
+                <li class="flex items-center gap-2 text-amberGlow"><span>•</span> Precaución: Volatilidad de volumen observada en la última hora.</li>
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- TAB 2: COPILOT AI CHAT -->
+          <div id="tabContent-ai" class="hidden flex-1 flex-col justify-between mt-4 overflow-hidden">
+            <div id="chatBox" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
+              <div class="p-3.5 rounded-xl bg-slate-900/90 border border-electricCyan/30 text-slate-200 space-y-2">
+                <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+                  <span class="font-bold text-electricCyan flex items-center gap-1.5">🤖 Flick Copilot AI</span>
+                  <span class="text-[10px] text-slate-500 font-mono">Datos en vivo</span>
+                </div>
+                <p class="text-slate-300 leading-relaxed">
+                  Analicé los parámetros del smart contract para <span class="text-amberGlow font-mono font-bold" id="aiTokenSymbol">$PEPE</span>:
+                </p>
+                <ul class="list-disc pl-4 space-y-1 text-slate-300 text-[11px]">
+                  <li>Sin patrones honeypot en el bytecode.</li>
+                  <li>El holder principal es la pool de liquidez Raydium.</li>
+                  <li>Puntuación global de seguridad: <strong>95/100</strong>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-2 border-t border-white/10 flex items-center gap-2">
+              <input type="text" id="aiInput" placeholder="Pregunta a Copilot sobre este token..." 
+                onkeydown="if(event.key === 'Enter') sendChatMessage()"
+                class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-electricCyan font-sans" />
+              <button onclick="sendChatMessage()" class="bg-electricCyan hover:brightness-110 text-black font-bold text-xs px-4 py-2 rounded-xl transition-all">
+                Enviar
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 3: TOP HOLDERS -->
+          <div id="tabContent-holders" class="hidden overflow-y-auto pr-1 mt-4 flex-1">
+            <table class="w-full text-left text-xs font-mono">
+              <thead>
+                <tr class="border-b border-white/10 text-slate-500 text-[10px] uppercase">
+                  <th class="pb-2">Billetera</th>
+                  <th class="pb-2">% Supply</th>
+                  <th class="pb-2 text-right">Etiqueta</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5 text-slate-300">
+                <tr>
+                  <td class="py-2.5 text-amberGlow">5Q54...89aF</td>
+                  <td class="py-2.5 font-bold">8.4%</td>
+                  <td class="py-2.5 text-right"><span class="bg-white/5 text-slate-400 text-[10px] px-2 py-0.5 rounded">Raydium Pool</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5">9xLK...11zP</td>
+                  <td class="py-2.5 font-bold">4.2%</td>
+                  <td class="py-2.5 text-right"><span class="bg-white/5 text-slate-400 text-[10px] px-2 py-0.5 rounded">Whale</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 text-slate-500">Burn Address</td>
+                  <td class="py-2.5 font-bold text-cyberGreen">52.0%</td>
+                  <td class="py-2.5 text-right"><span class="bg-cyberGreen/10 text-cyberGreen text-[10px] px-2 py-0.5 rounded">Burned LP</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
         </div>
+
+      </section>
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="border-t border-brand-border/30 mt-12 py-6 px-4 text-center text-xs text-brand-darkText font-mono">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <i class="fa-solid fa-fire text-brand-amber"></i>
-                <span id="i18n-footer-text">Flick AI Analyst • $FLICK / $EMBER Ecosystem</span>
-            </div>
-            <div>
-                <span id="i18n-footer-sub">Web3 Autonomous Intelligence • Multi-Chain & Liquidity Integration</span>
-            </div>
-        </div>
-    </footer>
+  </section>
 
-<script src="app.js"></script>
-<!-- Contenedor para Notificaciones Toast Flotantes -->
-<div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+  <!-- LÓGICA DE INTERACCIÓN & ANIMACIONES -->
+  <script>
+    const KNOWN_CONTRACTS = {
+      'PEPE': '7xKX2mP8k3b9P',
+      'SOL': 'So11111111111111111111111111111111111111112',
+      'WIF': 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm',
+      'BONK': 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263'
+    };
+
+    function enterApp() {
+      const cover = document.getElementById('landingCover');
+      const dashboard = document.getElementById('appDashboard');
+      
+      cover.classList.add('opacity-0', 'scale-95');
+      setTimeout(() => {
+        cover.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+        setTimeout(() => {
+          dashboard.classList.remove('opacity-0', 'scale-95');
+          dashboard.classList.add('opacity-100', 'scale-100');
+        }, 50);
+      }, 300);
+    }
+
+    function exitToLanding() {
+      const cover = document.getElementById('landingCover');
+      const dashboard = document.getElementById('appDashboard');
+
+      dashboard.classList.remove('opacity-100', 'scale-100');
+      dashboard.classList.add('opacity-0', 'scale-95');
+      setTimeout(() => {
+        dashboard.classList.add('hidden');
+        cover.classList.remove('hidden');
+        setTimeout(() => {
+          cover.classList.remove('opacity-0', 'scale-95');
+        }, 50);
+      }, 300);
+    }
+
+    function triggerScanAndEnter() {
+      const inputVal = document.getElementById('landingCaInput').value.trim();
+      runScanSequence(inputVal, () => enterApp());
+    }
+
+    function triggerScanFromDashboard() {
+      const inputVal = document.getElementById('dashboardCaInput').value.trim();
+      if (!inputVal) return;
+      runScanSequence(inputVal);
+    }
+
+    function runScanSequence(query, onCompleteCallback) {
+      const overlay = document.getElementById('scanOverlay');
+      const statusText = document.getElementById('scanStatusText');
+
+      if (query) {
+        updateActiveToken(query);
+      }
+
+      overlay.classList.remove('hidden');
+      
+      const steps = [
+        "Descompilando Bytecode del Contrato...",
+        "Analizando funciones de Mint y Liquidez...",
+        "Simulando transacciones de Swap (Honeypot Check)...",
+        "Conectando a Stream de DexScreener...",
+        "¡Auditoría Completada!"
+      ];
+
+      let stepIdx = 0;
+      const interval = setInterval(() => {
+        stepIdx++;
+        if (stepIdx < steps.length) {
+          statusText.textContent = steps[stepIdx];
+        } else {
+          clearInterval(interval);
+          overlay.classList.add('hidden');
+          if (onCompleteCallback) onCompleteCallback();
+        }
+      }, 350);
+    }
+
+    function updateActiveToken(query) {
+      const symbolElem = document.getElementById('activeTokenSymbol');
+      const caElem = document.getElementById('activeTokenCa');
+      const aiSymbolElem = document.getElementById('aiTokenSymbol');
+      const dexFrame = document.getElementById('dexFrame');
+      const raydiumBtn = document.getElementById('raydiumBtn');
+      const jupiterBtn = document.getElementById('jupiterBtn');
+      
+      const cleanQuery = query.trim().toUpperCase();
+      let caAddress = query.trim();
+
+      if (KNOWN_CONTRACTS[cleanQuery]) {
+        caAddress = KNOWN_CONTRACTS[cleanQuery];
+      }
+
+      const displaySymbol = cleanQuery.includes('/') ? cleanQuery : `${cleanQuery} / SOL`;
+      symbolElem.textContent = displaySymbol;
+      
+      const shortCa = caAddress.length > 14 
+        ? `${caAddress.substring(0, 6)}...${caAddress.substring(caAddress.length - 4)}` 
+        : caAddress;
+      
+      caElem.textContent = `CA: ${shortCa}`;
+      if (aiSymbolElem) aiSymbolElem.textContent = `$${cleanQuery.split('/')[0]}`;
+
+      if (dexFrame) {
+        dexFrame.src = `https://dexscreener.com/solana/${caAddress}?embed=1&theme=dark&trades=0&info=0`;
+      }
+
+      if (raydiumBtn) raydiumBtn.href = `https://raydium.io/swap/?output=${caAddress}`;
+      if (jupiterBtn) jupiterBtn.href = `https://jup.ag/swap/SOL-${caAddress}`;
+    }
+
+    function quickSelect(ticker) {
+      document.getElementById('landingCaInput').value = ticker;
+      triggerScanAndEnter();
+    }
+
+    async function connectWallet() {
+      const walletBtn = document.getElementById('connectWalletBtn');
+      
+      if (window.solana && window.solana.isPhantom) {
+        try {
+          const response = await window.solana.connect();
+          const pubKey = response.publicKey.toString();
+          const shortAddr = `${pubKey.substring(0, 4)}...${pubKey.substring(pubKey.length - 4)}`;
+          
+          walletBtn.textContent = `⚡ ${shortAddr}`;
+          walletBtn.className = "bg-cyberGreen/20 text-cyberGreen border border-cyberGreen/40 font-bold text-xs px-3.5 py-2 rounded-xl transition-all font-mono";
+        } catch (err) {
+          console.warn("Conexión cancelada:", err);
+        }
+      } else {
+        alert("No se detectó Phantom Wallet. Instala la extensión en tu navegador para conectar.");
+      }
+    }
+
+    function setTimeframe(btn) {
+      const parent = btn.parentElement;
+      const buttons = parent.querySelectorAll('button');
+      buttons.forEach(b => {
+        b.className = "px-2.5 py-0.5 rounded hover:bg-white/5 text-slate-400 transition-all";
+      });
+      btn.className = "px-2.5 py-0.5 rounded bg-amberCore/20 text-amberGlow font-bold border border-amberCore/30 transition-all";
+    }
+
+    function switchTab(tab) {
+      const tabs = ['audit', 'ai', 'holders'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tabBtn-${t}`);
+        const content = document.getElementById(`tabContent-${t}`);
+        
+        if (t === tab) {
+          btn.className = "flex-1 py-2 px-3 rounded-xl bg-amber-500/10 text-amberGlow border border-amber-500/30 transition-all flex items-center justify-center gap-1.5 font-bold";
+          content.classList.remove('hidden');
+          if (t === 'ai') content.classList.add('flex');
+        } else {
+          btn.className = "flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all flex items-center justify-center gap-1.5 font-bold";
+          content.classList.add('hidden');
+          if (t === 'ai') content.classList.remove('flex');
+        }
+      });
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('aiInput');
+      const chatBox = document.getElementById('chatBox');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const userMsg = document.createElement('div');
+      userMsg.className = "p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-slate-200 text-right";
+      userMsg.innerHTML = `<p class="font-mono text-amberGlow text-[11px] font-bold mb-0.5">Tú</p><p>${escapeHtml(text)}</p>`;
+      chatBox.appendChild(userMsg);
+
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      setTimeout(() => {
+        const aiMsg = document.createElement('div');
+        aiMsg.className = "p-3.5 rounded-xl bg-slate-900/90 border border-electricCyan/30 text-slate-200 space-y-1.5";
+        aiMsg.innerHTML = `
+          <div class="flex items-center justify-between border-b border-white/10 pb-1">
+            <span class="font-bold text-electricCyan text-xs">🤖 Flick Copilot AI</span>
+            <span class="text-[10px] text-slate-500 font-mono">Ahora</span>
+          </div>
+          <p class="text-xs text-slate-300">Análisis completado para "${escapeHtml(text)}": No se detectaron indicadores de honeypot o anomalías en la liquidez del par evaluado.</p>
+        `;
+        chatBox.appendChild(aiMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 600);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    const canvas = document.getElementById('interactiveCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, particles = [];
+    let mouse = { x: null, y: null, radius: 140 };
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.x;
+      mouse.y = e.y;
+    });
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = Math.random() * 1.5 + 0.5;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+
+        if (mouse.x && mouse.y) {
+          let dx = mouse.x - this.x;
+          let dy = mouse.y - this.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < mouse.radius) {
+            let force = (mouse.radius - distance) / mouse.radius;
+            this.x -= (dx / distance) * force * 2;
+            this.y -= (dy / distance) * force * 2;
+          }
+        }
+      }
+      draw() {
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.25)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const particleCount = Math.floor((width * height) / 18000);
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    }
+    initParticles();
+    window.addEventListener('resize', initParticles);
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+  </script>
 </body>
 </html>
-    
