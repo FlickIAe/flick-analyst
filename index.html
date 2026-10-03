@@ -165,7 +165,7 @@
         <div class="glass-panel p-2 rounded-2xl flex flex-col sm:flex-row items-center gap-2 border border-amber-500/25 shadow-2xl shadow-amber-500/10 focus-within:border-amberCore/60 transition-all">
           <div class="flex items-center gap-2.5 px-3 w-full flex-1">
             <span class="text-slate-500 text-sm">🔍</span>
-            <input type="text" id="landingCaInput" placeholder="Paste Contract Address (CA) or Symbol..." data-i18n-ph="ca_placeholder"
+            <input type="text" id="landingCaInput" placeholder="Paste Token Contract Address (CA)..." data-i18n-ph="ca_placeholder"
               onkeydown="if(event.key === 'Enter') triggerScanAndEnter()"
               class="w-full bg-transparent py-2 text-xs sm:text-sm font-mono text-amberGlow placeholder-slate-500 focus:outline-none" />
           </div>
@@ -174,8 +174,6 @@
             <span>→</span>
           </button>
         </div>
-
-
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-4 text-left">
@@ -201,7 +199,7 @@
     </div>
 
     <footer class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 border-t border-white/5 pt-5 gap-3">
-      <p>© 2026 Flick Analyst. Web3 Intelligence Platform.</p>
+      <p data-i18n="footer_copyright">© 2026 Flick Analyst. Web3 Intelligence Platform.</p>
       <div class="flex items-center gap-6">
         <button onclick="enterApp()" class="text-amberCore hover:underline font-mono text-xs"><span data-i18n="open_app">Open Terminal →</span></button>
       </div>
@@ -232,7 +230,7 @@
       <div class="w-full max-w-md relative">
         <div class="relative flex items-center">
           <span class="absolute left-3.5 text-slate-500 text-xs">🔍</span>
-          <input type="text" id="dashboardCaInput" placeholder="Search Contract Address (CA) or Symbol..." data-i18n-ph="ca_placeholder"
+          <input type="text" id="dashboardCaInput" placeholder="Search Contract Address (CA)..." data-i18n-ph="ca_placeholder"
             onkeydown="if(event.key === 'Enter') triggerScanFromDashboard()"
             class="w-full bg-slate-900/90 border border-white/10 rounded-xl pl-9 pr-12 py-2 text-xs font-mono text-amberGlow placeholder-slate-500 focus:outline-none focus:border-amberCore transition-all" />
           <span class="absolute right-3 text-[10px] font-mono text-slate-500 bg-white/5 px-1.5 py-0.5 rounded border border-white/10">↵</span>
@@ -245,10 +243,6 @@
           <option value="en" class="bg-slate-900 text-white">EN</option>
           <option value="zh" class="bg-slate-900 text-white">繁/简 中文</option>
         </select>
-
-        <button id="connectWalletBtn" onclick="connectWallet()" class="bg-amberCore hover:brightness-110 text-black font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-md shadow-amber-500/20 active:scale-95 whitespace-nowrap">
-          <span data-i18n="connect_wallet">Connect Wallet</span>
-        </button>
       </div>
 
     </header>
@@ -274,6 +268,15 @@
             <p class="text-xs font-mono text-slate-400 mt-1 flex items-center gap-2" id="activeTokenCa">CA: So11...1112</p>
           </div>
         </div>
+        <!-- TOGGLE LIVE POLL -->
+<div class="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10 text-xs font-mono">
+  <span class="relative flex h-2 w-2">
+    <span id="livePulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyberGreen opacity-75 hidden"></span>
+    <span id="liveDot" class="relative inline-flex rounded-full h-2 w-2 bg-slate-500"></span>
+  </span>
+  <span class="text-slate-400">Live 12s</span>
+  <input type="checkbox" id="toggleLiveCheckbox" onchange="toggleLivePolling(this.checked)" class="accent-amberCore cursor-pointer" />
+</div>
 
         <div class="flex items-center gap-6 md:gap-10 text-xs flex-wrap">
           <div class="border-r border-white/10 pr-6">
@@ -304,7 +307,7 @@
         <div class="glass-panel rounded-2xl p-2 h-[580px] flex flex-col overflow-hidden relative">
           <div class="flex items-center justify-between px-3 py-2 border-b border-white/10 text-xs">
             <div class="flex items-center gap-2">
-              <span class="font-semibold text-slate-300 font-mono">Stream DexScreener Real-Time</span>
+              <span class="font-semibold text-slate-300 font-mono" data-i18n="stream_dex">Stream DexScreener Real-Time</span>
             </div>
             <div class="flex gap-1 font-mono text-[11px]">
               <button onclick="setTimeframe(this)" class="px-2.5 py-0.5 rounded bg-amberCore/20 text-amberGlow font-bold border border-amberCore/30">1m</button>
@@ -359,86 +362,163 @@
             </button>
           </div>
 
-          <!-- TAB 1: AUDIT -->
-          <div id="tabContent-audit" class="space-y-3.5 overflow-y-auto pr-1 mt-4 flex-1">
-            
-            <div id="honeypotBanner" class="p-3.5 rounded-xl bg-cyberGreen/10 border border-cyberGreen/30 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <span class="text-xl" id="honeypotIcon">✅</span>
-                <div>
-                  <p class="text-xs font-bold text-cyberGreen" id="honeypotTitle">Honeypot Test: PASSED</p>
-                  <p class="text-[11px] text-slate-400" id="honeypotSub">No sell restrictions or active blacklists detected.</p>
-                </div>
-              </div>
-              <span class="font-mono text-xs text-cyberGreen font-bold bg-cyberGreen/20 px-2.5 py-1 rounded-lg" id="honeypotBadge">100% OK</span>
-            </div>
+          <!-- TAB 1: ENHANCED DETAILED AUDIT -->
+<div id="tabContent-audit" class="space-y-3.5 overflow-y-auto pr-1 mt-4 flex-1">
+  
+  <!-- BANNER PRINCIPAL DE ESTADO -->
+  <div id="honeypotBanner" class="p-3.5 rounded-xl bg-cyberGreen/10 border border-cyberGreen/30 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-xl" id="honeypotIcon">🛡️</span>
+      <div>
+        <p class="text-xs font-bold text-cyberGreen" id="honeypotTitle" data-i18n="honeypot_pass_title">Honeypot Test: PASSED</p>
+        <p class="text-[11px] text-slate-400" id="honeypotSub" data-i18n="honeypot_pass_sub">No sell restrictions or active blacklists detected.</p>
+      </div>
+    </div>
+    <span class="font-mono text-xs text-cyberGreen font-bold bg-cyberGreen/20 px-2.5 py-1 rounded-lg" id="honeypotBadge">100% OK</span>
+  </div>
 
-            <div class="grid grid-cols-2 gap-2 text-xs">
-              <div class="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1">
-                <span class="text-slate-400 text-[11px]">Buy / Sell Tax</span>
-                <p class="font-mono font-bold text-white text-sm" id="auditTax">0% / 0%</p>
-              </div>
-              <div class="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1">
-                <span class="text-slate-400 text-[11px]">Ownership</span>
-                <p class="font-mono font-bold text-cyberGreen text-sm" id="auditOwnership">Renounced</p>
-              </div>
-              <div class="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1">
-                <span class="text-slate-400 text-[11px]">Mint Function</span>
-                <p class="font-mono font-bold text-cyberGreen text-sm" id="auditMint">Disabled</p>
-              </div>
-              <div class="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1">
-                <span class="text-slate-400 text-[11px]">Proxy / Mod Risk</span>
-                <p class="font-mono font-bold text-cyberGreen text-sm" id="auditProxy">Low Risk</p>
-              </div>
-            </div>
+  <!-- DESGLOSE DE PUNTUACIÓN DE RIESGO (4 BARRAS) -->
+  <div class="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-2 text-xs">
+    <p class="font-bold text-slate-200 border-b border-white/10 pb-1.5 font-display flex justify-between items-center">
+      <span>Score Breakdown</span>
+      <span class="text-amberGlow font-mono" id="auditOverallScore">95/100</span>
+    </p>
+    <div class="grid grid-cols-2 gap-x-4 gap-y-2 pt-1 text-[11px]">
+      <div>
+        <div class="flex justify-between text-slate-400 mb-1"><span>Contract Code</span><span id="scoreCode" class="text-cyberGreen font-mono">100%</span></div>
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div id="barCode" class="h-full bg-cyberGreen w-[100%]"></div></div>
+      </div>
+      <div>
+        <div class="flex justify-between text-slate-400 mb-1"><span>Liquidity Lock</span><span id="scoreLiq" class="text-cyberGreen font-mono">92%</span></div>
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div id="barLiq" class="h-full bg-cyberGreen w-[92%]"></div></div>
+      </div>
+      <div>
+        <div class="flex justify-between text-slate-400 mb-1"><span>Holder Distribution</span><span id="scoreHolders" class="text-amberGlow font-mono">82%</span></div>
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div id="barHolders" class="h-full bg-amberGlow w-[82%]"></div></div>
+      </div>
+      <div>
+        <div class="flex justify-between text-slate-400 mb-1"><span>Owner Privileges</span><span id="scoreOwner" class="text-cyberGreen font-mono">100%</span></div>
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div id="barOwner" class="h-full bg-cyberGreen w-[100%]"></div></div>
+      </div>
+    </div>
+  </div>
 
-            <div class="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-2">
-              <div class="flex justify-between text-xs">
-                <span class="text-slate-300 font-medium">Top 10 Holders Supply Ratio</span>
-                <span class="font-mono font-bold text-amberGlow" id="auditHoldersRatio">18.4%</span>
-              </div>
-              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div id="auditHoldersBar" class="h-full bg-gradient-to-r from-cyberGreen to-amberGlow transition-all duration-500" style="width: 18.4%"></div>
-              </div>
-            </div>
+  <!-- MATRIZ DE 8 PRUEBAS DE SEGURIDAD (GRID) -->
+  <div class="grid grid-cols-2 gap-2 text-xs">
+    <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-0.5">
+      <div class="flex items-center justify-between">
+        <span class="text-slate-400 text-[11px]" data-i18n="audit_tax_label">Buy / Sell Tax</span>
+        <span id="badgeTax" class="text-[10px] text-cyberGreen font-bold">PASS</span>
+      </div>
+      <p class="font-mono font-bold text-white text-xs" id="auditTax">0% / 0%</p>
+    </div>
 
-            <div class="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-2 text-xs">
-              <p class="font-bold text-slate-200 border-b border-white/10 pb-2 font-display">Security Diagnostic Summary</p>
-              <ul class="space-y-1.5 text-[11px] text-slate-300" id="auditSummaryList">
-                <li class="flex items-center gap-2 text-cyberGreen"><span>•</span> Liquidity locked in DEX Pool Vault.</li>
-                <li class="flex items-center gap-2 text-cyberGreen"><span>•</span> No dangerous delegatecall vulnerabilities detected.</li>
-                <li class="flex items-center gap-2 text-amberGlow"><span>•</span> Normal trading volume and price action observed.</li>
-              </ul>
-            </div>
+    <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-0.5">
+      <div class="flex items-center justify-between">
+        <span class="text-slate-400 text-[11px]" data-i18n="audit_ownership_label">Ownership</span>
+        <span id="badgeOwnership" class="text-[10px] text-cyberGreen font-bold">SAFE</span>
+      </div>
+      <p class="font-mono font-bold text-cyberGreen text-xs" id="auditOwnership">Renounced</p>
+    </div>
 
-          </div>
+    <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-0.5">
+      <div class="flex items-center justify-between">
+        <span class="text-slate-400 text-[11px]" data-i18n="audit_mint_label">Mint Function</span>
+        <span id="badgeMint" class="text-[10px] text-cyberGreen font-bold">DISABLED</span>
+      </div>
+      <p class="font-mono font-bold text-cyberGreen text-xs" id="auditMint">Disabled</p>
+    </div>
+
+    <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-0.5">
+      <div class="flex items-center justify-between">
+        <span class="text-slate-400 text-[11px]">Blacklist/Freeze</span>
+        <span id="badgeFreeze" class="text-[10px] text-cyberGreen font-bold">NO RISK</span>
+      </div>
+      <p class="font-mono font-bold text-cyberGreen text-xs" id="auditFreeze">Not Detected</p>
+    </div>
+
+    <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-0.5">
+      <div class="flex items-center justify-between">
+        <span class="text-slate-400 text-[11px]">Proxy / Upgradeable</span>
+        <span id="badgeProxy" class="text-[10px] text-cyberGreen font-bold">NO PROXY</span>
+      </div>
+      <p class="font-mono font-bold text-cyberGreen text-xs" id="auditProxy">Immutable Code</p>
+    </div>
+
+    <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-0.5">
+      <div class="flex items-center justify-between">
+        <span class="text-slate-400 text-[11px]">LP Burn / Lock</span>
+        <span id="badgeLp" class="text-[10px] text-cyberGreen font-bold">LOCKED</span>
+      </div>
+      <p class="font-mono font-bold text-cyberGreen text-xs" id="auditLp">100% Locked</p>
+    </div>
+  </div>
+
+  <!-- RESUMEN DIAGNÓSTICO -->
+  <div class="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-2 text-xs">
+    <p class="font-bold text-slate-200 border-b border-white/10 pb-1.5 font-display" data-i18n="security_summary_title">Security Diagnostic Summary</p>
+    <ul class="space-y-1.5 text-[11px] text-slate-300" id="auditSummaryList">
+      <!-- Dinámico -->
+    </ul>
+  </div>
+  <!-- DESGLOSE DE POOLS Y LIQUIDEZ MÚLTIPLE -->
+<div class="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-2 mt-4">
+  <p class="text-xs font-bold text-slate-200 font-display flex justify-between items-center border-b border-white/10 pb-1.5">
+    <span>DEX Liquidity Pools</span>
+    <span class="text-slate-400 text-[10px] font-mono" id="multiPairCount">0 Pools</span>
+  </p>
+  <div id="multiPairsContainer" class="space-y-1.5 max-h-[160px] overflow-y-auto pr-1">
+    <p class="text-[11px] text-slate-500 italic">No pools loaded.</p>
+  </div>
+</div>
+  <button onclick="copySocialShareCard()" 
+  class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amberCore/10 hover:bg-amberCore/20 border border-amberCore/30 text-amberGlow text-xs font-mono transition-all active:scale-95">
+  📤 Share Analysis
+</button>
+
+</div>
 
           <!-- TAB 2: COPILOT AI CHAT ENGINE -->
-          <div id="tabContent-ai" class="hidden flex-1 flex-col justify-between mt-4 overflow-hidden">
-            <div id="chatBox" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
-              <!-- Initial Greeting from AI -->
-            </div>
+<div id="tabContent-ai" class="hidden flex-1 flex-col justify-between mt-4 overflow-hidden">
+  
+  <!-- QUICK PROMPT CHIPS -->
+  <div class="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-white/5 text-[10px] scrollbar-none">
+    <button onclick="quickCopilotQuery('safety')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_safety">🛡️ Safety</button>
+    <button onclick="quickCopilotQuery('holders')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_holders">👥 Holders</button>
+    <button onclick="quickCopilotQuery('liquidity')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_liquidity">💧 Liquidity</button>
+    <button onclick="quickCopilotQuery('trend')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_price">📈 Trend</button>
+  </div>
 
-            <div class="mt-3 pt-2 border-t border-white/10 flex items-center gap-2">
-              <input type="text" id="aiInput" placeholder="Ask Copilot about this token..." data-i18n-ph="ai_placeholder"
-                onkeydown="if(event.key === 'Enter') sendChatMessage()"
-                class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-electricCyan font-sans" />
-              <button onclick="sendChatMessage()" class="bg-electricCyan hover:brightness-110 text-black font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-md shadow-cyan-500/20 active:scale-95">
-                <span data-i18n="send">Send</span>
-              </button>
-            </div>
-          </div>
+  <!-- CHAT BOX CONTAINER -->
+  <div id="copilotChatBox" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs my-2">
+    <div class="p-3 bg-slate-900/80 rounded-xl border border-amber-500/20 text-xs font-mono text-slate-200 leading-relaxed">
+      🤖 Selecciona un botón arriba para obtener un reporte rápido del token.
+    </div>
+  </div>
 
-          <!-- TAB 3: TOP HOLDERS breakdown -->
+  <!-- INPUT & SEND BUTTON -->
+  <div class="pt-2 border-t border-white/10 flex items-center gap-2">
+    <input type="text" id="copilotInput" placeholder="Ask Copilot about this token..." data-i18n-ph="ai_placeholder"
+      onkeydown="if(event.key === 'Enter') sendCopilotQuery()"
+      class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-electricCyan font-sans" />
+    
+    <button onclick="sendCopilotQuery()" class="bg-electricCyan hover:brightness-110 text-black font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-md shadow-cyan-500/20 active:scale-95">
+      <span data-i18n="send">Send</span>
+    </button>
+  </div>
+
+</div>
+
+          <!-- TAB 3: DYNAMIC TOP HOLDERS BREAKDOWN -->
           <div id="tabContent-holders" class="hidden overflow-y-auto pr-1 mt-4 flex-1">
             <table class="w-full text-left text-xs font-mono">
               <thead>
                 <tr class="border-b border-white/10 text-slate-500 text-[10px] uppercase">
-                  <th class="pb-2">#</th>
-                  <th class="pb-2">Wallet Address</th>
-                  <th class="pb-2">% Supply</th>
-                  <th class="pb-2 text-right">USD Value</th>
-                  <th class="pb-2 text-right">Tag</th>
+                  <th class="pb-2" data-i18n="th_rank">#</th>
+                  <th class="pb-2" data-i18n="th_address">Wallet Address</th>
+                  <th class="pb-2" data-i18n="th_supply">% Supply</th>
+                  <th class="pb-2 text-right" data-i18n="th_val">USD Value</th>
+                  <th class="pb-2 text-right" data-i18n="th_tag">Tag</th>
                 </tr>
               </thead>
               <tbody id="holdersTableBody" class="divide-y divide-white/5 text-slate-300">
