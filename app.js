@@ -12,11 +12,10 @@ const TRANSLATIONS = {
     mainnet_active: "Mainnet V2 Active",
     open_app: "Open App →",
     badge_landing: "🛡️ AUTOMATED CONTRACT AUDIT & ON-CHAIN MARKET",
-    hero_title: 'Navigate Web3 Markets <br><span class="bg-gradient-to-r from-amberCore via-amberGlow to-white bg-clip-text text-transparent">Without Falling into Traps.</span>',
+    hero_title: 'Navigate Web3 Markets <br><span class="bg-gradient-to-r from-amberCore via-amberGlow to-white bg-clip-text text-transparent">Never Exit Liquidity</span>',
     hero_desc: "Honeypot detection, real-time DEX charts, liquidity audit, and an AI assistant designed for traders.",
     ca_placeholder: "Paste Contract Address (CA) or Symbol...",
     analyze_btn: "Analyze Contract",
-    trending: "Trending:",
     audit_score_title: "AI Security Scoring",
     audit_score_desc: "Bytecode inspection against honeypots, hidden taxes, and unlimited mint functions.",
     dex_stream_title: "Live DEX Stream",
@@ -52,7 +51,6 @@ const TRANSLATIONS = {
     hero_desc: "蜜罐检测、实时 DEX 0延迟图表、流动性深度审计以及专为交易者打造的 AI 助手。",
     ca_placeholder: "粘贴合约地址 (CA) 或搜索代币...",
     analyze_btn: "分析合约",
-    trending: "热门榜:",
     audit_score_title: "AI 安全评分",
     audit_score_desc: "字节码级别检测，防范蜜罐、隐藏税率及无上限铸币漏洞。",
     dex_stream_title: "DEX 实时流",
@@ -154,7 +152,7 @@ function enterApp() {
 
   // If initial load, trigger default SOL/USDT search
   if (!currentToken.price) {
-    executeTokenSearch('SOL/USDT');
+    executeTokenSearch('SOL/USD');
   }
 }
 
@@ -334,8 +332,8 @@ function updateUI() {
     raydiumBtn.href = `https://raydium.io/swap/?output=${currentToken.ca}`;
     jupiterBtn.href = `https://jup.ag/swap/SOL-${currentToken.ca}`;
   } else {
-    raydiumBtn.href = `https://uniswap.org/`;
-    jupiterBtn.href = `https://kyberswap.com/`;
+    raydiumBtn.href = `https://raydium.io/swap/`;
+    jupiterBtn.href = `https://jup.ag/swap/`;
   }
 
   // 7. Audit Tab Updates
