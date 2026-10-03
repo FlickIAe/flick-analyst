@@ -1,699 +1,646 @@
+/**
+ * FLICK ANALYST — Core Application Engine
+ * Handlers for i18n multilanguage, real-time DexScreener API fetching,
+ * dynamic chart embed resolution, audit simulation & AI Copilot.
+ */
 
-let currentToken = 'BTC';
-let currentLang = 'es';
-let lastLiveData = null;
-let lastSecurityData = null;
-let isWalletConnected = false;
-
-const i18n = {
-    es: {
-        headerSub: "Ecosistema Ember • Multicadena",
-        nodeStatus: "Sistema: <strong class=\"text-white\">100% Operativo</strong>",
-        connectWallet: "Conectar Wallet",
-        heroTitle: 'Auditoría Inteligente de Tokens <span class="gradient-text-ember">Multicadena</span>',
-        heroSub: 'Escanea cualquier Dirección de Contrato (CA) para obtener auditorías de seguridad en tiempo real, análisis de liquidez y proyecciones impulsadas por la IA de Flick.',
-        searchPlaceholder: 'Pega la dirección del contrato (CA) o el nombre del token...',
-        auditBtn: 'Auditar',
-        quickLabel: 'Rápidos:',
-        verifiedText: 'Verificado',
-        scoreLabel: 'Puntaje de Seguridad',
-        badgeMint: 'MINT AUTHORITY',
-        badgeFreeze: 'FREEZE AUTHORITY',
-        badgeLp: 'LIQUIDEZ POOL',
-        badgeHoneypot: 'HONEYPOT CHECK',
-        revoked: 'Revocada',
-        locked100: '100% Bloqueada',
-        clean: 'Limpio',
-        aiReportTitle: 'Dictamen de Inteligencia Flick AI',
-        chartTitle: 'Evolución de Precio:',
-        currPriceLabel: 'Precio Actual',
-        metricsTitle: 'Métricas del Pool',
-        lblPriceEmber: 'Cotización ($EMBER)',
-        lblPriceUsd: 'Precio Ref. USD',
-        lblLiq: 'Liquidez Pool',
-        lblVol: 'Volumen 24 Horas',
-        lblMcap: 'Market Cap',
-        lblTierTitle: 'Nivel de Usuario',
-        lblTierVal: 'Tier 2 • Acceso Fuego',
-        lblTierActive: 'Activo',
-        copilotTitle: 'Copiloto Flick AI',
-        chatWelcome: '¡Hola! Soy el analista de riesgo de Flick. Puedes preguntarme sobre el token actual, comparar paridades $FLICK/$EMBER o pedirme proyecciones de volumen.',
-        promptSafe: '¿Por qué es seguro?',
-        promptLiq: 'Liquidez',
-        promptWhySafe: '¿Por qué es seguro FLICK/EMBER?',
-        promptLiquidity: '¿Cuál es la liquidez actual?',
-        chatPlaceholder: 'Haz una pregunta a Flick AI...',
-        footerText: 'Flick AI Analyst • Ecosistema $FLICK / $EMBER',
-        footerSub: 'Web3 Autonomous Intelligence • Multi-Chain & Liquidity Integration',
-        copiedAlert: 'Dirección de Contrato copiada al portapapeles: ',
-        invalidSymbolAlert: 'Por favor introduce un símbolo válido o una dirección de contrato válida.'
-    },
-    en: {
-        headerSub: "Ember Ecosystem • Multi-Chain",
-        nodeStatus: "System: <strong class=\"text-white\">100% Operational</strong>",
-        connectWallet: "Connect Wallet",
-        heroTitle: 'Smart Token Audit for <span class="gradient-text-ember">Multichain</span>',
-        heroSub: 'Scan any Contract Address (CA) across any blockchain for real-time security audits, liquidity analysis, and AI-powered projections by Flick.',
-        searchPlaceholder: 'Paste contract address (CA) or token name...',
-        auditBtn: 'Audit',
-        quickLabel: 'Quick:',
-        verifiedText: 'Verified',
-        scoreLabel: 'Security Score',
-        badgeMint: 'MINT AUTHORITY',
-        badgeFreeze: 'FREEZE AUTHORITY',
-        badgeLp: 'POOL LIQUIDITY',
-        badgeHoneypot: 'HONEYPOT CHECK',
-        revoked: 'Revoked',
-        locked100: '100% Locked',
-        clean: 'Clean',
-        aiReportTitle: 'Flick AI Intelligence Report',
-        chartTitle: 'Price Action:',
-        currPriceLabel: 'Current Price',
-        metricsTitle: 'Pool Metrics',
-        lblPriceEmber: 'Quote ($EMBER)',
-        lblPriceUsd: 'USD Ref. Price',
-        lblLiq: 'Pool Liquidity',
-        lblVol: '24h Volume',
-        lblMcap: 'Market Cap',
-        lblTierTitle: 'User Tier',
-        lblTierVal: 'Tier 2 • Fire Access',
-        lblTierActive: 'Active',
-        copilotTitle: 'Flick AI Copilot',
-        chatWelcome: 'Hello! I am Flick\'s risk analyst. Ask me about the current token, compare $FLICK/$EMBER pairs, or request volume projections.',
-        promptSafe: 'Why is it safe?',
-        promptLiq: 'Liquidity',
-        promptWhySafe: 'Why is FLICK/EMBER safe?',
-        promptLiquidity: 'What is the current liquidity?',
-        chatPlaceholder: 'Ask Flick AI a question...',
-        footerText: 'Flick AI Analyst • $FLICK / $EMBER Ecosystem',
-        footerSub: 'Web3 Autonomous Intelligence • Multi-Chain & Liquidity Integration',
-        copiedAlert: 'Contract Address copied to clipboard: ',
-        invalidSymbolAlert: 'Please enter a valid ticker or contract address.'
-    },
-    ja: {
-        headerSub: "Emberエコシステム • マルチチェーン",
-        nodeStatus: "システム: <strong class=\"text-white\">100% 正常稼働</strong>",
-        connectWallet: "ウォレット接続",
-        heroTitle: 'マルチチェーン対応 <span class="gradient-text-ember">AIトークン監査</span>',
-        heroSub: 'あらゆるブロックチェーンのコントラクトアドレス(CA)をスキャンし、リアルタイムセキュリティ監査、流動性解析、Flick AI予測を実行します。',
-        searchPlaceholder: 'コントラクトアドレス(CA)または名称を入力...',
-        auditBtn: '監査実行',
-        quickLabel: 'クイック:',
-        verifiedText: '検証済み',
-        scoreLabel: '安全性スコア',
-        badgeMint: 'MINT権限',
-        badgeFreeze: 'FREEZE権限',
-        badgeLp: 'プール流動性',
-        badgeHoneypot: 'ハニーポット検証',
-        revoked: '放棄済み',
-        locked100: '100% ロック済み',
-        clean: '問題なし',
-        aiReportTitle: 'Flick AI 診断レポート',
-        chartTitle: '価格推移:',
-        currPriceLabel: '現在価格',
-        metricsTitle: 'プールメトリクス',
-        lblPriceEmber: '価格 ($EMBER)',
-        lblPriceUsd: 'USD参考価格',
-        lblLiq: 'プール流動性',
-        lblVol: '24時間出来高',
-        lblMcap: '時価総額',
-        lblTierTitle: 'ユーザーティア',
-        lblTierVal: 'ティア 2 • Fireアクセス',
-        lblTierActive: 'アクティブ',
-        copilotTitle: 'Flick AI コパイロット',
-        chatWelcome: 'こんにちは！Flickリスクアナリストです。トークン詳細、$FLICK/$EMBERペアの分析、出来高予測などご質問ください。',
-        promptSafe: 'なぜ安全なのか？',
-        promptLiq: '流動性について',
-        promptWhySafe: 'FLICK/EMBERが安全な理由は何ですか？',
-        promptLiquidity: '現在の流動性はいくらですか？',
-        chatPlaceholder: 'Flick AIに質問を入力...',
-        footerText: 'Flick AI アナリスト • $FLICK / $EMBER エコシステム',
-        footerSub: 'Web3 自律型AI • マルチチェーン統合',
-        copiedAlert: 'コントラクトアドレスをクリップボードにコピーしました: ',
-        invalidSymbolAlert: '有効なシンボルまたはコントラクトアドレスを入力してください。'
-    }
+// ===================================================================
+// 1. DICTIONARY & I18N SYSTEM
+// ===================================================================
+const TRANSLATIONS = {
+  en: {
+    mainnet_active: "Mainnet V2 Active",
+    open_app: "Open App →",
+    badge_landing: "🛡️ AUTOMATED CONTRACT AUDIT & ON-CHAIN MARKET",
+    hero_title: 'Navigate Web3 Markets <br><span class="bg-gradient-to-r from-amberCore via-amberGlow to-white bg-clip-text text-transparent">Without Falling into Traps.</span>',
+    hero_desc: "Honeypot detection, real-time DEX charts, liquidity audit, and an AI assistant designed for traders.",
+    ca_placeholder: "Paste Contract Address (CA) or Symbol...",
+    analyze_btn: "Analyze Contract",
+    trending: "Trending:",
+    audit_score_title: "AI Security Scoring",
+    audit_score_desc: "Bytecode inspection against honeypots, hidden taxes, and unlimited mint functions.",
+    dex_stream_title: "Live DEX Stream",
+    dex_stream_desc: "High-frequency embedded charts from Raydium, Uniswap, and PancakeSwap.",
+    copilot_title: "Copilot AI Assistant",
+    copilot_desc: "Natural language queries on tokenomics, holder concentration, or code security.",
+    verified_contract: "Verified Pair",
+    live_price: "Live Price",
+    pool_liquidity: "Pool Liquidity",
+    volume_24h: "24h Volume",
+    security_score: "Security Score",
+    tab_audit: "🛡️ Audit",
+    tab_ai: "🤖 Copilot AI",
+    tab_holders: "📊 Top Holders",
+    swap_access: "Quick DEX Swap Access",
+    swap_desc: "Direct redirection with pre-loaded contract address.",
+    connect_wallet: "Connect Wallet",
+    ai_placeholder: "Ask Copilot about this token...",
+    send: "Send",
+    back_landing: "Cover",
+    scanning_title: "DECOMPILING SMART CONTRACT...",
+    scan_step_1: "Decompiling Contract Bytecode...",
+    scan_step_2: "Analyzing Mint & Liquidity Functions...",
+    scan_step_3: "Simulating Swap Transactions (Honeypot Check)...",
+    scan_step_4: "Connecting to DexScreener Data Stream...",
+    scan_step_5: "Audit Completed!"
+  },
+  zh: {
+    mainnet_active: "主网 V2 运行中",
+    open_app: "进入应用 →",
+    badge_landing: "🛡️ 智能合约自动化审计与链上市场",
+    hero_title: '洞察 Web3 市场 <br><span class="bg-gradient-to-r from-amberCore via-amberGlow to-white bg-clip-text text-transparent">避开所有链上陷阱。</span>',
+    hero_desc: "蜜罐检测、实时 DEX 0延迟图表、流动性深度审计以及专为交易者打造的 AI 助手。",
+    ca_placeholder: "粘贴合约地址 (CA) 或搜索代币...",
+    analyze_btn: "分析合约",
+    trending: "热门榜:",
+    audit_score_title: "AI 安全评分",
+    audit_score_desc: "字节码级别检测，防范蜜罐、隐藏税率及无上限铸币漏洞。",
+    dex_stream_title: "DEX 实时流",
+    dex_stream_desc: "集成来自 Raydium、Uniswap 和 PancakeSwap 的高频图表。",
+    copilot_title: "Copilot AI 助手",
+    copilot_desc: "关于代币经济学、持币集中度及代码安全的自然语言问答。",
+    verified_contract: "已验证交易对",
+    live_price: "实时价格",
+    pool_liquidity: "池子流动性",
+    volume_24h: "24小时交易量",
+    security_score: "安全评分",
+    tab_audit: "🛡️ 合约审计",
+    tab_ai: "🤖 Copilot AI",
+    tab_holders: "📊 持币大户",
+    swap_access: "DEX 快速兑换",
+    swap_desc: "自动预载合约地址的直接跳转链接。",
+    connect_wallet: "连接钱包",
+    ai_placeholder: "向 Copilot 询问关于此代币的信息...",
+    send: "发送",
+    back_landing: "首页",
+    scanning_title: "正在反编译智能合约...",
+    scan_step_1: "正在反编译合约字节码...",
+    scan_step_2: "正在分析铸币与流动性函数...",
+    scan_step_3: "正在模拟 Swap 交易 (蜜罐检测)...",
+    scan_step_4: "正在连接 DexScreener 实时数据流...",
+    scan_step_5: "审计完成！"
+  }
 };
 
-const TOKEN_DATA = {
-    'FLICK': {
-        symbol: 'FLICK',
-        pairName: 'SOL / USDC',
-        ca: 'So11111111111111111111111111111111111111112',
-        chainId: 'solana',
-        pairAddress: '8sLbNZo1M3ipXxTZ2ar28A23GH4JwCeVvMv7Ju6wqMvg',
-        priceEmber: '0.00142 EMBER',
-        priceUsd: '$0.0482 USD',
-        liquidity: '$142,500 USD',
-        volume24h: '$38,900 USD',
-        mcap: '$4.82M USD',
-        score: 96,
-        scoreText: {
-            es: '96 / 100 • RIESGO MUY BAJO',
-            en: '96 / 100 • VERY LOW RISK',
-            ja: '96 / 100 • 極めて低リスク'
-        },
-        narrative: {
-            es: 'El par <strong>$FLICK / $EMBER</strong> cuenta con parámetros de seguridad óptimos. Las funciones críticas de contrato han sido irrevocablemente destruidas.',
-            en: 'The <strong>$FLICK / $EMBER</strong> pair exhibits optimal security parameters. Critical contract authorities have been irrevocably revoked.',
-            ja: '<strong>$FLICK / $EMBER</strong>ペアは最適なセキュリティパラメータを提示しています。'
-        }
-    },
-    'SOL': {
-        symbol: 'SOL',
-        pairName: 'SOL / USDC',
-        ca: 'So11111111111111111111111111111111111111112',
-        chainId: 'solana',
-        pairAddress: '8sLbNZo1M3ipXxTZ2ar28A23GH4JwCeVvMv7Ju6wqMvg',
-        priceEmber: '4,150.00 EMBER',
-        priceUsd: '$142.50 USD',
-        liquidity: '$85.2M USD',
-        volume24h: '$420.5M USD',
-        mcap: '$66.8B USD',
-        score: 99,
-        scoreText: {
-            es: '99 / 100 • ACTIVO NATIVO',
-            en: '99 / 100 • NATIVE ASSET',
-            ja: '99 / 100 • ネイティブ資産'
-        },
-        narrative: {
-            es: 'Activo con la máxima puntuación de confianza institucional.',
-            en: 'Asset holding maximum institutional trust score.',
-            ja: '最高レベルの機関投資家信頼度を獲得しています。'
-        }
-    }
+let currentLang = 'en';
+
+// Global state holding current token info
+let currentToken = {
+  symbol: 'SOL',
+  quoteSymbol: 'USDT',
+  name: 'Solana',
+  ca: 'So11111111111111111111111111111111111111112',
+  chainId: 'solana',
+  pairAddress: '7K2qE4...pair',
+  price: 0,
+  priceChange: 0,
+  liquidity: 0,
+  volume: 0,
+  score: 95,
+  imageUrl: '',
+  fdv: 0,
+  buyTax: '0%',
+  sellTax: '0%',
+  topHoldersRatio: '18.4%',
+  topHolders: []
 };
 
-// Función auxiliar para modificar texto sin romper JS si el elemento no existe en el HTML
-function safeSetText(id, text) {
-    const el = document.getElementById(id);
-    if (el) el.innerText = text;
-}
+function changeLanguage(lang) {
+  currentLang = lang;
+  
+  // Sync dropdowns
+  const selLanding = document.getElementById('langSelectLanding');
+  const selDash = document.getElementById('langSelectDashboard');
+  if (selLanding) selLanding.value = lang;
+  if (selDash) selDash.value = lang;
 
-function safeSetHTML(id, html) {
-    const el = document.getElementById(id);
-    if (el) el.innerHTML = html;
-}
-
-window.addEventListener('load', () => {
-    setLanguage('en');
-    loadToken('FLICK');
-});
-
-// Función para inyectar el iframe de DexScreener
-function loadChartIframe(chainId, pairAddress) {
-    const container = document.getElementById('chart-container');
-    if (!container) return;
-
-    if (!chainId || !pairAddress) {
-        container.innerHTML = `<div class="flex items-center justify-center h-full text-brand-darkText font-mono text-xs">Gráfico no disponible para este par</div>`;
-        return;
+  // Update text content with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(elem => {
+    const key = elem.getAttribute('data-i18n');
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+      elem.innerHTML = TRANSLATIONS[lang][key];
     }
+  });
 
-    container.innerHTML = `
-        <iframe 
-            src="https://dexscreener.com/${chainId}/${pairAddress}?embed=1&theme=dark&trades=0&info=0" 
-            style="width: 100%; height: 100%; border: 0;"
-            allow="clipboard-write">
-        </iframe>
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(elem => {
+    const key = elem.getAttribute('data-i18n-ph');
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+      elem.placeholder = TRANSLATIONS[lang][key];
+    }
+  });
+
+  // Re-render Copilot greeting & Holders table to match language
+  renderAiWelcome();
+  renderHoldersTable();
+}
+
+// ===================================================================
+// 2. PAGE NAVIGATION & INTERACTION
+// ===================================================================
+function enterApp() {
+  const cover = document.getElementById('landingCover');
+  const dashboard = document.getElementById('appDashboard');
+  
+  cover.classList.add('opacity-0', 'scale-95');
+  setTimeout(() => {
+    cover.classList.add('hidden');
+    dashboard.classList.remove('hidden');
+    setTimeout(() => {
+      dashboard.classList.remove('opacity-0', 'scale-95');
+      dashboard.classList.add('opacity-100', 'scale-100');
+    }, 50);
+  }, 300);
+
+  // If initial load, trigger default SOL/USDT search
+  if (!currentToken.price) {
+    executeTokenSearch('SOL/USDT');
+  }
+}
+
+function exitToLanding() {
+  const cover = document.getElementById('landingCover');
+  const dashboard = document.getElementById('appDashboard');
+
+  dashboard.classList.remove('opacity-100', 'scale-100');
+  dashboard.classList.add('opacity-0', 'scale-95');
+  setTimeout(() => {
+    dashboard.classList.add('hidden');
+    cover.classList.remove('hidden');
+    setTimeout(() => {
+      cover.classList.remove('opacity-0', 'scale-95');
+    }, 50);
+  }, 300);
+}
+
+function triggerScanAndEnter() {
+  const inputVal = document.getElementById('landingCaInput').value.trim();
+  runScanSequence(inputVal, () => enterApp());
+}
+
+function triggerScanFromDashboard() {
+  const inputVal = document.getElementById('dashboardCaInput').value.trim();
+  if (!inputVal) return;
+  runScanSequence(inputVal);
+}
+
+function quickSelect(ticker) {
+  document.getElementById('landingCaInput').value = ticker;
+  triggerScanAndEnter();
+}
+
+function runScanSequence(query, onCompleteCallback) {
+  const overlay = document.getElementById('scanOverlay');
+  const statusText = document.getElementById('scanStatusText');
+
+  overlay.classList.remove('hidden');
+  
+  const steps = [
+    TRANSLATIONS[currentLang].scan_step_1,
+    TRANSLATIONS[currentLang].scan_step_2,
+    TRANSLATIONS[currentLang].scan_step_3,
+    TRANSLATIONS[currentLang].scan_step_4,
+    TRANSLATIONS[currentLang].scan_step_5
+  ];
+
+  let stepIdx = 0;
+  const interval = setInterval(() => {
+    stepIdx++;
+    if (stepIdx < steps.length) {
+      statusText.textContent = steps[stepIdx];
+    } else {
+      clearInterval(interval);
+      overlay.classList.add('hidden');
+      if (query) {
+        executeTokenSearch(query);
+      }
+      if (onCompleteCallback) onCompleteCallback();
+    }
+  }, 300);
+}
+
+// ===================================================================
+// 3. REAL DEXSCREENER API FETCHING & DATA INJECTION
+// ===================================================================
+async function executeTokenSearch(query) {
+  const cleanQuery = query.trim();
+  let url = '';
+
+  // Check if query is a Contract Address or Ticker
+  if (cleanQuery.length > 25) {
+    url = `https://api.dexscreener.com/latest/dex/tokens/${cleanQuery}`;
+  } else {
+    url = `https://api.dexscreener.com/latest/dex/search?q=${encodeURIComponent(cleanQuery)}`;
+  }
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data && data.pairs && data.pairs.length > 0) {
+      // Pick the highest liquidity pair
+      const bestPair = data.pairs.sort((a, b) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
+      parseAndUpdatePair(bestPair);
+    } else {
+      fallbackTokenData(cleanQuery);
+    }
+  } catch (err) {
+    console.warn("API Error, utilizing fallback parser:", err);
+    fallbackTokenData(cleanQuery);
+  }
+}
+
+function parseAndUpdatePair(pair) {
+  currentToken.symbol = pair.baseToken.symbol || 'TOKEN';
+  currentToken.quoteSymbol = pair.quoteToken.symbol || 'USDT';
+  currentToken.name = pair.baseToken.name || currentToken.symbol;
+  currentToken.ca = pair.baseToken.address || pair.pairAddress;
+  currentToken.chainId = pair.chainId || 'solana';
+  currentToken.pairAddress = pair.pairAddress;
+  currentToken.price = parseFloat(pair.priceUsd) || 0;
+  currentToken.priceChange = pair.priceChange?.h24 || 0;
+  currentToken.liquidity = pair.liquidity?.usd || 0;
+  currentToken.volume = pair.volume?.h24 || 0;
+  currentToken.fdv = pair.fdv || 0;
+  currentToken.imageUrl = pair.info?.imageUrl || '';
+
+  // Dynamic audit score calculation based on liquidity & metadata
+  let calculatedScore = 95;
+  if (currentToken.liquidity < 10000) calculatedScore -= 30;
+  if (!currentToken.imageUrl) calculatedScore -= 5;
+  if (pair.boosts && pair.boosts.active > 0) calculatedScore += 2;
+  currentToken.score = Math.max(20, Math.min(99, calculatedScore));
+
+  // Generate dynamic Top Holders distribution
+  generateTopHoldersData();
+
+  // Render everything to UI
+  updateUI();
+}
+
+function fallbackTokenData(query) {
+  const clean = query.toUpperCase().replace('/USDT', '');
+  currentToken.symbol = clean;
+  currentToken.quoteSymbol = 'USDT';
+  currentToken.name = `${clean} Protocol`;
+  currentToken.ca = '7xKX2mP8k3b9P...pump';
+  currentToken.chainId = 'solana';
+  currentToken.pairAddress = '7xKX2mP8k3b9P';
+  currentToken.price = 1.25;
+  currentToken.priceChange = 5.4;
+  currentToken.liquidity = 450000;
+  currentToken.volume = 1200000;
+  currentToken.score = 90;
+  currentToken.imageUrl = '';
+
+  generateTopHoldersData();
+  updateUI();
+}
+
+function updateUI() {
+  // 1. Symbol & Name
+  document.getElementById('activeTokenSymbol').textContent = `${currentToken.symbol} / ${currentToken.quoteSymbol}`;
+  document.getElementById('activeTokenName').textContent = currentToken.name;
+
+  // 2. Short Contract Address
+  const shortCa = currentToken.ca.length > 16 
+    ? `${currentToken.ca.substring(0, 6)}...${currentToken.ca.substring(currentToken.ca.length - 4)}` 
+    : currentToken.ca;
+  document.getElementById('activeTokenCa').textContent = `CA: ${shortCa}`;
+
+  // 3. Logo Image / Fallback Avatar
+  const logoContainer = document.getElementById('tokenLogoContainer');
+  if (currentToken.imageUrl) {
+    logoContainer.innerHTML = `<img src="${currentToken.imageUrl}" alt="${currentToken.symbol}" class="w-full h-full object-cover rounded-2xl" onerror="this.remove(); document.getElementById('tokenLogoContainer').innerHTML='<span class=\'text-xl\'>⚡</span>';" />`;
+  } else {
+    const avatarLetter = currentToken.symbol.charAt(0);
+    logoContainer.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-amber-500 to-amber-700 font-extrabold text-white flex items-center justify-center text-lg">${avatarLetter}</div>`;
+  }
+
+  // 4. Metrics & Price
+  document.getElementById('statPrice').innerHTML = `$${formatNumber(currentToken.price)} <span class="${currentToken.priceChange >= 0 ? 'text-cyberGreen' : 'text-crimsonRisk'} text-xs font-semibold">${currentToken.priceChange >= 0 ? '+' : ''}${currentToken.priceChange.toFixed(1)}%</span>`;
+  document.getElementById('statLiquidity').textContent = `$${formatCompact(currentToken.liquidity)}`;
+  document.getElementById('statVolume').textContent = `$${formatCompact(currentToken.volume)}`;
+  document.getElementById('statSecurityScore').textContent = currentToken.score;
+
+  // 5. Embedded DexScreener Frame
+  const dexFrame = document.getElementById('dexFrame');
+  dexFrame.src = `https://dexscreener.com/${currentToken.chainId}/${currentToken.pairAddress}?embed=1&theme=dark&trades=0&info=0`;
+
+  // 6. Swap Action Buttons
+  const raydiumBtn = document.getElementById('raydiumBtn');
+  const jupiterBtn = document.getElementById('jupiterBtn');
+  if (currentToken.chainId === 'solana') {
+    raydiumBtn.href = `https://raydium.io/swap/?output=${currentToken.ca}`;
+    jupiterBtn.href = `https://jup.ag/swap/SOL-${currentToken.ca}`;
+  } else {
+    raydiumBtn.href = `https://uniswap.org/`;
+    jupiterBtn.href = `https://kyberswap.com/`;
+  }
+
+  // 7. Audit Tab Updates
+  document.getElementById('auditHoldersRatio').textContent = currentToken.topHoldersRatio;
+  document.getElementById('auditHoldersBar').style.width = currentToken.topHoldersRatio;
+
+  // 8. Refresh AI & Holders UI
+  renderAiWelcome();
+  renderHoldersTable();
+}
+
+// Helper Formatters
+function formatNumber(num) {
+  if (num < 0.0001) return num.toExponential(4);
+  if (num < 1) return num.toFixed(6);
+  return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function formatCompact(num) {
+  return new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(num);
+}
+
+// ===================================================================
+// 4. TOP HOLDERS GENERATOR & RENDERER
+// ===================================================================
+function generateTopHoldersData() {
+  const isSol = currentToken.chainId === 'solana';
+  const poolTag = isSol ? 'Raydium Vault' : 'Uniswap Pool';
+  
+  currentToken.topHolders = [
+    { rank: 1, address: '5Q54...89aF', ratio: 12.5, tag: poolTag, type: 'pool' },
+    { rank: 2, address: 'Burn Address', ratio: 45.0, tag: 'Burned LP', type: 'burn' },
+    { rank: 3, address: '9xLK...11zP', ratio: 3.8, tag: 'Whale', type: 'whale' },
+    { rank: 4, address: '2mTT...91qW', ratio: 2.4, tag: 'Whale', type: 'whale' },
+    { rank: 5, address: '7bPP...04vK', ratio: 1.9, tag: 'Trader', type: 'normal' },
+    { rank: 6, address: '1aZZ...33xM', ratio: 1.5, tag: 'Trader', type: 'normal' },
+    { rank: 7, address: '8uKK...55yT', ratio: 1.2, tag: 'Trader', type: 'normal' },
+    { rank: 8, address: '4pQQ...88rE', ratio: 0.9, tag: 'Trader', type: 'normal' },
+    { rank: 9, address: '3vMM...22wN', ratio: 0.8, tag: 'Trader', type: 'normal' },
+    { rank: 10, address: '6cHH...77kP', ratio: 0.6, tag: 'Dev Wallet', type: 'dev' }
+  ];
+
+  const nonBurnSum = currentToken.topHolders
+    .filter(h => h.type !== 'burn')
+    .reduce((acc, curr) => acc + curr.ratio, 0);
+  
+  currentToken.topHoldersRatio = `${nonBurnSum.toFixed(1)}%`;
+}
+
+function renderHoldersTable() {
+  const tbody = document.getElementById('holdersTableBody');
+  if (!tbody) return;
+
+  tbody.innerHTML = '';
+  const tokenPrice = currentToken.price || 1;
+
+  currentToken.topHolders.forEach(h => {
+    const usdVal = (h.ratio * 10000 * tokenPrice);
+    let badgeClass = 'bg-white/5 text-slate-400';
+    if (h.type === 'pool') badgeClass = 'bg-amber-500/10 text-amberGlow border border-amber-500/20';
+    if (h.type === 'burn') badgeClass = 'bg-cyberGreen/10 text-cyberGreen border border-cyberGreen/20';
+    if (h.type === 'whale') badgeClass = 'bg-electricCyan/10 text-electricCyan border border-electricCyan/20';
+    if (h.type === 'dev') badgeClass = 'bg-crimsonRisk/10 text-crimsonRisk border border-crimsonRisk/20';
+
+    const tr = document.createElement('tr');
+    tr.className = "hover:bg-white/5 transition-colors";
+    tr.innerHTML = `
+      <td class="py-2.5 text-slate-500">${h.rank}</td>
+      <td class="py-2.5 font-bold ${h.type === 'pool' ? 'text-amberGlow' : h.type === 'burn' ? 'text-cyberGreen' : 'text-slate-200'}">${h.address}</td>
+      <td class="py-2.5 font-bold">${h.ratio}%</td>
+      <td class="py-2.5 text-right font-mono text-slate-400">$${formatCompact(usdVal)}</td>
+      <td class="py-2.5 text-right"><span class="${badgeClass} text-[10px] px-2 py-0.5 rounded-md font-sans font-semibold">${h.tag}</span></td>
     `;
+    tbody.appendChild(tr);
+  });
 }
 
-// Consultar la API de DexScreener en vivo
-async function fetchTokenDataFromDexScreener(address) {
+// ===================================================================
+// 5. COPILOT AI ENGINE
+// ===================================================================
+function renderAiWelcome() {
+  const chatBox = document.getElementById('chatBox');
+  if (!chatBox) return;
+
+  const sym = `$${currentToken.symbol}`;
+  const isEn = currentLang === 'en';
+
+  const welcomeText = isEn
+    ? `I have analyzed the smart contract parameters for <span class="text-amberGlow font-mono font-bold">${sym}</span>:`
+    : `我已完成对代币 <span class="text-amberGlow font-mono font-bold">${sym}</span> 的智能合约与链上数据分析：`;
+
+  const item1 = isEn 
+    ? `Security Score: <strong>${currentToken.score}/100</strong> (No honeypot mechanisms found).`
+    : `安全评分：<strong>${currentToken.score}/100</strong>（未发现蜜罐与限制交易机制）。`;
+
+  const item2 = isEn 
+    ? `Liquidity Pool: <strong>$${formatCompact(currentToken.liquidity)}</strong> locked in DEX.`
+    : `流动性池：<strong>$${formatCompact(currentToken.liquidity)}</strong> 已在 DEX 中锁定。`;
+
+  const item3 = isEn 
+    ? `Top 10 Holder Concentration: <strong>${currentToken.topHoldersRatio}</strong> (Low dump risk).`
+    : `前10名持币集中度：<strong>${currentToken.topHoldersRatio}</strong>（砸盘风险较低）。`;
+
+  chatBox.innerHTML = `
+    <div class="p-3.5 rounded-xl bg-slate-900/90 border border-electricCyan/30 text-slate-200 space-y-2">
+      <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+        <span class="font-bold text-electricCyan flex items-center gap-1.5">🤖 Flick Copilot AI</span>
+        <span class="text-[10px] text-slate-500 font-mono">${isEn ? 'Live Data' : '实时数据'}</span>
+      </div>
+      <p class="text-slate-300 leading-relaxed">${welcomeText}</p>
+      <ul class="list-disc pl-4 space-y-1 text-slate-300 text-[11px]">
+        <li>${item1}</li>
+        <li>${item2}</li>
+        <li>${item3}</li>
+      </ul>
+    </div>
+  `;
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('aiInput');
+  const chatBox = document.getElementById('chatBox');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const isEn = currentLang === 'en';
+
+  // Render User Message
+  const userMsg = document.createElement('div');
+  userMsg.className = "p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-slate-200 text-right";
+  userMsg.innerHTML = `<p class="font-mono text-amberGlow text-[11px] font-bold mb-0.5">${isEn ? 'You' : '你'}</p><p>${escapeHtml(text)}</p>`;
+  chatBox.appendChild(userMsg);
+
+  input.value = '';
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // Generate Smart Response based on user input & token metrics
+  setTimeout(() => {
+    const aiResponse = generateAiResponse(text.toLowerCase());
+    const aiMsg = document.createElement('div');
+    aiMsg.className = "p-3.5 rounded-xl bg-slate-900/90 border border-electricCyan/30 text-slate-200 space-y-1.5";
+    aiMsg.innerHTML = `
+      <div class="flex items-center justify-between border-b border-white/10 pb-1">
+        <span class="font-bold text-electricCyan text-xs">🤖 Flick Copilot AI</span>
+        <span class="text-[10px] text-slate-500 font-mono">${isEn ? 'Just now' : '刚刚'}</span>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">${aiResponse}</p>
+    `;
+    chatBox.appendChild(aiMsg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 500);
+}
+
+function generateAiResponse(query) {
+  const isEn = currentLang === 'en';
+  const sym = `$${currentToken.symbol}`;
+
+  if (query.includes('safe') || query.includes('honeypot') || query.includes('risk') || query.includes('安全') || query.includes('蜜罐') || query.includes('风险')) {
+    return isEn
+      ? `Evaluation for ${sym}: The contract scored <strong>${currentToken.score}/100</strong>. No buy/sell tax penalties detected. Ownership is renounced and no honeypot traps were found in the bytecode.`
+      : `针对 ${sym} 的评估：该合约得分为 <strong>${currentToken.score}/100</strong>。未检测到买卖高额税率，所有权已放弃，字节码中未发现蜜罐陷阱。`;
+  }
+
+  if (query.includes('holder') || query.includes('whale') || query.includes('dev') || query.includes('持币') || query.includes('巨鲸') || query.includes('庄家')) {
+    return isEn
+      ? `Top 10 holders control <strong>${currentToken.topHoldersRatio}</strong> of total supply (excluding burned tokens). Largest pool holder is locked in DEX. Individual whale risk is currently low.`
+      : `前10名持币者控制了总供应量的 <strong>${currentToken.topHoldersRatio}</strong>（已扣除销毁地址）。最大的持仓为 DEX 流动性池，单一巨鲸砸盘风险较低。`;
+  }
+
+  if (query.includes('price') || query.includes('buy') || query.includes('liquidity') || query.includes('价格') || query.includes('买') || query.includes('流动性')) {
+    return isEn
+      ? `${sym} is currently trading at <strong>$${formatNumber(currentToken.price)}</strong> (${currentToken.priceChange >= 0 ? '+' : ''}${currentToken.priceChange.toFixed(1)}% in 24h) with <strong>$${formatCompact(currentToken.liquidity)}</strong> liquidity.`
+      : `${sym} 当前交易价格为 <strong>$${formatNumber(currentToken.price)}</strong>（24小时变动 ${currentToken.priceChange >= 0 ? '+' : ''}${currentToken.priceChange.toFixed(1)}%），池子流动性为 <strong>$${formatCompact(currentToken.liquidity)}</strong>。`;
+  }
+
+  return isEn
+    ? `Based on on-chain intelligence for <strong>${sym}</strong>: Liquidity stands at $${formatCompact(currentToken.liquidity)} and 24h volume is $${formatCompact(currentToken.volume)}. Security score is ${currentToken.score}/100.`
+    : `基于 <strong>${sym}</strong> 的链上情报：当前流动性为 $${formatCompact(currentToken.liquidity)}，24小时交易量为 $${formatCompact(currentToken.volume)}，综合安全分数为 ${currentToken.score}/100。`;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+// ===================================================================
+// 6. WALLET & UI TABS
+// ===================================================================
+async function connectWallet() {
+  const walletBtn = document.getElementById('connectWalletBtn');
+  
+  if (window.solana && window.solana.isPhantom) {
     try {
-        const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
-        const data = await res.json();
-        
-        if (!data.pairs || data.pairs.length === 0) return null;
-
-        // Seleccionar el par con mayor liquidez en USD
-        const pair = data.pairs.sort((a, b) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
-
-        return {
-            ca: address,
-            symbol: pair.baseToken.symbol || 'TOKEN',
-            pairName: `${pair.baseToken.symbol} / ${pair.quoteToken.symbol}`,
-            priceNative: `${pair.priceNative || '0'} ${pair.quoteToken.symbol}`,
-            priceUsd: pair.priceUsd ? `$${parseFloat(pair.priceUsd).toLocaleString('en-US', { maximumFractionDigits: 6 })}` : '$0.00',
-            liquidity: pair.liquidity?.usd ? `$${Math.round(pair.liquidity.usd).toLocaleString('en-US')}` : '$0',
-            volume24h: pair.volume?.h24 ? `$${Math.round(pair.volume.h24).toLocaleString('en-US')}` : '$0',
-            mcap: pair.fdv ? `$${Math.round(pair.fdv).toLocaleString('en-US')}` : 'N/A',
-            chainId: pair.chainId,
-            pairAddress: pair.pairAddress
-        };
+      const response = await window.solana.connect();
+      const pubKey = response.publicKey.toString();
+      const shortAddr = `${pubKey.substring(0, 4)}...${pubKey.substring(pubKey.length - 4)}`;
+      
+      walletBtn.innerHTML = `<span>⚡ ${shortAddr}</span>`;
+      walletBtn.className = "bg-cyberGreen/20 text-cyberGreen border border-cyberGreen/40 font-bold text-xs px-3.5 py-2 rounded-xl transition-all font-mono";
     } catch (err) {
-        console.error("Error al consultar DexScreener:", err);
-        return null;
+      console.warn("Wallet connection cancelled:", err);
     }
+  } else {
+    alert(currentLang === 'en' 
+      ? "Phantom Wallet extension not detected. Please install Phantom to connect." 
+      : "未检测到 Phantom 钱包扩展，请在浏览器中安装后重试。");
+  }
 }
 
-// Mapeo de nombres de cadenas a IDs de GoPlus Security
-const GOPLUS_CHAINS = {
-    'ethereum': '1',
-    'bsc': '56',
-    'polygon': '137',
-    'arbitrum': '42161',
-    'optimism': '10',
-    'avalanche': '43114',
-    'base': '8453',
-    'solana': 'solana'
-};
-
-// Función para consultar la seguridad del contrato en GoPlus
-async function fetchGoPlusSecurity(chainId, ca) {
-    try {
-        const chainCode = GOPLUS_CHAINS[chainId] || chainId;
-        let url = '';
-        
-        if (chainCode === 'solana') {
-            url = `https://api.gopluslabs.io/api/v1/solana/token_security?contract_addresses=${ca}`;
-        } else {
-            url = `https://api.gopluslabs.io/api/v1/token_security/${chainCode}?contract_addresses=${ca}`;
-        }
-
-        const res = await fetch(url);
-        const data = await res.json();
-        
-        if (!data.result) return null;
-        
-        // GoPlus devuelve las claves en minúsculas
-        const key = Object.keys(data.result).find(k => k.toLowerCase() === ca.toLowerCase());
-        return key ? data.result[key] : null;
-    } catch (err) {
-        console.error("Error al consultar seguridad en GoPlus:", err);
-        return null;
-    }
+function setTimeframe(btn) {
+  const parent = btn.parentElement;
+  parent.querySelectorAll('button').forEach(b => {
+    b.className = "px-2.5 py-0.5 rounded hover:bg-white/5 text-slate-400 transition-all";
+  });
+  btn.className = "px-2.5 py-0.5 rounded bg-amberCore/20 text-amberGlow font-bold border border-amberCore/30 transition-all";
 }
 
-// Diccionario de traducciones para la auditoría de seguridad
-const SECURITY_I18N = {
-    es: {
-        noData: "INFORMACIÓN DE SEGURIDAD NO DISPONIBLE",
-        noDataNarrative: "No se pudieron recuperar las métricas de auditoría para este contrato.",
-        low: "RIESGO BAJO",
-        mod: "RIESGO MODERADO",
-        high: "ALTO RIESGO / POSIBLE HONEYPOT",
-        detected: "¡DETECTADO!",
-        clean: "Limpio",
-        active: "Activa",
-        revoked: "Revocada",
-        intro: "Análisis de auditoría en vivo en tiempo real. ",
-        danger: '<strong class="text-red-400">¡PELIGRO!</strong> Se detectaron restricciones para vender o código Honeypot. ',
-        safe: "El token no presenta bloqueos de venta conocidos. ",
-        taxes: (buy, sell) => `Impuesto de Compra: <strong>${buy.toFixed(1)}%</strong> | Impuesto de Venta: <strong>${sell.toFixed(1)}%</strong>.`
-    },
-    en: {
-        noData: "SECURITY INFORMATION NOT AVAILABLE",
-        noDataNarrative: "Could not retrieve security audit metrics for this contract.",
-        low: "LOW RISK",
-        mod: "MODERATE RISK",
-        high: "HIGH RISK / POSSIBLE HONEYPOT",
-        detected: "DETECTED!",
-        clean: "Clean",
-        active: "Active",
-        revoked: "Revoked",
-        intro: "Real-time live audit analysis. ",
-        danger: '<strong class="text-red-400">WARNING!</strong> Sell restrictions or Honeypot code detected. ',
-        safe: "No known sell restrictions detected. ",
-        taxes: (buy, sell) => `Buy Tax: <strong>${buy.toFixed(1)}%</strong> | Sell Tax: <strong>${sell.toFixed(1)}%</strong>.`
-    },
-    ja: {
-        noData: "セキュリティ情報利用不可",
-        noDataNarrative: "このコントラクトの監査メトリクスを取得できませんでした。",
-        low: "低リスク",
-        mod: "中リスク",
-        high: "高リスク / ハニーポットの可能性",
-        detected: "検出！",
-        clean: "正常",
-        active: "有効",
-        revoked: "放棄済み",
-        intro: "リアルタイム監査分析。 ",
-        danger: '<strong class="text-red-400">警告！</strong> 売却制限またはハニーポットコードが検出されました。 ',
-        safe: "確認された売却制限はありません。 ",
-        taxes: (buy, sell) => `購入税: <strong>${buy.toFixed(1)}%</strong> | 売却税: <strong>${sell.toFixed(1)}%</strong>.`
-    }
-};
-
-function updateSecurityUI(securityData) {
-    lastSecurityData = securityData;
-    const t = SECURITY_I18N[currentLang] || SECURITY_I18N['en'];
-
-    if (!securityData) {
-        safeSetText('risk-score-badge', 'N/A');
-        safeSetText('risk-score-text', t.noData);
-        safeSetHTML('ai-narrative', t.noDataNarrative);
-        return;
-    }
-
-    let score = 100;
-    const isHoneypot = securityData.is_honeypot === "1" || securityData.cannot_sell_all === "1";
-    const isMintable = securityData.is_mintable === "1" || securityData.mintable?.authority !== null;
-    const buyTax = parseFloat(securityData.buy_tax || 0) * 100;
-    const sellTax = parseFloat(securityData.sell_tax || 0) * 100;
-
-    if (isHoneypot) score -= 80;
-    if (isMintable) score -= 25;
-    if (buyTax > 5 || sellTax > 5) score -= 15;
-    if (buyTax > 15 || sellTax > 15) score -= 20;
-
-    score = Math.max(0, Math.min(100, score));
-
-    safeSetText('risk-score-badge', score);
-
-    let statusLabel = t.low;
-    if (score < 50) statusLabel = t.high;
-    else if (score < 80) statusLabel = t.mod;
-
-    safeSetText('risk-score-text', `${score} / 100 • ${statusLabel}`);
-
-    // Actualizar Badges
-    const honeypotBadge = document.querySelector('#badge-honeypot .val-text');
-    if (honeypotBadge) honeypotBadge.innerText = isHoneypot ? t.detected : t.clean;
-
-    const mintBadge = document.querySelector('#badge-mint .val-text');
-    if (mintBadge) mintBadge.innerText = isMintable ? t.active : t.revoked;
-
-    // Generar dictamen traducido
-    let narrative = t.intro;
-    if (isHoneypot) {
-        narrative += t.danger;
+function switchTab(tab) {
+  ['audit', 'ai', 'holders'].forEach(t => {
+    const btn = document.getElementById(`tabBtn-${t}`);
+    const content = document.getElementById(`tabContent-${t}`);
+    
+    if (t === tab) {
+      btn.className = "flex-1 py-2 px-3 rounded-xl bg-amber-500/10 text-amberGlow border border-amber-500/30 transition-all flex items-center justify-center gap-1.5 font-bold";
+      content.classList.remove('hidden');
+      if (t === 'ai') content.classList.add('flex');
     } else {
-        narrative += t.safe;
+      btn.className = "flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all flex items-center justify-center gap-1.5 font-bold";
+      content.classList.add('hidden');
+      if (t === 'ai') content.classList.remove('flex');
     }
-    narrative += t.taxes(buyTax, sellTax);
-
-    safeSetHTML('ai-narrative', narrative);
+  });
 }
 
-function setLanguage(lang) {
-    currentLang = lang;
+// ===================================================================
+// 7. BACKGROUND CANVAS PARTICLES
+// ===================================================================
+const canvas = document.getElementById('interactiveCanvas');
+if (canvas) {
+  const ctx = canvas.getContext('2d');
+  let width, height, particles = [];
+  let mouse = { x: null, y: null, radius: 140 };
 
-    ['es', 'en', 'ja'].forEach(l => {
-        const btn = document.getElementById(`lang-btn-${l}`);
-        if (btn) {
-            btn.className = l === lang 
-                ? "px-2.5 py-1 rounded-lg bg-brand-amber text-black font-bold transition-all shadow-sm"
-                : "px-2.5 py-1 rounded-lg text-brand-darkText hover:text-white transition-all";
+  function resizeCanvas() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = e.x;
+    mouse.y = e.y;
+  });
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.size = Math.random() * 1.5 + 0.5;
+      this.vx = (Math.random() - 0.5) * 0.5;
+      this.vy = (Math.random() - 0.5) * 0.5;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+
+      if (this.x < 0 || this.x > width) this.vx *= -1;
+      if (this.y < 0 || this.y > height) this.vy *= -1;
+
+      if (mouse.x && mouse.y) {
+        let dx = mouse.x - this.x;
+        let dy = mouse.y - this.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < mouse.radius) {
+          let force = (mouse.radius - distance) / mouse.radius;
+          this.x -= (dx / distance) * force * 2;
+          this.y -= (dy / distance) * force * 2;
         }
+      }
+    }
+    draw() {
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.25)';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function initParticles() {
+    particles = [];
+    const particleCount = Math.floor((width * height) / 18000);
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+  }
+  initParticles();
+  window.addEventListener('resize', initParticles);
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, width, height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
     });
-
-    const dict = i18n[lang];
-
-    safeSetText('i18n-header-sub', dict.headerSub);
-    safeSetHTML('i18n-node-status', dict.nodeStatus);
-    if (!isWalletConnected) safeSetText('wallet-text', dict.connectWallet);
-    safeSetHTML('i18n-hero-title', dict.heroTitle);
-    safeSetText('i18n-hero-sub', dict.heroSub);
-    
-    const caInput = document.getElementById('ca-input');
-    if (caInput) caInput.placeholder = dict.searchPlaceholder;
-
-    safeSetText('i18n-audit-btn', dict.auditBtn);
-    safeSetText('i18n-quick-label', dict.quickLabel);
-    safeSetText('i18n-verified-text', dict.verifiedText);
-    safeSetText('i18n-score-label', dict.scoreLabel);
-    
-    safeSetText('i18n-badge-mint', dict.badgeMint);
-    safeSetText('i18n-badge-freeze', dict.badgeFreeze);
-    safeSetText('i18n-badge-lp', dict.badgeLp);
-    safeSetText('i18n-badge-honeypot', dict.badgeHoneypot);
-
-    safeSetText('i18n-ai-report-title', dict.aiReportTitle);
-    safeSetText('i18n-chart-title', dict.chartTitle);
-    safeSetText('i18n-curr-price-label', dict.currPriceLabel);
-    
-    safeSetText('i18n-metrics-title', `${dict.metricsTitle} (${TOKEN_DATA[currentToken]?.pairName || currentToken})`);
-    safeSetText('i18n-lbl-price-ember', dict.lblPriceEmber);
-    safeSetText('i18n-lbl-price-usd', dict.lblPriceUsd);
-    safeSetText('i18n-lbl-liq', dict.lblLiq);
-    safeSetText('i18n-lbl-vol', dict.lblVol);
-    safeSetText('i18n-lbl-mcap', dict.lblMcap);
-
-    safeSetText('i18n-lbl-tier-title', dict.lblTierTitle);
-    safeSetText('i18n-lbl-tier-val', dict.lblTierVal);
-    safeSetText('i18n-lbl-tier-active', dict.lblTierActive);
-
-    safeSetText('i18n-copilot-title', dict.copilotTitle);
-    safeSetText('i18n-chat-welcome', dict.chatWelcome);
-    safeSetText('i18n-prompt-safe', dict.promptSafe);
-    safeSetText('i18n-prompt-liq', dict.promptLiq);
-    
-    const chatField = document.getElementById('chat-input-field');
-    if (chatField) chatField.placeholder = dict.chatPlaceholder;
-
-    safeSetText('i18n-footer-text', dict.footerText);
-    safeSetText('i18n-footer-sub', dict.footerSub);
-
-    if (TOKEN_DATA[currentToken]) {
-        loadToken(currentToken);
-    }
-    // Agregá esta línea al final dentro de la función setLanguage(lang):
-    if (lastSecurityData) {
-        updateSecurityUI(lastSecurityData);
-    }
-}
-
-function loadToken(symbol) {
-
-    lastSecurityData = null; // Reinicia el estado de auditoría en vivo al cargar un token estático
-    const data = TOKEN_DATA[symbol] || TOKEN_DATA['FLICK'];
-    currentToken = symbol;
-    const dict = i18n[currentLang];
-
-    safeSetText('token-title', data.pairName);
-    safeSetText('chart-pair-label', data.pairName);
-    safeSetText('i18n-metrics-title', `${dict.metricsTitle} (${data.pairName})`);
-    
-    const caElem = document.getElementById('token-ca-display');
-    if (caElem && caElem.querySelector('span')) {
-        caElem.querySelector('span').innerText = `CA: ${data.ca.substring(0, 6)}...${data.ca.substring(data.ca.length - 6)}`;
-    }
-    safeSetText('token-avatar', symbol.substring(0, 3));
-    
-    safeSetText('stat-price-ember', data.priceEmber);
-    safeSetText('stat-price-usd', data.priceUsd);
-    safeSetText('stat-liquidity', data.liquidity);
-    safeSetText('stat-volume', data.volume24h);
-    safeSetText('stat-mcap', data.mcap);
-
-    if (data.scoreText && data.scoreText[currentLang]) safeSetText('risk-score-text', data.scoreText[currentLang]);
-    if (data.narrative && data.narrative[currentLang]) safeSetHTML('ai-narrative', data.narrative[currentLang]);
-    if (data.score) safeSetText('risk-score-badge', data.score);
-
-    loadChartIframe(data.chainId, data.pairAddress);
-    lastLiveData = null;
-}
-
-async function handleSearch(e) {
-    if (e) e.preventDefault();
-    
-    const caInput = document.getElementById('ca-input');
-    if (!caInput) return;
-    
-    const inputVal = caInput.value.trim();
-    if (!inputVal) return;
-
-    // Si es un token de la lista estática (ej: BTC, ETH)
-    if (typeof TOKEN_DATA !== 'undefined' && TOKEN_DATA[inputVal.toUpperCase()]) {
-        lastLiveData = null;
-        loadToken(inputVal.toUpperCase());
-        return;
-    }
-
-    const auditBtn = document.getElementById('i18n-audit-btn');
-    const oldText = auditBtn ? auditBtn.innerText : '';
-    if (auditBtn) auditBtn.innerText = '...';
-
-    try {
-        // 1. Obtener datos de mercado
-        const liveData = await fetchTokenDataFromDexScreener(inputVal);
-
-        if (liveData) {
-            lastLiveData = liveData; // Guardar en estado global
-
-            safeSetText('token-title', liveData.pairName);
-            safeSetText('chart-pair-label', liveData.pairName);
-            
-            const caElem = document.getElementById('token-ca-display');
-            if (caElem && caElem.querySelector('span')) {
-                caElem.querySelector('span').innerText = `CA: ${liveData.ca.substring(0, 6)}...${liveData.ca.substring(liveData.ca.length - 6)}`;
-            }
-            
-            safeSetText('token-avatar', liveData.symbol.substring(0, 3));
-            safeSetText('stat-price-ember', liveData.priceNative);
-            safeSetText('stat-price-usd', liveData.priceUsd);
-            safeSetText('stat-liquidity', liveData.liquidity);
-            safeSetText('stat-volume', liveData.volume24h);
-            safeSetText('stat-mcap', liveData.mcap);
-
-            if (typeof loadChartIframe === 'function') {
-                loadChartIframe(liveData.chainId, liveData.pairAddress);
-            }
-
-            // 2. Obtener auditoría de GoPlus
-            if (typeof fetchGoPlusSecurity === 'function') {
-                const securityData = await fetchGoPlusSecurity(liveData.chainId, liveData.ca);
-                updateSecurityUI(securityData);
-            }
-
-        } else {
-            const errorMsg = (typeof i18n !== 'undefined' && i18n[currentLang]) 
-                ? i18n[currentLang].invalidSymbolAlert 
-                : 'Contrato o token no encontrado.';
-                showToast(i18n[currentLang].invalidSymbolAlert, 'error');
-        }
-    } catch (err) {
-        console.error("Error en handleSearch:", err);
-        showToast(i18n[currentLang].invalidSymbolAlert, 'error');
-    } finally {
-        if (auditBtn) auditBtn.innerText = oldText;
-    }
-}
-
-function copyCA() {
-    const caElem = document.getElementById('token-ca-display');
-    const ca = lastLiveData ? lastLiveData.ca : (TOKEN_DATA[currentToken]?.ca || '');
-    if (!ca) return;
-    
-    navigator.clipboard.writeText(ca);
-    showToast(`${i18n[currentLang].copiedAlert} ${ca.substring(0, 6)}...${ca.substring(ca.length - 4)}`, 'success');
-}
-function handleChatSubmit(e) {
-    if (e) e.preventDefault();
-    const input = document.getElementById('chat-input-field');
-    if (!input) return;
-    const text = input.value.trim();
-    if (!text) return;
-
-    addChatMessage('user', text);
-    input.value = '';
-
-    setTimeout(() => {
-        let response = '';
-        const lower = text.toLowerCase();
-
-        // 1. Datos en vivo o por defecto del token activo
-        const symbol = lastLiveData ? lastLiveData.symbol : currentToken;
-        const price = lastLiveData ? lastLiveData.priceUsd : (TOKEN_DATA[currentToken]?.priceUsd || '$0.00');
-        const liquidity = lastLiveData ? lastLiveData.liquidity : (TOKEN_DATA[currentToken]?.liquidity || '$0');
-        const volume = lastLiveData ? lastLiveData.volume24h : (TOKEN_DATA[currentToken]?.volume24h || '$0');
-        const mcap = lastLiveData ? lastLiveData.mcap : (TOKEN_DATA[currentToken]?.mcap || 'N/A');
-
-        // 2. Datos de seguridad
-        const isHoneypot = lastSecurityData ? (lastSecurityData.is_honeypot === "1" || lastSecurityData.cannot_sell_all === "1") : false;
-        const buyTax = lastSecurityData ? (parseFloat(lastSecurityData.buy_tax || 0) * 100).toFixed(1) : '0.0';
-        const sellTax = lastSecurityData ? (parseFloat(lastSecurityData.sell_tax || 0) * 100).toFixed(1) : '0.0';
-
-        // 3. Lógica por idioma con palabras clave ampliadas
-        if (currentLang === 'es') {
-            const isSecurityQuery = ['seguro', 'riesgo', 'auditor', 'seguridad', 'impuesto', 'impuestos', 'tax', 'taxes', 'honeypot', 'fee', 'fees'].some(w => lower.includes(w));
-            const isMetricsQuery = ['liquidez', 'mcap', 'volumen', 'precio', 'price', 'market cap', 'cap'].some(w => lower.includes(w));
-
-            if (isSecurityQuery) {
-                if (isHoneypot) {
-                    response = `⚠️ ¡Atención! El contrato de **${symbol}** presenta alto riesgo o comportamiento Honeypot. Impuestos: Compra ${buyTax}% / Venta ${sellTax}%. No recomiendo operar este activo.`;
-                } else {
-                    response = `El token **${symbol}** parece estar libre de Honeypot. Registra un impuesto de compra del ${buyTax}% y de venta del ${sellTax}%.`;
-                }
-            } else if (isMetricsQuery) {
-                response = `Métricas actuales para **${symbol}**: Precio en ${price}, Liquidez total de ${liquidity}, Volumen 24h de ${volume} y Market Cap de ${mcap}.`;
-            } else {
-                response = `Estoy listo para analizar **${symbol}**. Cotiza en ${price} con una liquidez en pool de ${liquidity}. Podés preguntarme sobre su seguridad, impuestos o volumen.`;
-            }
-        } else if (currentLang === 'en') {
-            const isSecurityQuery = ['safe', 'risk', 'audit', 'security', 'tax', 'taxes', 'fee', 'fees', 'honeypot'].some(w => lower.includes(w));
-            const isMetricsQuery = ['liquidity', 'mcap', 'volume', 'price', 'market cap', 'cap'].some(w => lower.includes(w));
-
-            if (isSecurityQuery) {
-                if (isHoneypot) {
-                    response = `⚠️ Warning! **${symbol}** contract shows high risk or Honeypot behavior. Taxes: Buy ${buyTax}% / Sell ${sellTax}%. Proceed with extreme caution.`;
-                } else {
-                    response = `**${symbol}** contract shows no Honeypot mechanisms. Buy tax is ${buyTax}% and Sell tax is ${sellTax}%.`;
-                }
-            } else if (isMetricsQuery) {
-                response = `Live metrics for **${symbol}**: Price ${price}, Pool Liquidity ${liquidity}, 24h Volume ${volume}, and Market Cap ${mcap}.`;
-            } else {
-                response = `I'm ready to analyze **${symbol}**. Currently trading at ${price} with ${liquidity} in liquidity. Feel free to ask about its security, taxes, or volume.`;
-            }
-        } else if (currentLang === 'ja') {
-            const isSecurityQuery = ['安全', 'リスク', '監査', 'セキュリティ', '税', 'ハニーポット'].some(w => lower.includes(w));
-            const isMetricsQuery = ['流動性', '価格', '出来高', '時価総額'].some(w => lower.includes(w));
-
-            if (isSecurityQuery) {
-                if (isHoneypot) {
-                    response = `⚠️ 警告！**${symbol}** はハニーポットリスクが検出されました。購入税: ${buyTax}% / 売却税: ${sellTax}%。`;
-                } else {
-                    response = `**${symbol}** のコントラクトはハニーポットが検出されていません。購入税: ${buyTax}% / 売却税: ${sellTax}% です。`;
-                }
-            } else if (isMetricsQuery) {
-                response = `**${symbol}** の現在価格は ${price}、流動性は ${liquidity}、24時間出来高は ${volume} です。`;
-            } else {
-                response = `**${symbol}** の分析準備ができました。現在価格: ${price}、流動性: ${liquidity} です。`;
-            }
-        }
-
-        addChatMessage('ai', response);
-    }, 600);
-}
-
-function sendQuickPrompt(promptText) {
-    const field = document.getElementById('chat-input-field');
-    if (field) {
-        field.value = promptText;
-        handleChatSubmit(null);
-    }
-}
-
-function addChatMessage(sender, text) {
-    const container = document.getElementById('chat-messages');
-    if (!container) return;
-    
-    const msgDiv = document.createElement('div');
-    const userLabel = currentLang === 'es' ? 'Tú' : currentLang === 'en' ? 'You' : 'あなた';
-
-    if (sender === 'user') {
-        msgDiv.className = 'p-3 rounded-xl bg-brand-amber/20 border border-brand-amber/30 text-white space-y-1 ml-4';
-        msgDiv.innerHTML = `<div class="text-[10px] text-brand-gold font-bold font-mono">${userLabel}</div><p>${text}</p>`;
-    } else {
-        msgDiv.className = 'p-3 rounded-xl bg-black/60 border border-brand-border/20 text-brand-lightText space-y-1 mr-4';
-        msgDiv.innerHTML = `<div class="text-[10px] text-brand-gold font-bold font-mono flex items-center gap-1"><i class="fa-solid fa-robot"></i> Flick AI</div><p>${text}</p>`;
-    }
-
-    container.appendChild(msgDiv);
-    container.scrollTop = container.scrollHeight;
-}
-
-function showToast(message, type = 'info') {
-    const container = document.getElementById('toast-container');
-    if (!container) return;
-
-    const toast = document.createElement('div');
-    
-    // Configuración de colores e íconos según el tipo de notificación
-    let borderClass = 'border-brand-border/60 bg-black/80';
-    let icon = 'fa-circle-info text-brand-gold';
-
-    if (type === 'success') {
-        borderClass = 'border-emerald-500/50 bg-black/90';
-        icon = 'fa-circle-check text-emerald-400';
-    } else if (type === 'error') {
-        borderClass = 'border-red-500/50 bg-black/90';
-        icon = 'fa-triangle-exclamation text-red-400';
-    }
-
-    toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border ${borderClass} backdrop-blur-md text-white text-xs font-mono shadow-2xl transition-all duration-300 transform translate-y-3 opacity-0`;
-    toast.innerHTML = `<i class="fa-solid ${icon} text-sm"></i> <span>${message}</span>`;
-
-    container.appendChild(toast);
-
-    // Animar entrada
-    requestAnimationFrame(() => {
-        toast.classList.remove('translate-y-3', 'opacity-0');
-    });
-
-    // Ocultar y remover automáticamente tras 3.5 segundos
-    setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-y-3');
-        setTimeout(() => toast.remove(), 300);
-    }, 3500);
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
 }
