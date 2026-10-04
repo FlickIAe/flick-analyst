@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flick Analyst — On-Chain Intelligence Terminal</title>
+  <link rel="icon" type="image/png" href="flick-logo.png">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,28 +15,23 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            display: ['Plus Jakarta Sans', 'sans-serif'],
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            void: '#030508',
-            surface: 'rgba(10, 14, 23, 0.8)',
-            amberCore: '#F59E0B',
-            amberGlow: '#FFB800',
-            cyberGreen: '#10B981',
-            electricCyan: '#00F0FF',
-            crimsonRisk: '#FF3366'
-          }
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          void: '#030508',
+          surface: 'rgba(10, 14, 23, 0.8)',
+          amberCore: '#F59E0B', // Naranja ámbar cálido
+          amberGlow: '#F97316', // Brillo fuego/ember
+          cyberGreen: '#10B981',
+          electricCyan: '#00F0FF',
+          crimsonRisk: '#FF3366'
         }
       }
     }
-  </script>
+  }
+</script>
 
   <style>
     .bg-tech-grid {
@@ -44,7 +40,9 @@
         linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
     }
-    .glow-orb-amber { background: radial-gradient(circle, rgba(245, 158, 11, 0.14) 0%, rgba(0, 0, 0, 0) 70%); }
+    .glow-orb-amber { 
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(0, 0, 0, 0) 70%); 
+}
     .glow-orb-cyan { background: radial-gradient(circle, rgba(0, 240, 255, 0.10) 0%, rgba(0, 0, 0, 0) 70%); }
 
     .glass-panel {
@@ -121,10 +119,13 @@
     
     <header class="flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amberCore to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/20 ring-1 ring-white/15">
-          <span class="text-lg">⚡</span>
-        </div>
-        <span class="font-display font-bold text-lg tracking-normal text-white">FLICK <span class="text-amberCore">ANALYST</span></span>
+  <!-- Contenedor del Isotipo/Logo -->
+      <div class="w-10 h-10 rounded-xl bg-surface border border-amberCore/30 flex items-center justify-center p-2 shadow-lg shadow-amberCore/10">
+        <img src="flick-logo.png" alt="Flick Logo" class="w-full h-full object-contain" />
+      </div>
+  
+      <!-- Nombre de la marca -->
+      <span class="text-xl font-bold tracking-wider text-white">Flick Super Intelligence</span>
       </div>
       
       <div class="flex items-center gap-4">
@@ -492,7 +493,7 @@
   <!-- CHAT BOX CONTAINER -->
   <div id="copilotChatBox" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs my-2">
     <div class="p-3 bg-slate-900/80 rounded-xl border border-amber-500/20 text-xs font-mono text-slate-200 leading-relaxed">
-      🤖 Selecciona un botón arriba para obtener un reporte rápido del token.
+      🤖 Select a button above to get a quick report on the token.
     </div>
   </div>
 
