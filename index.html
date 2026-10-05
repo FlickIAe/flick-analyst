@@ -6,8 +6,8 @@
   <title>Flick Super Intelligence — Token Risk & Market Terminal</title>
   <meta name="description" content="Live DEX data, risk checklist, contract checks, top holders and price alerts for any token. Free, in English, Español and 中文.">
   <meta name="theme-color" content="#030508">
-  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png?v=2">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 
   <!-- Installable app (PWA) -->
   <link rel="manifest" href="manifest.webmanifest">
@@ -28,7 +28,7 @@
   <meta property="og:title" content="Flick Super Intelligence — Analyze any token. Never exit liquidity.">
   <meta property="og:description" content="Live DEX data, risk checklist, contract checks, top holders and price alerts for any token. Free, in English, Español and 中文.">
   <meta property="og:url" content="https://flick-app.pages.dev/">
-  <meta property="og:image" content="https://flick-app.pages.dev/og-image.jpg">
+  <meta property="og:image" content="https://flick-app.pages.dev/og-image.jpg?v=2">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -36,7 +36,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Flick Super Intelligence — Analyze any token. Never exit liquidity.">
   <meta name="twitter:description" content="Live DEX data, risk checklist, contract checks, top holders and price alerts for any token.">
-  <meta name="twitter:image" content="https://flick-app.pages.dev/og-image.jpg">
+  <meta name="twitter:image" content="https://flick-app.pages.dev/og-image.jpg?v=2">
 
   <!-- Tailwind CSS CDN (fine for a static site; use the Tailwind CLI for a production build) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -177,8 +177,8 @@
     <header class="flex items-center justify-between gap-x-3 gap-y-4 flex-wrap">
       <div class="flex items-center gap-3">
         <!-- Logo Container -->
-        <div class="w-10 h-10 rounded-xl bg-surface border border-amberCore/30 flex items-center justify-center p-2 shadow-lg shadow-amberCore/10">
-          <img src="flick-logo.webp" width="40" height="40" alt="Flick Logo" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23F59E0B\'><path d=\'M13 2L3 14h9l-1 8 10-12h-9l1-8z\'/></svg>'" />
+        <div class="w-10 h-10 rounded-xl overflow-hidden border border-amberCore/30 shadow-lg shadow-amberCore/10">
+          <img src="flick-logo.webp" width="40" height="40" alt="Flick Logo" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23F59E0B\'><path d=\'M13 2L3 14h9l-1 8 10-12h-9l1-8z\'/></svg>'" />
         </div>
         <!-- Brand Name -->
         <span class="text-lg sm:text-xl font-bold tracking-wide text-white">Flick <span class="text-amberCore">Super Intelligence</span></span>
@@ -283,7 +283,7 @@
     </div>
 
     <footer class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 border-t border-white/5 pt-5 gap-3">
-      <p data-i18n="footer_copyright">© 2026 Flick Analyst. Web3 Intelligence Platform. Not financial advice.</p>
+      <p data-i18n="footer_copyright">© 2026 Flick Super Intelligence. Web3 Intelligence Platform. Not financial advice.</p>
       <div class="flex items-center gap-6">
         <button type="button" onclick="enterApp()" class="text-amberCore hover:underline font-semibold text-xs"><span data-i18n="open_terminal">Open Terminal →</span></button>
       </div>
@@ -304,9 +304,7 @@
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg><span class="hidden sm:inline" data-i18n="back_landing">Cover</span>
         </button>
         <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amberCore to-amber-700 flex items-center justify-center text-black shadow-md shadow-amber-500/20">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </div>
+          <img src="flick-logo.webp" width="28" height="28" alt="" class="w-7 h-7 rounded-lg object-cover border border-amberCore/30 shadow-md shadow-amber-500/20" />
           <span class="font-display font-bold text-sm tracking-wide text-white">FLICK <span class="text-amberCore hidden lg:inline">SUPER INTELLIGENCE</span><span class="text-amberCore lg:hidden">SI</span></span>
         </div>
       </div>

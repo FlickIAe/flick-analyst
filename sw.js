@@ -1,11 +1,11 @@
 /**
- * Flick Analyst service worker
+ * Flick Super Intelligence service worker
  * - Makes the site installable and lets the app shell open offline.
  * - Network-first for the site's own files, so a new deploy shows up right away.
  * - Never caches API calls (DexScreener, GoPlus, /api/*): market data must be live.
  * - Shows watchlist alert notifications and opens the token when one is tapped.
  */
-const CACHE = 'flick-shell-v1';
+const CACHE = 'flick-shell-v2';
 const SHELL = ['/', '/app.js', '/flick-logo.webp', '/favicon.png', '/icon-192.png', '/manifest.webmanifest'];
 const STATIC_HOSTS = ['cdn.tailwindcss.com', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 
