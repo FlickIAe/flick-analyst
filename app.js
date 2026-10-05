@@ -38,7 +38,7 @@ const TRANSLATIONS = {
     tab_holders: "📊 Holders",
     swap_access: "Quick DEX Swap Access",
     swap_desc: "Direct redirection with the contract address pre-loaded.",
-    ai_placeholder: "Ask about safety, holders, liquidity or trend...",
+    ai_placeholder: "Ask anything about this token...",
     send: "Send",
     back_landing: "Cover",
     back_title: "Back to cover",
@@ -149,7 +149,12 @@ const TRANSLATIONS = {
     th_tag: "Tag",
 
     // Chat
-    chat_intro: "🤖 Pick a quick report above or ask about safety, holders, liquidity or trend.",
+    chat_intro: "🤖 Ask anything about this token: the AI assistant answers using its live data. The buttons above give instant reports.",
+    ai_hint: "Ask anything: the AI assistant answers with this token's live data.",
+    ai_thinking: "Thinking…",
+    ai_refusal: "I can't help with that request. Try asking about this token's risks, holders, liquidity or trend.",
+    ai_busy: "The AI assistant is busy right now. Here is a quick report instead.",
+    ai_interrupted: "(answer interrupted)",
     chip_safety: "🛡️ Safety Check",
     chip_holders: "📊 Holders Risk",
     chip_liquidity: "💧 Liquidity Depth",
@@ -182,7 +187,7 @@ const TRANSLATIONS = {
     tab_holders: "📊 持币",
     swap_access: "DEX 快速兑换",
     swap_desc: "自动预载合约地址的直接跳转链接。",
-    ai_placeholder: "询问安全、持币、流动性或走势...",
+    ai_placeholder: "关于这个代币，问什么都可以...",
     send: "发送",
     back_landing: "返回首页",
     back_title: "返回首页",
@@ -287,7 +292,12 @@ const TRANSLATIONS = {
     th_val: "≈ USD",
     th_tag: "标签",
 
-    chat_intro: "🤖 点击上方快捷报告，或询问安全、持币、流动性与走势。",
+    chat_intro: "🤖 关于这个代币，问什么都可以：AI 助手会基于实时数据回答。上方按钮可生成即时报告。",
+    ai_hint: "问什么都可以：AI 助手会基于该代币的实时数据回答。",
+    ai_thinking: "思考中…",
+    ai_refusal: "我无法处理这个请求。可以试着询问该代币的风险、持币、流动性或走势。",
+    ai_busy: "AI 助手当前繁忙，先为你生成一份快速报告。",
+    ai_interrupted: "（回答中断）",
     chip_safety: "🛡️ 安全检测",
     chip_holders: "📊 持仓风险",
     chip_liquidity: "💧 流动性深度",
@@ -320,7 +330,7 @@ const TRANSLATIONS = {
     tab_holders: "📊 Holders",
     swap_access: "Acceso rápido a swap",
     swap_desc: "Redirección directa con la dirección del contrato precargada.",
-    ai_placeholder: "Preguntá sobre seguridad, holders, liquidez o tendencia...",
+    ai_placeholder: "Preguntá lo que quieras sobre este token...",
     send: "Enviar",
     back_landing: "Portada",
     back_title: "Volver a la portada",
@@ -425,7 +435,12 @@ const TRANSLATIONS = {
     th_val: "≈ USD",
     th_tag: "Etiqueta",
 
-    chat_intro: "🤖 Elegí un reporte rápido arriba o preguntá sobre seguridad, holders, liquidez o tendencia.",
+    chat_intro: "🤖 Preguntá lo que quieras sobre este token: el asistente de IA responde con sus datos en vivo. Los botones de arriba dan reportes instantáneos.",
+    ai_hint: "Preguntá lo que quieras: el asistente de IA responde con los datos en vivo de este token.",
+    ai_thinking: "Pensando…",
+    ai_refusal: "No puedo ayudar con ese pedido. Probá preguntar por los riesgos, holders, liquidez o tendencia de este token.",
+    ai_busy: "El asistente de IA está ocupado. Te dejo un reporte rápido.",
+    ai_interrupted: "(respuesta interrumpida)",
     chip_safety: "🛡️ Seguridad",
     chip_holders: "📊 Riesgo de holders",
     chip_liquidity: "💧 Profundidad de liquidez",
@@ -1226,9 +1241,11 @@ function renderAiWelcome() {
     ` · ${L('Liquidity', '流动性', 'Liquidez')}: `, el('strong', '', formatUsd(t.liquidity)),
     ` · ${L('24h Volume', '24小时交易量', 'Volumen 24h')}: `, el('strong', '', formatUsd(t.volume))
   );
+  resetAiConversation();
   card.append(
     el('p', 'font-bold text-electricCyan', `🤖 $${t.symbol} · ${chainName(t.chainId)}`),
     stats,
+    el('p', 'text-[11px] text-electricCyan/80', tr('ai_hint')),
     el('p', 'text-[10px] text-slate-500', L('Reports use public DEX data and GoPlus checks. Not financial advice.', '报告基于公开 DEX 数据与 GoPlus 检测，不构成投资建议。', 'Los reportes usan datos públicos de DEX y chequeos de GoPlus. No es asesoramiento financiero.'))
   );
   chatBox.replaceChildren(card);
@@ -1297,6 +1314,7 @@ function addMsg(text, isUser) {
     ? 'p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-slate-200 text-right font-sans my-1 whitespace-pre-line break-words'
     : 'p-3 bg-slate-900/90 rounded-xl border border-electricCyan/30 text-xs font-mono text-slate-200 leading-relaxed my-1 whitespace-pre-line break-words', text));
   box.scrollTop = box.scrollHeight;
+  return box.lastChild;
 }
 
 function quickCopilotQuery(type) {
@@ -1304,20 +1322,145 @@ function quickCopilotQuery(type) {
   addMsg(reportText(type), false);
 }
 
-function sendCopilotQuery() {
-  const input = $('copilotInput');
-  if (!input) return;
-  const text = input.value.trim();
-  if (!text) return;
-  if (!currentToken.loaded) return showToast(tr('waiting'));
-  input.value = '';
-  addMsg(text, true);
+function detectReportType(text) {
   const q = text.toLowerCase();
-  const type = /safe|honey|rug|scam|risk|tax|mint|freeze|audit|segur|riesgo|estafa|impuesto|auditor|安全|蜜罐|风险|税|审计/.test(q) ? 'safety'
+  return /safe|honey|rug|scam|risk|tax|mint|freeze|audit|segur|riesgo|estafa|impuesto|auditor|安全|蜜罐|风险|税|审计/.test(q) ? 'safety'
     : /holder|whale|ballena|concentra|distribu|持币|巨鲸|集中|分布/.test(q) ? 'holders'
     : /liq|pool|\blp\b|流动|池/.test(q) ? 'liquidity'
     : /price|trend|pump|dump|chart|precio|tendencia|grafic|gráfic|sube|baja|走势|价格|涨|跌/.test(q) ? 'trend' : 'help';
-  addMsg(reportText(type), false);
+}
+
+// ---- AI assistant (Claude via functions/api/chat.js) ----
+const AI_ENDPOINT = '/api/chat';
+const AI_MAX_TURNS = 10;
+let aiHistory = [];       // text-only turns for the current token: [{ role, content }]
+let aiController = null;  // in-flight request
+let aiAvailable = location.protocol.startsWith('http'); // the function only exists on the deployed site
+
+function resetAiConversation() {
+  if (aiController) aiController.abort();
+  aiController = null;
+  aiHistory = [];
+  setAiBusy(false);
+}
+
+function setAiBusy(busy) {
+  const input = $('copilotInput'), btn = $('copilotSendBtn');
+  if (input) input.disabled = busy;
+  if (btn) btn.disabled = busy;
+}
+
+// Snapshot of what the app knows about the current token (sent with each question)
+function tokenSnapshot() {
+  const t = currentToken;
+  const s = security.status === 'ok' ? security.data : null;
+  const clip = (v, n = 60) => (v == null ? null : String(v).slice(0, n));
+  const days = ageDays(t);
+  return {
+    token: { symbol: clip(t.symbol, 24), name: clip(t.name), chain: chainName(t.chainId), contract: t.ca, quote: clip(t.quoteSymbol, 24), dex: clip(t.dexId, 30) },
+    market: {
+      priceUsd: t.price || null, priceChangePct: t.changes, liquidityUsd: t.liquidity, volume24hUsd: t.volume, fdvUsd: t.fdv || null,
+      buys24h: t.buys, sells24h: t.sells, pairAgeDays: days == null ? null : +days.toFixed(1), socialLinks: t.socials,
+      marketHealthScore: t.score,
+      scoreParts: { liquidity: t.parts.liq, volumeToLiquidity: t.parts.vol, pairAge: t.parts.age, buySellBalance: t.parts.bal }
+    },
+    pools: currentPairs.slice(0, 5).map(p => ({
+      dex: clip(p.dexId, 30), pair: clip(`${p.baseToken?.symbol || ''}/${p.quoteToken?.symbol || ''}`, 50),
+      liquidityUsd: p.liquidity?.usd || 0, active: p.pairAddress === t.pairAddress
+    })),
+    contractChecks: s ? {
+      source: 'GoPlus', riskLevel: contractRisk(s), honeypot: s.honeypot, cannotSellAll: s.cannotSell,
+      buyTaxPct: s.buyTax, sellTaxPct: s.sellTax, transferFee: s.transferFee, mintable: s.mintable,
+      freezeOrBlacklist: s.freezable, proxyOrMutable: s.mutable, lpLockedPct: s.lpLocked,
+      holderCount: s.holderCount, top10HoldersPct: s.top10 == null ? null : +s.top10.toFixed(2),
+      topHolders: s.holders.slice(0, 5).map(h => ({ pct: +h.pct.toFixed(2), tag: clip(h.tag, 40), isContract: h.isContract, isLocked: h.isLocked }))
+    } : { status: security.status === 'loading' ? 'loading' : 'unavailable' }
+  };
+}
+
+async function sendCopilotQuery() {
+  const input = $('copilotInput');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text || aiController) return;
+  if (!currentToken.loaded) return showToast(tr('waiting'));
+  input.value = '';
+  addMsg(text, true);
+  // Without the AI function (local file, not deployed, no API key) fall back to the instant reports
+  const answered = aiAvailable && await askAI(text);
+  if (!answered) addMsg(reportText(detectReportType(text)), false);
+}
+
+// Streams Claude's answer into a chat bubble. Returns false when the caller should fall back.
+async function askAI(question) {
+  const key = chatKey;
+  const bubble = addMsg(tr('ai_thinking'), false);
+  bubble.classList.add('animate-pulse');
+  const box = $('copilotChatBox');
+  const controller = (aiController = new AbortController());
+  setAiBusy(true);
+  let answer = '', stop = null, failed = null;
+
+  try {
+    const res = await fetch(AI_ENDPOINT, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({ lang: currentLang, context: tokenSnapshot(), messages: [...aiHistory, { role: 'user', content: question }] })
+    });
+    const type = res.headers.get('content-type') || '';
+    if (!res.ok || !res.body || !type.includes('ndjson')) {
+      // 404/405 or an HTML page: the function isn't deployed. 503: no API key configured.
+      if (res.status !== 429 && res.status !== 400) aiAvailable = false;
+      throw new Error(`AI endpoint HTTP ${res.status}`);
+    }
+    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+    let buf = '';
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += value;
+      let nl;
+      while ((nl = buf.indexOf('\n')) >= 0) {
+        const line = buf.slice(0, nl).trim();
+        buf = buf.slice(nl + 1);
+        if (!line) continue;
+        const ev = JSON.parse(line);
+        if (ev.t === 'delta') answer += ev.v;
+        else if (ev.t === 'reset') answer = '';
+        else if (ev.t === 'end') stop = ev.stop;
+        else if (ev.t === 'error') failed = ev.code;
+      }
+      if (answer && key === chatKey) {
+        bubble.classList.remove('animate-pulse');
+        bubble.textContent = answer;
+        box.scrollTop = box.scrollHeight;
+      }
+    }
+  } catch (err) {
+    if (err.name === 'AbortError') { bubble.remove(); return true; } // token changed; chat was reset
+    console.warn('AI assistant unavailable:', err);
+    failed = failed || 'network';
+  } finally {
+    if (aiController === controller) { aiController = null; setAiBusy(false); }
+  }
+  if (key !== chatKey) return true;
+  bubble.classList.remove('animate-pulse');
+
+  if (stop === 'refusal') { bubble.textContent = tr('ai_refusal'); return true; }
+  if (!answer) {
+    bubble.remove();
+    if (failed === 'config') aiAvailable = false;
+    if (failed === 'busy') showToast(tr('ai_busy'));
+    return false;
+  }
+  if (failed || !stop) answer += `\n${tr('ai_interrupted')}`;
+  else if (stop === 'max_tokens') answer += ' …';
+  bubble.textContent = answer;
+  box.scrollTop = box.scrollHeight;
+  aiHistory.push({ role: 'user', content: question }, { role: 'assistant', content: answer });
+  aiHistory = aiHistory.slice(-AI_MAX_TURNS);
+  return true;
 }
 
 // ===================================================================

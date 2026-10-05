@@ -1,0 +1,9 @@
+{
+  "name": "flick-analyst",
+  "private": true,
+  "type": "module",
+  "description": "Flick Analyst static site + Cloudflare Pages Functions",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0"
+  }
+}

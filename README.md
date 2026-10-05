@@ -11,7 +11,7 @@
 - 🛡️ **Contract Checks (GoPlus):** Buy/sell tax, honeypot / sell restrictions, mint authority, freeze/blacklist, proxy/mutable code and LP lock. Shows "Not verified" when a check is unavailable.
 - 📊 **Top Holders:** Top-10 supply concentration, holder count, approximate USD value and explorer links.
 - 📈 **Live Charts & Pools:** Embedded DexScreener chart, clickable list of the token's pools and live price polling every 12 s.
-- 🤖 **Quick Reports:** Safety, holders, liquidity and multi-timeframe trend reports built from the loaded data.
+- 🤖 **AI Assistant (Claude):** Ask anything about the loaded token; Claude answers in the chat using the token's live DexScreener and GoPlus data. The quick-report buttons still give instant, free reports, and the chat falls back to them when the AI isn't available.
 - 🌐 **Languages:** English, Español and 简体中文 (`EN`, `ES`, `ZH`), auto-detected from the browser.
 - ⚡ **Extras:** Recent searches, shareable deep links (`?ca=…&chain=…`), copy-CA button, `/` keyboard shortcut to search.
 
@@ -25,7 +25,10 @@
 - **APIs:**
   - [DexScreener API](https://docs.dexscreener.com/) — market data and chart embeds
   - [GoPlus Security API](https://gopluslabs.io/) — contract security and holders
-- **Deployment:** Cloudflare Pages, with a Pages Function (`functions/api/goplus.js`) that proxies GoPlus when the browser can't call it directly
+  - [Claude API](https://docs.claude.com/) — AI assistant (via the official `@anthropic-ai/sdk`)
+- **Deployment:** Cloudflare Pages + Pages Functions:
+  - `functions/api/goplus.js` proxies GoPlus when the browser can't call it directly
+  - `functions/api/chat.js` calls Claude server-side, so the API key never reaches the browser
 
 ---
 
@@ -35,6 +38,8 @@
 index.html              Page layout (landing + dashboard)
 app.js                  App logic: i18n, search, scoring, GoPlus, reports, polling
 functions/api/goplus.js Cloudflare Pages Function: same-origin GoPlus proxy
+functions/api/chat.js   Cloudflare Pages Function: AI assistant (Claude, streaming)
+package.json            Dependency for the functions (@anthropic-ai/sdk)
 flick-logo.webp         Optimized logo (flick-logo.png is the original source)
 favicon.png             Browser tab icon
 apple-touch-icon.png    Home-screen icon for iOS
@@ -57,3 +62,14 @@ No build step or dependencies required.
    ```
    The GoPlus proxy only runs on Cloudflare Pages (or locally with `npx wrangler pages dev .`).
 3. **Deploy:** push to `main`; Cloudflare Pages publishes it automatically.
+
+---
+
+## 🤖 AI Assistant Setup
+
+1. Create an API key at [console.anthropic.com](https://console.anthropic.com/) and set a monthly spend limit there.
+2. In Cloudflare: **Workers & Pages → your project → Settings → Variables and Secrets**, add `ANTHROPIC_API_KEY` as a **Secret** (Production).
+3. Optional: add `ANTHROPIC_MODEL` to use a different model (default: `claude-opus-5-5`).
+4. Redeploy (push to `main` or **Retry deployment**).
+
+Without the key, the chat keeps working with the instant reports. For local testing, put the key in a `.dev.vars` file (`ANTHROPIC_API_KEY=...`, ignored by git) and run `npx wrangler pages dev .`.
