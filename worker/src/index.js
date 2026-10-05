@@ -290,9 +290,34 @@ async function setup(url, env) {
     if (lang !== 'en') payload.language_code = lang;
     results.push((await tg(env, 'setMyCommands', payload)).ok);
   }
+  // Profile texts in each language (Telegram shows the one matching the user's app language)
+  const site = cfg(env, 'SITE_URL').replace(/^https?:\/\//, '').replace(/\/+$/, '');
+  const descriptions = [];
+  for (const [lang, t] of Object.entries(BOT_PROFILE)) {
+    const extra = lang === 'en' ? {} : { language_code: lang };
+    const d = await tg(env, 'setMyDescription', { description: fill(t.description, { site }), ...extra });
+    const s = await tg(env, 'setMyShortDescription', { short_description: fill(t.short, { site }), ...extra });
+    descriptions.push(d.ok && s.ok);
+  }
   const me = await tg(env, 'getMe', {});
-  return json({ webhook: webhook.body, commands: results, bot: me.body?.result?.username || null });
+  return json({ webhook: webhook.body, commands: results, descriptions, bot: me.body?.result?.username || null });
 }
+
+// Shown before tapping "Start" (description, max 512 chars) and in the bot profile (short, max 120)
+const BOT_PROFILE = {
+  en: {
+    description: "⚡ Flick Super Intelligence alerts you when something changes in the tokens you follow.\n\n🔔 Price alerts (±5/10/20/50%)\n💧 Liquidity drains (possible rug pull)\n📉 Heavy selling in the last hour\n⛔ Contracts that start showing risk\n\nGet started: open {site}, follow tokens with ☆ Watch and tap “Connect Telegram” in the Watchlist tab.\n\nFree. Not financial advice.",
+    short: "Price and risk alerts for your crypto tokens, even with Flick closed. Free · {site}"
+  },
+  es: {
+    description: "⚡ Flick Super Intelligence te avisa cuando algo cambia en los tokens que seguís.\n\n🔔 Alertas de precio (±5/10/20/50%)\n💧 Caída de liquidez (posible rug pull)\n📉 Ventas masivas en la última hora\n⛔ Contratos que empiezan a mostrar riesgo\n\nCómo empezar: entrá a {site}, seguí tokens con ☆ Seguir y tocá “Conectar Telegram” en la pestaña Watchlist.\n\nGratis. No es asesoramiento financiero.",
+    short: "Alertas de precio y riesgo para tus tokens cripto, aunque tengas Flick cerrado. Gratis · {site}"
+  },
+  zh: {
+    description: "⚡ 当你关注的代币发生变化时，Flick Super Intelligence 会提醒你。\n\n🔔 价格提醒（±5/10/20/50%）\n💧 流动性流失（可能跑路）\n📉 过去一小时大量抛售\n⛔ 合约开始出现风险\n\n开始使用：打开 {site}，用 ☆ 自选 关注代币，然后在自选标签页点击“连接 Telegram”。\n\n免费。不构成投资建议。",
+    short: "即使关闭 Flick，也能收到加密代币的价格和风险提醒。免费 · {site}"
+  }
+};
 
 // ------------------------------------------------------------------ contract checks (same rules as the website)
 const flag = v => (v === undefined || v === null || v === '' ? null : String(v) === '1');

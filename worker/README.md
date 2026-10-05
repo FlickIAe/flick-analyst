@@ -91,6 +91,8 @@ https://flick-alerts.TU-SUBDOMINIO.workers.dev/setup?key=TU_TELEGRAM_WEBHOOK_SEC
 
 Tiene que responder algo como `{"webhook":{"ok":true,...},"bot":"FlickSIbot"}`.
 
+Este paso también carga los comandos del bot y su **descripción** (lo que se ve antes de tocar "Iniciar" y en el perfil) en inglés, español y chino. Telegram muestra a cada usuario la del idioma de su app. Si después cambiás los textos en `src/index.js` (`BOT_PROFILE`), ejecutá `npx wrangler deploy` y volvé a abrir este link.
+
 ## Paso 7 · Activarlo en la página
 
 En `index.html` completá estas dos líneas:
