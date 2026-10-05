@@ -12,6 +12,7 @@
 - 📊 **Top Holders:** Top-10 supply concentration, holder count, approximate USD value and explorer links.
 - 📈 **Live Charts & Pools:** Embedded DexScreener chart, clickable list of the token's pools and live price polling every 12 s.
 - 🤖 **Smart Assistant (free, no AI service):** Ask in your own words ("is it safe?", "who holds the most?", "should I buy?") in English, Spanish or Chinese. A rule-based risk engine combines market and contract signals into a risk checklist with an overall LOW / MEDIUM / HIGH verdict, all computed in the browser.
+- 🔥 **Trending on the landing page:** DexScreener's most boosted tokens (boosts are paid promotions, and the page says so), enriched with real pair data, sorted by 24h volume and flagged for low liquidity or pairs under 24h old. Click a card to analyze it.
 - ⭐ **Watchlist & Price Alerts:** Follow up to 20 tokens with ☆ Watch. Prices refresh every minute while the page is open (even in a background tab), and a toast plus a browser notification fire when a token moves ±5/10/20/50% (configurable per token). Saved only in the browser (localStorage).
 - 🌐 **Languages:** English, Español and 简体中文 (`EN`, `ES`, `ZH`), auto-detected from the browser.
 - ⚡ **Extras:** Recent searches, shareable deep links (`?ca=…&chain=…`), copy-CA button, `/` keyboard shortcut to search.
