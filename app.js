@@ -15,10 +15,10 @@ const TRANSLATIONS = {
     mainnet_active: "Live DEX Data",
     open_app: "Open App →",
     open_terminal: "Open Terminal →",
-    badge_landing: "📡 LIVE DEX DATA & CONTRACT RISK SIGNALS",
+    badge_landing: "LIVE DEX DATA & CONTRACT RISK SIGNALS",
     hero_title: 'Navigate Web3 Markets <br><span class="bg-gradient-to-r from-amberCore via-amberGlow to-white bg-clip-text text-transparent">Never Exit Liquidity</span>',
     hero_desc: "Real-time DEX charts, market-health scoring, contract checks and holder distribution for traders.",
-    ca_placeholder: "Paste contract address (CA) or ticker...",
+    ca_placeholder: "Contract address or ticker…",
     analyze_btn: "Analyze Token",
     recent_title: "Recent:",
     audit_score_title: "Market Health Score",
@@ -33,9 +33,9 @@ const TRANSLATIONS = {
     fdv: "FDV",
     security_score: "Market Health",
     stream_dex: "DexScreener Real-Time Chart",
-    tab_audit: "🛡️ Audit",
-    tab_ai: "🤖 Reports",
-    tab_holders: "📊 Holders",
+    tab_audit: "Audit",
+    tab_ai: "Reports",
+    tab_holders: "Holders",
     swap_access: "Quick DEX Swap Access",
     swap_desc: "Direct redirection with the contract address pre-loaded.",
     ai_placeholder: "Ask about safety, holders, liquidity or trend...",
@@ -43,7 +43,7 @@ const TRANSLATIONS = {
     back_landing: "Cover",
     back_title: "Back to cover",
     copy_ca: "Copy contract address",
-    footer_copyright: "© 2026 Flick Analyst. Web3 Intelligence Platform. Not financial advice.",
+    footer_copyright: "© 2026 Flick Super Intelligence. Web3 Intelligence Platform. Not financial advice.",
     live: "LIVE",
     updated_ago: "updated {s}s ago",
     scanning_title: "ANALYZING TOKEN DATA...",
@@ -69,7 +69,7 @@ const TRANSLATIONS = {
     no_pools: "No pools loaded.",
     pool_active: "ACTIVE",
     pool_switch: "Show this pool on the chart",
-    share_btn: "📤 Share Analysis",
+    share_btn: "Share Analysis",
 
     // Banner
     health_good_title: "Market Health: GOOD",
@@ -149,16 +149,16 @@ const TRANSLATIONS = {
     th_tag: "Tag",
 
     // Chat
-    chat_intro: "🤖 Ask about this token in your own words (e.g. \"is it safe?\", \"who holds the most?\", \"should I buy?\") or use the buttons above. Answers are built instantly from live data.",
+    chat_intro: "Ask about this token in your own words (e.g. \"is it safe?\", \"who holds the most?\", \"should I buy?\") or use the buttons above. Answers are built instantly from live data.",
     chat_hint: "Ask in your own words, e.g. \"is it safe?\", \"who holds the most?\", \"should I buy?\"",
-    chip_checklist: "⚖️ Risk Checklist",
-    chip_safety: "🛡️ Safety Check",
-    chip_holders: "📊 Holders Risk",
-    chip_liquidity: "💧 Liquidity Depth",
-    chip_price: "📈 Technical Trend",
-    tab_watch: "⭐ Watchlist",
-    watch: "☆ Watch",
-    watching: "★ Watching",
+    chip_checklist: "Risk Checklist",
+    chip_safety: "Safety Check",
+    chip_holders: "Holders Risk",
+    chip_liquidity: "Liquidity Depth",
+    chip_price: "Technical Trend",
+    tab_watch: "Watchlist",
+    watch: "Watch",
+    watching: "Watching",
     watch_title: "Add to or remove from your watchlist",
     watch_added: "{s} added to your watchlist",
     watch_removed: "{s} removed from your watchlist",
@@ -170,13 +170,13 @@ const TRANSLATIONS = {
     w_off: "Off",
     w_remove: "Remove",
     w_open: "Open this token",
-    notify_enable: "🔔 Enable notifications",
-    notify_on: "🔔 Notifications on",
+    notify_enable: "Enable notifications",
+    notify_on: "Notifications on",
     notify_blocked: "Notifications are blocked in your browser settings. Alerts will show inside the page.",
     notify_unsupported: "This browser doesn't support notifications. Alerts will show inside the page.",
     alert_up: "📈 {s} is up {pct} → {price}",
     alert_down: "📉 {s} is down {pct} → {price}",
-    trending_title: "🔥 Trending on DexScreener",
+    trending_title: "Trending on DexScreener",
     trending_note: "Most boosted tokens on DexScreener (boosts are paid promotions), sorted by real 24h volume. Not a recommendation: open one and check its risk checklist before trading.",
     trending_loading: "Loading trending tokens…",
     trending_error: "Couldn't load trending tokens.",
@@ -187,18 +187,22 @@ const TRANSLATIONS = {
     t_new: "⚠️ <24h old",
     t_lowliq: "⚠️ Low liquidity",
     t_open: "Analyze this token",
-    install_app: "📲 Install app",
+    install_app: "Install app",
     installed: "Flick was installed on your device!",
-    ios_install: "On iPhone/iPad: tap Share ⬆️ and then “Add to Home Screen”."
+    ios_install: "On iPhone/iPad: tap Share ⬆️ and then “Add to Home Screen”.",
+    risk_label: "Risk",
+    rv_low: "LOW",
+    rv_medium: "MEDIUM",
+    rv_high: "HIGH"
   },
   zh: {
     mainnet_active: "实时 DEX 数据",
     open_app: "进入应用 →",
     open_terminal: "打开终端 →",
-    badge_landing: "📡 实时 DEX 数据与合约风险信号",
+    badge_landing: "实时 DEX 数据与合约风险信号",
     hero_title: '洞察 Web3 市场 <br><span class="bg-gradient-to-r from-amberCore via-amberGlow to-white bg-clip-text text-transparent">避开所有链上陷阱。</span>',
     hero_desc: "实时 DEX 图表、市场健康评分、合约检测与持币分布，专为交易者打造。",
-    ca_placeholder: "粘贴合约地址 (CA) 或代币符号...",
+    ca_placeholder: "合约地址或代币符号…",
     analyze_btn: "分析代币",
     recent_title: "最近：",
     audit_score_title: "市场健康评分",
@@ -213,9 +217,9 @@ const TRANSLATIONS = {
     fdv: "完全稀释估值",
     security_score: "市场健康",
     stream_dex: "DexScreener 实时图表",
-    tab_audit: "🛡️ 审计",
-    tab_ai: "🤖 报告",
-    tab_holders: "📊 持币",
+    tab_audit: "审计",
+    tab_ai: "报告",
+    tab_holders: "持币",
     swap_access: "DEX 快速兑换",
     swap_desc: "自动预载合约地址的直接跳转链接。",
     ai_placeholder: "询问安全、持币、流动性或走势...",
@@ -223,7 +227,7 @@ const TRANSLATIONS = {
     back_landing: "返回首页",
     back_title: "返回首页",
     copy_ca: "复制合约地址",
-    footer_copyright: "© 2026 Flick Analyst. Web3 链上情报终端。不构成投资建议。",
+    footer_copyright: "© 2026 Flick Super Intelligence. Web3 链上情报终端。不构成投资建议。",
     live: "实时",
     updated_ago: "{s} 秒前更新",
     scanning_title: "正在分析代币数据...",
@@ -249,7 +253,7 @@ const TRANSLATIONS = {
     no_pools: "暂无池子数据。",
     pool_active: "当前",
     pool_switch: "在图表中显示此池子",
-    share_btn: "📤 分享分析",
+    share_btn: "分享分析",
 
     health_good_title: "市场健康：良好",
     health_good_sub: "流动性与活跃度良好。",
@@ -323,16 +327,16 @@ const TRANSLATIONS = {
     th_val: "≈ USD",
     th_tag: "标签",
 
-    chat_intro: "🤖 用自己的话询问该代币（例如“安全吗？”“谁持有最多？”“值得买吗？”），或使用上方按钮。答案基于实时数据即时生成。",
+    chat_intro: "用自己的话询问该代币（例如“安全吗？”“谁持有最多？”“值得买吗？”），或使用上方按钮。答案基于实时数据即时生成。",
     chat_hint: "用自己的话提问，例如“安全吗？”“谁持有最多？”“值得买吗？”",
-    chip_checklist: "⚖️ 风险清单",
-    chip_safety: "🛡️ 安全检测",
-    chip_holders: "📊 持仓风险",
-    chip_liquidity: "💧 流动性深度",
-    chip_price: "📈 技术走势",
-    tab_watch: "⭐ 自选",
-    watch: "☆ 自选",
-    watching: "★ 已自选",
+    chip_checklist: "风险清单",
+    chip_safety: "安全检测",
+    chip_holders: "持仓风险",
+    chip_liquidity: "流动性深度",
+    chip_price: "技术走势",
+    tab_watch: "自选",
+    watch: "自选",
+    watching: "已自选",
     watch_title: "加入或移出自选",
     watch_added: "{s} 已加入自选",
     watch_removed: "{s} 已移出自选",
@@ -344,13 +348,13 @@ const TRANSLATIONS = {
     w_off: "关闭",
     w_remove: "移除",
     w_open: "打开该代币",
-    notify_enable: "🔔 开启通知",
-    notify_on: "🔔 通知已开启",
+    notify_enable: "开启通知",
+    notify_on: "通知已开启",
     notify_blocked: "浏览器设置已阻止通知。提醒将显示在页面内。",
     notify_unsupported: "此浏览器不支持通知。提醒将显示在页面内。",
     alert_up: "📈 {s} 上涨 {pct} → {price}",
     alert_down: "📉 {s} 下跌 {pct} → {price}",
-    trending_title: "🔥 DexScreener 热门",
+    trending_title: "DexScreener 热门",
     trending_note: "DexScreener 上被推广（Boost，即付费推广）最多的代币，按真实 24 小时交易量排序。不构成推荐：交易前请打开代币查看风险清单。",
     trending_loading: "正在加载热门代币…",
     trending_error: "无法加载热门代币。",
@@ -361,18 +365,22 @@ const TRANSLATIONS = {
     t_new: "⚠️ 不到24小时",
     t_lowliq: "⚠️ 流动性低",
     t_open: "分析该代币",
-    install_app: "📲 安装应用",
+    install_app: "安装应用",
     installed: "Flick 已安装到你的设备！",
-    ios_install: "在 iPhone/iPad 上：点击分享 ⬆️，然后选择“添加到主屏幕”。"
+    ios_install: "在 iPhone/iPad 上：点击分享 ⬆️，然后选择“添加到主屏幕”。",
+    risk_label: "风险",
+    rv_low: "低",
+    rv_medium: "中",
+    rv_high: "高"
   },
   es: {
     mainnet_active: "Datos DEX en vivo",
     open_app: "Abrir app →",
     open_terminal: "Abrir terminal →",
-    badge_landing: "📡 DATOS DEX EN VIVO Y SEÑALES DE RIESGO DE CONTRATOS",
+    badge_landing: "DATOS DEX EN VIVO Y SEÑALES DE RIESGO DE CONTRATOS",
     hero_title: 'Navegá los mercados Web3 <br><span class="bg-gradient-to-r from-amberCore via-amberGlow to-white bg-clip-text text-transparent">Nunca seas la liquidez de salida</span>',
     hero_desc: "Gráficos DEX en tiempo real, puntuación de salud del mercado, chequeos de contrato y distribución de holders para traders.",
-    ca_placeholder: "Pegá la dirección del contrato (CA) o el ticker...",
+    ca_placeholder: "Dirección del contrato o ticker…",
     analyze_btn: "Analizar token",
     recent_title: "Recientes:",
     audit_score_title: "Salud del mercado",
@@ -387,9 +395,9 @@ const TRANSLATIONS = {
     fdv: "FDV",
     security_score: "Salud del mercado",
     stream_dex: "Gráfico en tiempo real de DexScreener",
-    tab_audit: "🛡️ Auditoría",
-    tab_ai: "🤖 Reportes",
-    tab_holders: "📊 Holders",
+    tab_audit: "Auditoría",
+    tab_ai: "Reportes",
+    tab_holders: "Holders",
     swap_access: "Acceso rápido a swap",
     swap_desc: "Redirección directa con la dirección del contrato precargada.",
     ai_placeholder: "Preguntá sobre seguridad, holders, liquidez o tendencia...",
@@ -397,7 +405,7 @@ const TRANSLATIONS = {
     back_landing: "Portada",
     back_title: "Volver a la portada",
     copy_ca: "Copiar dirección del contrato",
-    footer_copyright: "© 2026 Flick Analyst. Plataforma de inteligencia Web3. No es asesoramiento financiero.",
+    footer_copyright: "© 2026 Flick Super Intelligence. Plataforma de inteligencia Web3. No es asesoramiento financiero.",
     live: "EN VIVO",
     updated_ago: "actualizado hace {s}s",
     scanning_title: "ANALIZANDO DATOS DEL TOKEN...",
@@ -423,7 +431,7 @@ const TRANSLATIONS = {
     no_pools: "No hay pools cargados.",
     pool_active: "ACTIVO",
     pool_switch: "Mostrar este pool en el gráfico",
-    share_btn: "📤 Compartir análisis",
+    share_btn: "Compartir análisis",
 
     health_good_title: "Salud del mercado: BUENA",
     health_good_sub: "Liquidez y actividad saludables.",
@@ -497,16 +505,16 @@ const TRANSLATIONS = {
     th_val: "≈ USD",
     th_tag: "Etiqueta",
 
-    chat_intro: "🤖 Preguntá sobre este token con tus palabras (por ejemplo \"¿es seguro?\", \"¿quién tiene más tokens?\", \"¿me conviene comprar?\") o usá los botones de arriba. Las respuestas se arman al instante con datos en vivo.",
+    chat_intro: "Preguntá sobre este token con tus palabras (por ejemplo \"¿es seguro?\", \"¿quién tiene más tokens?\", \"¿me conviene comprar?\") o usá los botones de arriba. Las respuestas se arman al instante con datos en vivo.",
     chat_hint: "Preguntá con tus palabras, por ejemplo \"¿es seguro?\", \"¿quién tiene más tokens?\", \"¿me conviene comprar?\"",
-    chip_checklist: "⚖️ Checklist de riesgo",
-    chip_safety: "🛡️ Seguridad",
-    chip_holders: "📊 Riesgo de holders",
-    chip_liquidity: "💧 Profundidad de liquidez",
-    chip_price: "📈 Tendencia técnica",
-    tab_watch: "⭐ Watchlist",
-    watch: "☆ Seguir",
-    watching: "★ Siguiendo",
+    chip_checklist: "Checklist de riesgo",
+    chip_safety: "Seguridad",
+    chip_holders: "Riesgo de holders",
+    chip_liquidity: "Profundidad de liquidez",
+    chip_price: "Tendencia técnica",
+    tab_watch: "Watchlist",
+    watch: "Seguir",
+    watching: "Siguiendo",
     watch_title: "Agregar o quitar de tu watchlist",
     watch_added: "{s} se agregó a tu watchlist",
     watch_removed: "Quitaste {s} de tu watchlist",
@@ -518,13 +526,13 @@ const TRANSLATIONS = {
     w_off: "Apagada",
     w_remove: "Quitar",
     w_open: "Abrir este token",
-    notify_enable: "🔔 Activar notificaciones",
-    notify_on: "🔔 Notificaciones activadas",
+    notify_enable: "Activar notificaciones",
+    notify_on: "Notificaciones activadas",
     notify_blocked: "Las notificaciones están bloqueadas en tu navegador. Las alertas se van a mostrar dentro de la página.",
     notify_unsupported: "Este navegador no soporta notificaciones. Las alertas se van a mostrar dentro de la página.",
     alert_up: "📈 {s} subió {pct} → {price}",
     alert_down: "📉 {s} bajó {pct} → {price}",
-    trending_title: "🔥 En tendencia en DexScreener",
+    trending_title: "En tendencia en DexScreener",
     trending_note: "Los tokens más boosteados en DexScreener (los boosts son promociones pagas), ordenados por volumen real de 24h. No es una recomendación: abrí uno y revisá su checklist de riesgo antes de operar.",
     trending_loading: "Cargando tokens en tendencia…",
     trending_error: "No se pudieron cargar los tokens en tendencia.",
@@ -535,9 +543,13 @@ const TRANSLATIONS = {
     t_new: "⚠️ <24h de vida",
     t_lowliq: "⚠️ Poca liquidez",
     t_open: "Analizar este token",
-    install_app: "📲 Instalar app",
+    install_app: "Instalar app",
     installed: "¡Flick se instaló en tu dispositivo!",
-    ios_install: "En iPhone/iPad: tocá Compartir ⬆️ y después “Agregar a inicio”."
+    ios_install: "En iPhone/iPad: tocá Compartir ⬆️ y después “Agregar a inicio”.",
+    risk_label: "Riesgo",
+    rv_low: "BAJO",
+    rv_medium: "MEDIO",
+    rv_high: "ALTO"
   }
 };
 
@@ -557,6 +569,36 @@ function el(tag, cls, text) {
   if (cls) e.className = cls;
   if (text != null) e.textContent = text;
   return e;
+}
+
+// Line icons (Feather, MIT): trusted constant markup, rendered as inline SVG
+const ICONS = {
+  "shield": '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  "message": '<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>',
+  "users": '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  "star": '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  "activity": '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+  "trending-up": '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+  "alert": '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+  "x-octagon": '<polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',
+  "check-circle": '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+  "clock": '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  "search": '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+  "zap": '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  "share": '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',
+  "download": '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+  "bell": '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+  "repeat": '<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
+  "copy": '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  "radio": '<circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>',
+  "arrow-left": '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+  "list": '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>'
+};
+
+function icon(name, cls = 'w-4 h-4') {
+  const t = document.createElement('template');
+  t.innerHTML = `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+  return t.content.firstChild;
 }
 
 function safeStorage(fn) {
@@ -887,10 +929,10 @@ const explorerLink = (chainId, addr) => (EXPLORERS[chainId] ? EXPLORERS[chainId]
 
 function swapLinks(t) {
   const ca = encodeURIComponent(t.ca);
-  if (t.chainId === 'solana') return [['⚡ Raydium', `https://raydium.io/swap/?inputMint=sol&outputMint=${ca}`], ['🪐 Jupiter', `https://jup.ag/swap/SOL-${ca}`]];
-  if (UNI_CHAIN[t.chainId]) return [['🦄 Uniswap', `https://app.uniswap.org/swap?chain=${UNI_CHAIN[t.chainId]}&outputCurrency=${ca}`]];
-  if (t.chainId === 'bsc') return [['🥞 PancakeSwap', `https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${ca}`]];
-  return t.pairUrl ? [['📊 DexScreener', t.pairUrl]] : [];
+  if (t.chainId === 'solana') return [['Raydium', `https://raydium.io/swap/?inputMint=sol&outputMint=${ca}`], ['Jupiter', `https://jup.ag/swap/SOL-${ca}`]];
+  if (UNI_CHAIN[t.chainId]) return [['Uniswap', `https://app.uniswap.org/swap?chain=${UNI_CHAIN[t.chainId]}&outputCurrency=${ca}`]];
+  if (t.chainId === 'bsc') return [['PancakeSwap', `https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${ca}`]];
+  return t.pairUrl ? [['DexScreener', t.pairUrl]] : [];
 }
 
 function verifyLink(t) {
@@ -946,7 +988,7 @@ function updateUI(full = true) {
   [['raydiumBtn', links[0]], ['jupiterBtn', links[1]]].forEach(([id, l]) => {
     const a = $(id);
     a.classList.toggle('hidden', !l);
-    if (l) { a.textContent = l[0]; a.href = l[1]; }
+    if (l) { a.replaceChildren(icon('repeat', 'w-3.5 h-3.5'), l[0]); a.href = l[1]; }
   });
   const vb = $('verifyBtn');
   const vl = verifyLink(t);
@@ -1128,7 +1170,7 @@ function renderHoldersTable() {
     const fill = el('div', `h-full ${BAR[lv]}`);
     fill.style.width = `${Math.min(100, s.top10)}%`;
     bar.appendChild(fill);
-    const meta = el('div', 'flex items-center justify-between gap-2 text-[10px] text-slate-500');
+    const meta = el('div', 'flex items-center justify-between gap-2 text-[11px] text-slate-400');
     meta.append(el('span', '', s.holderCount != null ? `${tr('holder_count')}: ${formatCompact(s.holderCount)}` : ''), el('span', '', tr('holders_usd_note')));
     summary.replaceChildren(ratio, bar, meta);
     summary.classList.remove('hidden');
@@ -1179,9 +1221,11 @@ function setCell(id, value, badge, lv) {
   if (b) { b.textContent = badge; b.className = `text-[10px] font-bold ${TXT[lv]}`; }
 }
 
-function setBanner(lv, icon, title, sub, badge) {
+function setBanner(lv, iconName, title, sub, badge) {
   $('honeypotBanner').className = `p-3.5 rounded-xl border flex items-center justify-between gap-3 ${BANNER[lv]}`;
-  $('honeypotIcon').textContent = icon;
+  const ic = $('honeypotIcon');
+  ic.className = `shrink-0 ${TXT[lv]}`;
+  ic.replaceChildren(icon(iconName, 'w-6 h-6'));
   const ti = $('honeypotTitle');
   ti.textContent = title;
   ti.className = `text-xs font-bold ${TXT[lv]}`;
@@ -1249,12 +1293,33 @@ function renderContractCells() {
 }
 
 // Market data comes from DexScreener, contract data from GoPlus. Unknowns are marked as such.
+// Overall risk (LOW / MEDIUM / HIGH) shown next to the market health score
+function renderRiskBadge() {
+  const b = $('statRisk');
+  if (!b) return;
+  const base = 'inline-flex items-center gap-1.5 mt-0.5 px-2.5 py-1 rounded-lg text-xs font-extrabold tracking-wide border';
+  if (!currentToken.loaded || security.status === 'loading' || security.status === 'idle') {
+    b.className = `${base} text-slate-400 bg-white/5 border-white/10`;
+    b.textContent = currentToken.loaded ? '…' : '—';
+    return;
+  }
+  const v = riskVerdict(riskFindings());
+  const style = {
+    low: ['text-cyberGreen bg-cyberGreen/10 border-cyberGreen/30', 'check-circle'],
+    medium: ['text-amberGlow bg-amberGlow/10 border-amberGlow/30', 'alert'],
+    high: ['text-crimsonRisk bg-crimsonRisk/10 border-crimsonRisk/30', 'x-octagon']
+  }[v];
+  b.className = `${base} ${style[0]}`;
+  b.replaceChildren(icon(style[1], 'w-3.5 h-3.5'), tr(`rv_${v}`));
+}
+
 function renderAuditTab() {
   const t = currentToken;
   if (!$('honeypotBanner')) return;
 
+  renderRiskBadge();
   if (!t.loaded) {
-    setBanner('na', '⏳', tr('waiting'), '', '—');
+    setBanner('na', 'clock', tr('waiting'), '', '—');
     $('auditOverallScore').textContent = '—';
     setBars({ bdLiq: null, bdVol: null, bdAge: null, bdBal: null });
     [...MARKET_CELLS, ...CONTRACT_CELLS].forEach(id => setCell(id, '—', '', 'na'));
@@ -1271,12 +1336,12 @@ function renderAuditTab() {
   const hl = level(t.score);
   const unverified = security.status === 'error' || security.status === 'unsupported';
   if (risk === 'bad') {
-    setBanner('bad', '☠️', tr('contract_bad_title'), tr('contract_bad_sub'), `${t.score}/100`);
+    setBanner('bad', 'x-octagon', tr('contract_bad_title'), tr('contract_bad_sub'), `${t.score}/100`);
   } else {
     const [title, sub, icon] = {
-      ok: ['health_good_title', 'health_good_sub', '📈'],
-      warn: ['health_mid_title', 'health_mid_sub', '⚖️'],
-      bad: ['health_bad_title', 'health_bad_sub', '⚠️']
+      ok: ['health_good_title', 'health_good_sub', 'check-circle'],
+      warn: ['health_mid_title', 'health_mid_sub', 'alert'],
+      bad: ['health_bad_title', 'health_bad_sub', 'alert']
     }[hl];
     const note = unverified ? tr('contract_unverified_note') : risk === 'warn' ? tr('contract_warn_note') : '';
     setBanner(hl, icon, tr(title), note ? `${tr(sub)} ${note}` : tr(sub), `${t.score}/100`);
@@ -1339,10 +1404,10 @@ function renderAiWelcome() {
     ` · ${L('24h Volume', '24小时交易量', 'Volumen 24h')}: `, el('strong', '', formatUsd(t.volume))
   );
   card.append(
-    el('p', 'font-bold text-electricCyan', `🤖 $${t.symbol} · ${chainName(t.chainId)}`),
+    (() => { const h = el('p', 'flex items-center gap-1.5 font-bold text-electricCyan'); h.append(icon('message', 'w-4 h-4'), `$${t.symbol} · ${chainName(t.chainId)}`); return h; })(),
     stats,
     el('p', 'text-[11px] text-electricCyan/80', tr('chat_hint')),
-    el('p', 'text-[10px] text-slate-500', L('Reports use public DEX data and GoPlus checks. Not financial advice.', '报告基于公开 DEX 数据与 GoPlus 检测，不构成投资建议。', 'Los reportes usan datos públicos de DEX y chequeos de GoPlus. No es asesoramiento financiero.'))
+    el('p', 'text-[11px] text-slate-400', L('Reports use public DEX data and GoPlus checks. Not financial advice.', '报告基于公开 DEX 数据与 GoPlus 检测，不构成投资建议。', 'Los reportes usan datos públicos de DEX y chequeos de GoPlus. No es asesoramiento financiero.'))
   );
   chatBox.replaceChildren(card);
 }
@@ -1623,7 +1688,7 @@ function addMsg(text, isUser) {
   if (!box) return;
   box.appendChild(el('div', isUser
     ? 'p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-slate-200 text-right font-sans my-1 whitespace-pre-line break-words'
-    : 'p-3 bg-slate-900/90 rounded-xl border border-electricCyan/30 text-xs font-mono text-slate-200 leading-relaxed my-1 whitespace-pre-line break-words', text));
+    : 'p-3 bg-slate-900/90 rounded-xl border border-electricCyan/30 text-[13px] lg:text-xs text-slate-200 leading-relaxed my-1 whitespace-pre-line break-words', text));
   box.scrollTop = box.scrollHeight;
 }
 
@@ -1653,9 +1718,8 @@ function switchTab(tab) {
     const active = t === tab;
     btn.setAttribute('aria-selected', String(active));
     btn.tabIndex = active ? 0 : -1;
-    btn.className = active
-      ? 'flex-1 py-2 px-3 rounded-xl bg-amber-500/10 text-amberGlow border border-amber-500/30 transition-all flex items-center justify-center gap-1.5 font-bold'
-      : 'flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent transition-all flex items-center justify-center gap-1.5 font-bold';
+    btn.className = 'flex-1 py-2 px-2 rounded-xl transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 font-bold text-[11px] sm:text-xs border '
+      + (active ? 'bg-amber-500/10 text-amberGlow border-amber-500/30' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border-transparent');
     content.classList.toggle('hidden', !active);
     if (t === 'ai') content.classList.toggle('flex', active);
   });
@@ -1776,7 +1840,7 @@ function copySocialShareCard() {
   if (!t.loaded) return;
   const risk = security.status === 'ok' ? `GoPlus: ${tr(`risk_${contractRisk(security.data)}`)}` : tr('not_verified');
   const text = [
-    '⚡ Flick Market Snapshot', '',
+    '⚡ Flick Super Intelligence · Market Snapshot', '',
     `🪙 $${t.symbol} (${chainName(t.chainId)})`,
     `📍 CA: ${t.ca}`, '',
     `💲 ${tr('live_price')}: $${formatPrice(t.price)} (${formatPct(t.priceChange)} 24h)`,
@@ -1829,7 +1893,10 @@ function showToast(message) {
     stack.setAttribute('aria-live', 'polite');
     document.body.appendChild(stack);
   }
-  const toast = el('div', 'bg-[#10141e] text-white border border-amberCore/40 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-mono transition-opacity duration-300 max-w-sm', `⚡ ${message}`);
+  const toast = el('div', 'bg-[#10141e] text-white border border-amberCore/40 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-sm transition-opacity duration-300 max-w-sm');
+  const zap = el('span', 'text-amberCore shrink-0');
+  zap.appendChild(icon('zap', 'w-4 h-4'));
+  toast.append(zap, el('span', '', message));
   stack.appendChild(toast);
   while (stack.children.length > 3) stack.firstChild.remove();
   setTimeout(() => {
@@ -2037,7 +2104,7 @@ function renderTrending() {
     const names = el('div', 'min-w-0');
     names.append(
       el('p', 'text-xs font-bold text-white truncate', `$${item.symbol}`),
-      el('p', 'text-[10px] text-slate-500 font-mono truncate', chainName(item.chainId))
+      el('p', 'text-[11px] text-slate-400 font-mono truncate', chainName(item.chainId))
     );
     head.append(logo, names);
 
@@ -2128,18 +2195,18 @@ function renderWatchButton() {
   btn.classList.toggle('hidden', !t.loaded);
   if (!t.loaded) return;
   const on = !!findWatch(t);
-  btn.textContent = tr(on ? 'watching' : 'watch');
+  btn.replaceChildren(icon('star', `w-3.5 h-3.5${on ? ' fill-current' : ''}`), tr(on ? 'watching' : 'watch'));
   btn.setAttribute('aria-pressed', String(on));
-  btn.className = `text-[11px] font-bold px-2.5 py-0.5 rounded-full border transition-all ${on ? 'bg-amber-500/20 text-amberGlow border-amber-500/40' : 'bg-white/5 text-slate-300 border-white/15 hover:text-amberGlow hover:border-amber-500/40'}`;
+  btn.className = `inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border transition-all ${on ? 'bg-amber-500/20 text-amberGlow border-amber-500/40' : 'bg-white/5 text-slate-300 border-white/15 hover:text-amberGlow hover:border-amber-500/40'}`;
 }
 
 function renderNotifyControl(highlight = false) {
   const box = $('notifyControl');
   if (!box) return;
-  if (!('Notification' in window)) return box.replaceChildren(el('p', 'text-[10px] text-slate-500', tr('notify_unsupported')));
+  if (!('Notification' in window)) return box.replaceChildren(el('p', 'text-[11px] text-slate-400', tr('notify_unsupported')));
   const perm = Notification.permission;
   if (perm === 'granted') return box.replaceChildren(el('p', 'text-[11px] text-cyberGreen font-mono', tr('notify_on')));
-  if (perm === 'denied') return box.replaceChildren(el('p', 'text-[10px] text-slate-500', tr('notify_blocked')));
+  if (perm === 'denied') return box.replaceChildren(el('p', 'text-[11px] text-slate-400', tr('notify_blocked')));
   const btn = el('button', `w-full px-3 py-2 rounded-xl text-xs font-mono border transition-all ${highlight ? 'bg-amber-500/20 border-amber-500/50 text-amberGlow' : 'bg-white/5 border-white/10 text-slate-300 hover:text-amberGlow'}`, tr('notify_enable'));
   btn.type = 'button';
   btn.onclick = async () => {
@@ -2175,7 +2242,7 @@ function renderWatchlist() {
     open.type = 'button';
     open.title = tr('w_open');
     open.onclick = () => runScanSequence(w.ca, { chain: w.chainId });
-    open.append(el('span', 'font-bold text-white text-xs truncate', `$${w.symbol}`), el('span', 'text-[10px] text-slate-500 font-mono', chainName(w.chainId)));
+    open.append(el('span', 'font-bold text-white text-xs truncate', `$${w.symbol}`), el('span', 'text-[11px] text-slate-400 font-mono', chainName(w.chainId)));
     const remove = el('button', 'text-slate-500 hover:text-crimsonRisk text-xs px-1.5', '✕');
     remove.type = 'button';
     remove.title = tr('w_remove');
@@ -2217,13 +2284,13 @@ function sendAlert(w, change, price) {
     };
     const viaPage = () => {
       try {
-        const n = new Notification('Flick Analyst', opts);
+        const n = new Notification('Flick Super Intelligence', opts);
         n.onclick = () => { window.focus(); openTokenFromAlert(w.ca, w.chainId); n.close(); };
       } catch (e) { /* this browser only allows notifications from a service worker */ }
     };
     // Android only shows notifications created by the service worker (sw.js handles the tap)
     if (navigator.serviceWorker?.getRegistration) {
-      navigator.serviceWorker.getRegistration().then(reg => (reg ? reg.showNotification('Flick Analyst', opts) : viaPage())).catch(viaPage);
+      navigator.serviceWorker.getRegistration().then(reg => (reg ? reg.showNotification('Flick Super Intelligence', opts) : viaPage())).catch(viaPage);
     } else viaPage();
   }
   if (document.hidden && !document.title.startsWith('🔔')) document.title = `🔔 ${document.title}`;
