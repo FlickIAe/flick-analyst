@@ -193,7 +193,27 @@ const TRANSLATIONS = {
     risk_label: "Risk",
     rv_low: "LOW",
     rv_medium: "MEDIUM",
-    rv_high: "HIGH"
+    rv_high: "HIGH",
+    sim_title: "Price impact simulator",
+    sim_desc: "How much the price moves if you buy now.",
+    sim_impact: "Price impact",
+    sim_move: "Price after your buy",
+    sim_receive: "You receive ≈",
+    sim_roundtrip: "If you sell right away",
+    sim_safe: "Up to {amt} moves the price less than 1%.",
+    sim_na: "Load a token with liquidity to simulate a buy.",
+    sim_note: "Estimate for a standard pool (x·y=k) using the active pool's liquidity, a 0.3% DEX fee and GoPlus taxes. Concentrated-liquidity pools (Uniswap v3, Raydium CLMM, Meteora) can differ.",
+    ra_toggle: "Risk alerts: liquidity drain, heavy selling and worse contract checks",
+    ra_liq: "⚠️ {s}: liquidity fell {pct} to {liq}. Possible rug pull.",
+    ra_sells: "⚠️ {s}: {pct}% of the last hour's trades are sells.",
+    ra_contract: "⛔ {s}: contract checks now show {level}.",
+    feed_trending: "Trending",
+    feed_launches: "New · filtered",
+    launch_loading: "Analyzing new launches…",
+    launch_empty: "No new launch passed the filter right now. Try again in a few minutes.",
+    launch_error: "Couldn't load new launches.",
+    launch_note: "Tokens launched in the last 72h on DexScreener, checked automatically (liquidity, age, activity and GoPlus contract checks). High-risk ones are hidden. Passing the filter doesn't make a token safe: new launches are always risky.",
+    t_unverified: "⚠️ Contract not verified"
   },
   zh: {
     mainnet_active: "实时 DEX 数据",
@@ -371,7 +391,27 @@ const TRANSLATIONS = {
     risk_label: "风险",
     rv_low: "低",
     rv_medium: "中",
-    rv_high: "高"
+    rv_high: "高",
+    sim_title: "价格冲击模拟器",
+    sim_desc: "现在买入会让价格变动多少。",
+    sim_impact: "价格冲击",
+    sim_move: "买入后价格",
+    sim_receive: "你将获得 ≈",
+    sim_roundtrip: "如果立刻卖出",
+    sim_safe: "不超过 {amt} 的买入对价格的影响小于 1%。",
+    sim_na: "加载有流动性的代币后即可模拟买入。",
+    sim_note: "基于标准池（x·y=k）、当前池子流动性、0.3% DEX 手续费和 GoPlus 税率的估算。集中流动性池（Uniswap v3、Raydium CLMM、Meteora）可能不同。",
+    ra_toggle: "风险提醒：流动性流失、大量抛售、合约检测变差",
+    ra_liq: "⚠️ {s}：流动性下降 {pct}，降至 {liq}。可能跑路。",
+    ra_sells: "⚠️ {s}：过去一小时 {pct}% 的交易是卖出。",
+    ra_contract: "⛔ {s}：合约检测现在显示{level}。",
+    feed_trending: "热门",
+    feed_launches: "新币 · 已过滤",
+    launch_loading: "正在分析新上线代币…",
+    launch_empty: "目前没有新代币通过过滤。请几分钟后再试。",
+    launch_error: "无法加载新上线代币。",
+    launch_note: "DexScreener 上近 72 小时上线的代币，自动检测（流动性、年龄、活跃度和 GoPlus 合约检测），高风险的已隐藏。通过过滤不代表安全：新币始终有风险。",
+    t_unverified: "⚠️ 合约未验证"
   },
   es: {
     mainnet_active: "Datos DEX en vivo",
@@ -549,7 +589,27 @@ const TRANSLATIONS = {
     risk_label: "Riesgo",
     rv_low: "BAJO",
     rv_medium: "MEDIO",
-    rv_high: "ALTO"
+    rv_high: "ALTO",
+    sim_title: "Simulador de impacto",
+    sim_desc: "Cuánto se mueve el precio si comprás ahora.",
+    sim_impact: "Impacto en tu compra",
+    sim_move: "El precio sube",
+    sim_receive: "Recibís ≈",
+    sim_roundtrip: "Si vendés enseguida",
+    sim_safe: "Hasta {amt} el precio se mueve menos de 1%.",
+    sim_na: "Cargá un token con liquidez para simular una compra.",
+    sim_note: "Estimación para un pool estándar (x·y=k) con la liquidez del pool activo, comisión de 0,3% y los impuestos de GoPlus. Los pools de liquidez concentrada (Uniswap v3, Raydium CLMM, Meteora) pueden diferir.",
+    ra_toggle: "Alertas de riesgo: caída de liquidez, ventas masivas y contrato que empeora",
+    ra_liq: "⚠️ {s}: la liquidez cayó {pct} a {liq}. Posible rug pull.",
+    ra_sells: "⚠️ {s}: el {pct}% de las operaciones de la última hora son ventas.",
+    ra_contract: "⛔ {s}: los chequeos del contrato ahora muestran {level}.",
+    feed_trending: "Tendencia",
+    feed_launches: "Nuevos filtrados",
+    launch_loading: "Analizando lanzamientos nuevos…",
+    launch_empty: "Ningún lanzamiento nuevo pasó el filtro por ahora. Probá de nuevo en unos minutos.",
+    launch_error: "No se pudieron cargar los lanzamientos nuevos.",
+    launch_note: "Tokens lanzados en las últimas 72h en DexScreener, revisados automáticamente (liquidez, antigüedad, actividad y chequeos de contrato de GoPlus). Los de riesgo alto se ocultan. Pasar el filtro no hace seguro a un token: los lanzamientos nuevos siempre son riesgosos.",
+    t_unverified: "⚠️ Contrato sin verificar"
   }
 };
 
@@ -655,6 +715,9 @@ function changeLanguage(lang) {
   renderWatchButton();
   renderWatchlist();
   renderTrending();
+  renderLaunches();
+  renderFeedTabs();
+  renderSimulator();
 }
 
 // ===================================================================
@@ -1318,6 +1381,7 @@ function renderAuditTab() {
   if (!$('honeypotBanner')) return;
 
   renderRiskBadge();
+  renderSimulator();
   if (!t.loaded) {
     setBanner('na', 'clock', tr('waiting'), '', '—');
     $('auditOverallScore').textContent = '—';
@@ -1421,9 +1485,8 @@ const SEV_ICON = { bad: '⛔', warn: '⚠️', info: 'ℹ️', ok: '✅' };
 const pctTxt = v => `${+v.toFixed(1)}%`;
 
 // Combines market (DexScreener) and contract (GoPlus) signals into findings, worst first
-function riskFindings() {
-  const t = currentToken;
-  const s = security.status === 'ok' ? security.data : null;
+function riskFindings(t = currentToken, st = security) {
+  const s = st.status === 'ok' ? st.data : null;
   const out = [];
   const add = (lv, topic, text) => out.push({ lv, topic, text });
 
@@ -1456,7 +1519,7 @@ function riskFindings() {
       else if (s.top10 > 30) add('warn', 'holders', L(`The top 10 wallets hold ${v} of the supply.`, `前10名钱包持有 ${v} 的供应量。`, `Las 10 billeteras principales tienen el ${v} del supply.`));
       else add('ok', 'holders', L(`Holders are well distributed (top 10: ${v}).`, `持币分布较分散（前10名：${v}）。`, `Los holders están bien distribuidos (top 10: ${v}).`));
     }
-  } else if (security.status === 'loading') {
+  } else if (st.status === 'loading') {
     add('info', 'contract', L('Contract checks are still loading.', '合约检测仍在加载中。', 'Los chequeos del contrato todavía se están cargando.'));
   } else {
     add('warn', 'contract', L('Contract checks are not available for this token: verify on-chain before trading.', '该代币暂无合约检测：交易前请先链上验证。', 'No hay chequeos de contrato para este token: verificá on-chain antes de operar.'));
@@ -1491,9 +1554,9 @@ function riskFindings() {
   return out.sort((a, b) => SEV_ORDER[a.lv] - SEV_ORDER[b.lv]);
 }
 
-function riskVerdict(findings) {
+function riskVerdict(findings, st = security) {
   if (findings.some(f => f.lv === 'bad')) return 'high';
-  if (findings.filter(f => f.lv === 'warn').length >= 2 || security.status !== 'ok') return 'medium';
+  if (findings.filter(f => f.lv === 'warn').length >= 2 || st.status !== 'ok') return 'medium';
   return 'low';
 }
 
@@ -2084,45 +2147,266 @@ function renderTrending() {
     return;
   }
   status.replaceChildren();
-  grid.replaceChildren(...trending.items.map(item => {
-    const card = el('button', 'glass-panel glass-card-hover p-3 rounded-2xl border border-white/5 text-left space-y-1.5 min-w-0');
-    card.type = 'button';
-    card.title = `${tr('t_open')}: ${item.name || item.symbol}`;
-    card.onclick = () => openTrending(item);
+  grid.replaceChildren(...trending.items.map(item => feedCard(item)));
+}
 
-    const head = el('div', 'flex items-center gap-2 min-w-0');
-    const logo = el('div', 'w-7 h-7 rounded-lg overflow-hidden bg-amber-500/20 flex items-center justify-center text-xs font-bold text-white shrink-0', Array.from(item.symbol)[0] || '?');
-    if (item.img) {
-      const img = new Image();
-      img.alt = '';
-      img.loading = 'lazy';
-      img.className = 'w-full h-full object-cover';
-      img.onerror = () => img.remove();
-      img.src = item.img;
-      logo.replaceChildren(img);
+// ===================================================================
+// 11c. PRICE IMPACT SIMULATOR
+// Constant-product (x·y=k) estimate on the active pool: each side holds about
+// half of the pool's USD liquidity. 0.3% DEX fee + GoPlus taxes when known.
+// Concentrated-liquidity pools can behave differently, and the page says so.
+// ===================================================================
+const SIM_FEE = 0.003;
+const SIM_PRESETS = [100, 500, 1000, 5000];
+
+function simulateImpact(amountUsd, liquidityUsd, buyTaxPct = 0, sellTaxPct = 0) {
+  const Q = liquidityUsd / 2; // USD side of the pool (base side valued at spot)
+  if (!(Q > 0) || !(amountUsd > 0)) return null;
+  const eff = amountUsd * (1 - SIM_FEE);
+  const tokensGross = (Q * eff) / (Q + eff);           // in USD-at-spot units (price = 1)
+  const tokensNet = tokensGross * (1 - buyTaxPct / 100);
+  const impact = eff / (Q + eff);                       // execution price vs spot
+  const priceMove = ((Q + eff) / Q) ** 2 - 1;           // spot price after the buy
+  // Selling everything right back into the same pool
+  const sellIn = tokensNet * (1 - sellTaxPct / 100) * (1 - SIM_FEE);
+  const roundTrip = ((Q + eff) * sellIn) / (Q - tokensGross + sellIn);
+  const maxFor1pct = (Q * 0.01 / 0.99) / (1 - SIM_FEE);
+  return { impact: impact * 100, priceMove: priceMove * 100, tokensUsd: tokensNet, roundTrip, roundTripLoss: (1 - roundTrip / amountUsd) * 100, maxFor1pct };
+}
+
+function setSimAmount(v) {
+  const input = $('simAmount');
+  if (!input) return;
+  input.value = String(v);
+  renderSimulator();
+}
+
+function renderSimulator() {
+  const box = $('simResult');
+  if (!box) return;
+  const t = currentToken;
+  const amount = Number($('simAmount')?.value) || 0;
+  document.querySelectorAll('[data-sim-amt]').forEach(b => {
+    const on = Number(b.dataset.simAmt) === amount;
+    b.className = `px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all ${on ? 'bg-amber-500/15 text-amberGlow border-amber-500/40' : 'bg-white/5 text-slate-300 border-white/10 hover:text-amberGlow'}`;
+  });
+  const sec = security.status === 'ok' ? security.data : null;
+  const r = t.loaded ? simulateImpact(amount, t.liquidity, sec?.buyTax || 0, sec?.sellTax || 0) : null;
+  if (!r) {
+    box.replaceChildren(el('p', 'col-span-2 text-[11px] text-slate-400', tr('sim_na')));
+    return;
+  }
+  const lv = r.impact < 1 ? 'ok' : r.impact < 5 ? 'warn' : 'bad';
+  const tile = (label, value, cls = 'text-white') => {
+    const d = el('div', 'p-2.5 rounded-xl bg-white/5 border border-white/5 min-w-0');
+    d.append(el('p', 'text-[11px] text-slate-400', label), el('p', `font-mono text-sm font-bold truncate ${cls}`, value));
+    return d;
+  };
+  const tokens = t.price > 0 ? r.tokensUsd / t.price : null;
+  box.replaceChildren(
+    tile(tr('sim_impact'), `${r.impact.toFixed(2)}%`, TXT[lv]),
+    tile(tr('sim_move'), `+${r.priceMove.toFixed(2)}%`, TXT[lv]),
+    tile(tr('sim_receive'), tokens == null ? '—' : `${formatCompact(tokens)} ${t.symbol}`),
+    tile(tr('sim_roundtrip'), `$${formatCompact(r.roundTrip)} (−${r.roundTripLoss.toFixed(1)}%)`, r.roundTripLoss > 10 ? TXT.bad : r.roundTripLoss > 3 ? TXT.warn : 'text-white'),
+    el('p', `col-span-2 text-[11px] ${TXT[lv]}`, tr('sim_safe', { amt: formatUsd(r.maxFor1pct) }))
+  );
+}
+
+// ===================================================================
+// 11d. NEW LAUNCHES, FILTERED (landing page, next to Trending)
+// Latest token profiles on DexScreener, launched in the last 72h, run through
+// the same risk engine as the dashboard (market + GoPlus). High risk is hidden.
+// ===================================================================
+const LAUNCH_CACHE_KEY = 'flickLaunches';
+const LAUNCH_MAX_AGE_DAYS = 3;
+let launches = { status: 'idle', items: [] };
+let feed = safeStorage(() => localStorage.getItem('flickFeed')) === 'launches' ? 'launches' : 'trending';
+
+function setFeed(f) {
+  feed = f === 'launches' ? 'launches' : 'trending';
+  safeStorage(() => localStorage.setItem('flickFeed', feed));
+  renderFeedTabs();
+  if (feed === 'launches' && launches.status === 'idle') loadLaunches();
+}
+
+function refreshFeed() {
+  if (feed === 'launches') loadLaunches(true);
+  else loadTrending(true);
+}
+
+function renderFeedTabs() {
+  ['trending', 'launches'].forEach(f => {
+    const btn = $(`feedBtn-${f}`), panel = $(`feed-${f}`);
+    if (!btn || !panel) return;
+    const on = f === feed;
+    btn.setAttribute('aria-selected', String(on));
+    btn.className = `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${on ? 'bg-amber-500/15 text-amberGlow' : 'text-slate-400 hover:text-slate-200'}`;
+    panel.classList.toggle('hidden', !on);
+  });
+}
+
+async function launchItem(profile) {
+  const d = await fetchJson(`${DEX_API}/tokens/${encodeURIComponent(profile.tokenAddress)}`, { timeout: 10000 });
+  const own = (d.pairs || [])
+    .filter(p => p.chainId === profile.chainId && sameAddress(p.baseToken?.address, profile.tokenAddress))
+    .sort(byLiquidity);
+  if (!own.length) return null;
+  const p = own[0];
+  const created = Math.min(...own.map(x => x.pairCreatedAt || Infinity));
+  if (!Number.isFinite(created) || (Date.now() - created) / 864e5 > LAUNCH_MAX_AGE_DAYS) return null;
+  const img = [p.info?.imageUrl, profile.icon].find(u => typeof u === 'string' && u.startsWith('https://')) || '';
+  const tok = {
+    liquidity: own.reduce((a, x) => a + (x.liquidity?.usd || 0), 0),
+    volume: own.reduce((a, x) => a + (x.volume?.h24 || 0), 0),
+    pairCreatedAt: created,
+    buys: p.txns?.h24?.buys ?? null, sells: p.txns?.h24?.sells ?? null,
+    changes: { h24: Number.isFinite(Number(p.priceChange?.h24)) ? Number(p.priceChange.h24) : null },
+    socials: (p.info?.websites?.length || 0) + (p.info?.socials?.length || 0)
+  };
+  return {
+    ca: p.baseToken.address, chainId: p.chainId,
+    symbol: String(p.baseToken.symbol || '?').slice(0, 12), name: String(p.baseToken.name || '').slice(0, 40),
+    price: parseFloat(p.priceUsd) || 0, ch24: tok.changes.h24 ?? NaN,
+    vol: tok.volume, liq: tok.liquidity, ageDays: (Date.now() - created) / 864e5, img, tok
+  };
+}
+
+async function launchVerdict(item) {
+  let st = { status: 'unsupported', data: null };
+  if (item.chainId === 'solana' || GOPLUS_EVM[item.chainId]) {
+    try {
+      const d = await fetchGoPlus(item.chainId, item.ca);
+      const result = d?.result || {};
+      const raw = result[item.ca] || result[item.ca.toLowerCase()] || Object.values(result)[0];
+      st = raw && typeof raw === 'object' ? { status: 'ok', data: normalizeSecurity(raw, item.chainId === 'solana') } : { status: 'error', data: null };
+    } catch (e) {
+      st = { status: 'error', data: null };
     }
-    const names = el('div', 'min-w-0');
-    names.append(
-      el('p', 'text-xs font-bold text-white truncate', `$${item.symbol}`),
-      el('p', 'text-[11px] text-slate-400 font-mono truncate', chainName(item.chainId))
-    );
-    head.append(logo, names);
+  }
+  const findings = riskFindings(item.tok, st);
+  item.verdict = riskVerdict(findings, st);
+  item.checked = st.status === 'ok';
+  return item;
+}
 
-    const known = Number.isFinite(item.ch24);
-    const priceRow = el('div', 'flex items-baseline justify-between gap-2 font-mono');
-    priceRow.append(
-      el('span', 'text-[11px] text-slate-200 truncate', `$${formatPrice(item.price)}`),
-      el('span', `text-[11px] font-semibold ${known ? (item.ch24 >= 0 ? 'text-cyberGreen' : 'text-crimsonRisk') : 'text-slate-400'}`, formatPct(item.ch24))
-    );
-    const stats = el('p', 'text-[10px] text-slate-400 font-mono truncate', `${tr('t_vol')} ${formatUsd(item.vol)} · ${tr('t_liq')} ${formatUsd(item.liq)}`);
-    card.append(head, priceRow, stats);
+async function loadLaunches(force = false) {
+  if (launches.status === 'loading') return;
+  if (!force) {
+    const cached = safeStorage(() => JSON.parse(sessionStorage.getItem(LAUNCH_CACHE_KEY) || 'null'));
+    if (cached && Array.isArray(cached.items) && Date.now() - cached.at < TRENDING_TTL) {
+      launches = { status: 'ok', items: cached.items };
+      return renderLaunches();
+    }
+  }
+  launches = { status: 'loading', items: launches.items };
+  renderLaunches();
+  try {
+    const profiles = await fetchJson('https://api.dexscreener.com/token-profiles/latest/v1', { timeout: 10000 });
+    const seen = new Set();
+    const candidates = (Array.isArray(profiles) ? profiles : [])
+      .filter(p => p && typeof p.tokenAddress === 'string' && typeof p.chainId === 'string')
+      .filter(p => {
+        const k = `${p.chainId}:${p.tokenAddress}`;
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      })
+      .slice(0, 24);
+    let items = [];
+    for (let i = 0; i < candidates.length; i += 4) {
+      const batch = await Promise.all(candidates.slice(i, i + 4).map(p => launchItem(p).catch(() => null)));
+      items.push(...batch.filter(Boolean));
+    }
+    // Contract checks only for the most active ones (keeps GoPlus calls low)
+    items = items.sort((a, b) => b.vol - a.vol).slice(0, 12);
+    for (let i = 0; i < items.length; i += 4) {
+      await Promise.all(items.slice(i, i + 4).map(launchVerdict));
+    }
+    const rank = { low: 0, medium: 1, high: 2 };
+    const passed = items.filter(x => x.verdict !== 'high')
+      .sort((a, b) => rank[a.verdict] - rank[b.verdict] || b.vol - a.vol)
+      .slice(0, TRENDING_SHOW)
+      .map(({ tok, ...rest }) => rest);
+    launches = { status: 'ok', items: passed };
+    safeStorage(() => sessionStorage.setItem(LAUNCH_CACHE_KEY, JSON.stringify({ at: Date.now(), items: passed })));
+  } catch (err) {
+    console.warn('New launches load failed:', err);
+    launches = { status: 'error', items: [] };
+  }
+  renderLaunches();
+}
 
-    const flags = [];
-    if (item.liq < 20000) flags.push(tr('t_lowliq'));
-    if (item.ageDays != null && item.ageDays < 1) flags.push(tr('t_new'));
-    if (flags.length) card.appendChild(el('p', 'text-[10px] text-amberGlow font-mono truncate', flags.join(' · ')));
-    return card;
-  }));
+function renderLaunches() {
+  const grid = $('launchGrid'), status = $('launchStatus');
+  if (!grid || !status) return;
+  if (launches.status === 'loading' && !launches.items.length) {
+    grid.replaceChildren();
+    status.replaceChildren(el('p', 'text-[11px] text-slate-400 animate-pulse', tr('launch_loading')));
+    return;
+  }
+  if (launches.status === 'error') {
+    grid.replaceChildren();
+    const retry = el('button', 'ml-2 text-amberCore hover:underline', tr('trending_retry'));
+    retry.type = 'button';
+    retry.onclick = () => loadLaunches(true);
+    const msg = el('p', 'text-[11px] text-slate-400', tr('launch_error'));
+    msg.appendChild(retry);
+    status.replaceChildren(msg);
+    return;
+  }
+  if (launches.status === 'ok' && !launches.items.length) {
+    grid.replaceChildren();
+    status.replaceChildren(el('p', 'text-[11px] text-slate-400', tr('launch_empty')));
+    return;
+  }
+  status.replaceChildren();
+  grid.replaceChildren(...launches.items.map(item => feedCard(item, true)));
+}
+
+// Card shared by "Trending" and "New launches"
+function feedCard(item, isLaunch = false) {
+  const card = el('button', 'glass-panel glass-card-hover p-3 rounded-2xl border border-white/5 text-left space-y-1.5 min-w-0');
+  card.type = 'button';
+  card.title = `${tr('t_open')}: ${item.name || item.symbol}`;
+  card.onclick = () => openTrending(item);
+
+  const head = el('div', 'flex items-center gap-2 min-w-0');
+  const logo = el('div', 'w-7 h-7 rounded-lg overflow-hidden bg-amber-500/20 flex items-center justify-center text-xs font-bold text-white shrink-0', Array.from(item.symbol)[0] || '?');
+  if (item.img) {
+    const img = new Image();
+    img.alt = '';
+    img.loading = 'lazy';
+    img.className = 'w-full h-full object-cover';
+    img.onerror = () => img.remove();
+    img.src = item.img;
+    logo.replaceChildren(img);
+  }
+  const names = el('div', 'min-w-0 flex-1');
+  names.append(
+    el('p', 'text-xs font-bold text-white truncate', `$${item.symbol}`),
+    el('p', 'text-[11px] text-slate-400 truncate', isLaunch ? `${chainName(item.chainId)} · ${formatAge(item.ageDays)}` : chainName(item.chainId))
+  );
+  head.append(logo, names);
+  if (isLaunch && item.verdict) {
+    const style = { low: 'text-cyberGreen bg-cyberGreen/10 border-cyberGreen/30', medium: 'text-amberGlow bg-amberGlow/10 border-amberGlow/30' }[item.verdict] || 'text-slate-400 bg-white/5 border-white/10';
+    head.appendChild(el('span', `shrink-0 px-1.5 py-0.5 rounded-md border text-[10px] font-extrabold ${style}`, tr(`rv_${item.verdict}`)));
+  }
+
+  const known = Number.isFinite(item.ch24);
+  const priceRow = el('div', 'flex items-baseline justify-between gap-2 font-mono');
+  priceRow.append(
+    el('span', 'text-[11px] text-slate-200 truncate', `$${formatPrice(item.price)}`),
+    el('span', `text-[11px] font-semibold ${known ? (item.ch24 >= 0 ? 'text-cyberGreen' : 'text-crimsonRisk') : 'text-slate-400'}`, formatPct(item.ch24))
+  );
+  const stats = el('p', 'text-[11px] text-slate-400 font-mono truncate', `${tr('t_vol')} ${formatUsd(item.vol)} · ${tr('t_liq')} ${formatUsd(item.liq)}`);
+  card.append(head, priceRow, stats);
+
+  const flags = [];
+  if (item.liq < 20000) flags.push(tr('t_lowliq'));
+  if (!isLaunch && item.ageDays != null && item.ageDays < 1) flags.push(tr('t_new'));
+  if (isLaunch && item.checked === false) flags.push(tr('t_unverified'));
+  if (flags.length) card.appendChild(el('p', 'text-[11px] text-amberGlow truncate', flags.join(' · ')));
+  return card;
 }
 
 // ===================================================================
@@ -2225,6 +2509,8 @@ function renderWatchlist() {
   }
   if (!list) return;
   renderNotifyControl();
+  const toggle = $('riskAlertToggle');
+  if (toggle) toggle.checked = riskAlertsOn();
   if (!watchlist.length) {
     list.replaceChildren(el('p', 'py-6 text-center text-slate-500 text-[11px] leading-relaxed', tr('watch_empty')));
     return;
@@ -2242,7 +2528,13 @@ function renderWatchlist() {
     open.type = 'button';
     open.title = tr('w_open');
     open.onclick = () => runScanSequence(w.ca, { chain: w.chainId });
-    open.append(el('span', 'font-bold text-white text-xs truncate', `$${w.symbol}`), el('span', 'text-[11px] text-slate-400 font-mono', chainName(w.chainId)));
+    open.append(el('span', 'font-bold text-white text-xs truncate', `$${w.symbol}`), el('span', 'text-[11px] text-slate-400', chainName(w.chainId)));
+    if (w.lastRisk) {
+      const lv = { ok: 'ok', warn: 'warn', bad: 'bad' }[w.lastRisk];
+      const tag = el('span', `inline-flex items-center gap-1 text-[10px] font-semibold ${TXT[lv]}`);
+      tag.append(icon(w.lastRisk === 'ok' ? 'check-circle' : 'alert', 'w-3 h-3'), tr(`risk_${w.lastRisk}`));
+      open.appendChild(tag);
+    }
     const remove = el('button', 'text-slate-500 hover:text-crimsonRisk text-xs px-1.5', '✕');
     remove.type = 'button';
     remove.title = tr('w_remove');
@@ -2275,7 +2567,11 @@ function renderWatchlist() {
 }
 
 function sendAlert(w, change, price) {
-  const msg = tr(change > 0 ? 'alert_up' : 'alert_down', { s: `$${w.symbol}`, pct: formatPct(change), price: `$${formatPrice(price)}` });
+  notifyWatch(w, tr(change > 0 ? 'alert_up' : 'alert_down', { s: `$${w.symbol}`, pct: formatPct(change), price: `$${formatPrice(price)}` }));
+}
+
+// Toast + browser notification (through the service worker when available) + 🔔 in the tab title
+function notifyWatch(w, msg) {
   showToast(msg);
   if ('Notification' in window && Notification.permission === 'granted') {
     const opts = {
@@ -2311,11 +2607,63 @@ async function refreshWatchItem(w) {
   watchPrices[watchKey(w)] = { price, change24: Number(pair.priceChange?.h24) };
   if (!w.addedPrice) w.addedPrice = price;
   if (!w.refPrice) w.refPrice = price;
-  if (!w.alertPct) return;
-  const change = ((price - w.refPrice) / w.refPrice) * 100;
-  if (Math.abs(change) >= w.alertPct) {
-    w.refPrice = price; // the next alert is measured from this price
-    sendAlert(w, change, price);
+  if (w.alertPct) {
+    const change = ((price - w.refPrice) / w.refPrice) * 100;
+    if (Math.abs(change) >= w.alertPct) {
+      w.refPrice = price; // the next alert is measured from this price
+      sendAlert(w, change, price);
+    }
+  }
+  if (riskAlertsOn()) await checkRiskSignals(w, pair, own);
+}
+
+// ---- Risk alerts: liquidity drain, heavy selling, contract checks getting worse ----
+const RISK_RANK = { ok: 0, warn: 1, bad: 2 };
+const riskAlertsOn = () => safeStorage(() => localStorage.getItem('flickRiskAlerts')) !== 'off';
+
+function setRiskAlerts(on) {
+  safeStorage(() => localStorage.setItem('flickRiskAlerts', on ? 'on' : 'off'));
+  renderWatchlist();
+}
+
+async function checkRiskSignals(w, pair, own) {
+  const now = Date.now();
+  const s = `$${w.symbol}`;
+  w.cool = w.cool || {};
+  const ready = (type, ms) => !w.cool[type] || now - w.cool[type] > ms;
+  const fire = (type, msg) => { w.cool[type] = now; notifyWatch(w, msg); };
+
+  // Liquidity drained from its recent peak (all of the token's pools on this chain)
+  const liq = own.reduce((a, p) => a + (p.liquidity?.usd || 0), 0);
+  if (liq > 0) {
+    if (!w.peakLiq || liq > w.peakLiq) w.peakLiq = liq;
+    const drop = ((w.peakLiq - liq) / w.peakLiq) * 100;
+    if (drop >= 30 && ready('liq', 30 * 60e3)) {
+      fire('liq', tr('ra_liq', { s, pct: pctTxt(drop), liq: formatUsd(liq) }));
+      w.peakLiq = liq;
+    }
+  }
+
+  // Heavy selling in the last hour
+  const h1 = pair.txns?.h1;
+  if (h1 && h1.buys + h1.sells >= 30) {
+    const r = h1.sells / (h1.buys + h1.sells);
+    if (r >= 0.75 && ready('sells', 2 * 3600e3)) fire('sells', tr('ra_sells', { s, pct: Math.round(r * 100) }));
+  }
+
+  // Contract checks (GoPlus) every 30 minutes: alert only when they get worse
+  if ((w.chainId === 'solana' || GOPLUS_EVM[w.chainId]) && (!w.riskCheckedAt || now - w.riskCheckedAt > 30 * 60e3)) {
+    w.riskCheckedAt = now;
+    try {
+      const d = await fetchGoPlus(w.chainId, w.ca);
+      const result = d?.result || {};
+      const raw = result[w.ca] || result[w.ca.toLowerCase()] || Object.values(result)[0];
+      if (raw && typeof raw === 'object') {
+        const risk = contractRisk(normalizeSecurity(raw, w.chainId === 'solana'));
+        if (w.lastRisk && RISK_RANK[risk] > RISK_RANK[w.lastRisk]) fire('contract', tr('ra_contract', { s, level: tr(`risk_${risk}`) }));
+        w.lastRisk = risk;
+      }
+    } catch (e) { /* try again in 30 minutes */ }
   }
 }
 
@@ -2392,6 +2740,8 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   changeLanguage(saved || (nav.startsWith('zh') ? 'zh' : nav.startsWith('es') ? 'es' : 'en'));
   if (watchlist.length) setTimeout(checkWatchlist, 2000);
   loadTrending();
+  renderFeedTabs();
+  if (feed === 'launches') loadLaunches();
   if (isIOS() && !isStandalone()) showInstallButton(true);
   const params = new URLSearchParams(location.search);
   const ca = params.get('ca');
