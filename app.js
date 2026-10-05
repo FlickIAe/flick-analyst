@@ -149,7 +149,9 @@ const TRANSLATIONS = {
     th_tag: "Tag",
 
     // Chat
-    chat_intro: "🤖 Pick a quick report above or ask about safety, holders, liquidity or trend.",
+    chat_intro: "🤖 Ask about this token in your own words (e.g. \"is it safe?\", \"who holds the most?\", \"should I buy?\") or use the buttons above. Answers are built instantly from live data.",
+    chat_hint: "Ask in your own words, e.g. \"is it safe?\", \"who holds the most?\", \"should I buy?\"",
+    chip_checklist: "⚖️ Risk Checklist",
     chip_safety: "🛡️ Safety Check",
     chip_holders: "📊 Holders Risk",
     chip_liquidity: "💧 Liquidity Depth",
@@ -287,7 +289,9 @@ const TRANSLATIONS = {
     th_val: "≈ USD",
     th_tag: "标签",
 
-    chat_intro: "🤖 点击上方快捷报告，或询问安全、持币、流动性与走势。",
+    chat_intro: "🤖 用自己的话询问该代币（例如“安全吗？”“谁持有最多？”“值得买吗？”），或使用上方按钮。答案基于实时数据即时生成。",
+    chat_hint: "用自己的话提问，例如“安全吗？”“谁持有最多？”“值得买吗？”",
+    chip_checklist: "⚖️ 风险清单",
     chip_safety: "🛡️ 安全检测",
     chip_holders: "📊 持仓风险",
     chip_liquidity: "💧 流动性深度",
@@ -425,7 +429,9 @@ const TRANSLATIONS = {
     th_val: "≈ USD",
     th_tag: "Etiqueta",
 
-    chat_intro: "🤖 Elegí un reporte rápido arriba o preguntá sobre seguridad, holders, liquidez o tendencia.",
+    chat_intro: "🤖 Preguntá sobre este token con tus palabras (por ejemplo \"¿es seguro?\", \"¿quién tiene más tokens?\", \"¿me conviene comprar?\") o usá los botones de arriba. Las respuestas se arman al instante con datos en vivo.",
+    chat_hint: "Preguntá con tus palabras, por ejemplo \"¿es seguro?\", \"¿quién tiene más tokens?\", \"¿me conviene comprar?\"",
+    chip_checklist: "⚖️ Checklist de riesgo",
     chip_safety: "🛡️ Seguridad",
     chip_holders: "📊 Riesgo de holders",
     chip_liquidity: "💧 Profundidad de liquidez",
@@ -1229,10 +1235,107 @@ function renderAiWelcome() {
   card.append(
     el('p', 'font-bold text-electricCyan', `🤖 $${t.symbol} · ${chainName(t.chainId)}`),
     stats,
+    el('p', 'text-[11px] text-electricCyan/80', tr('chat_hint')),
     el('p', 'text-[10px] text-slate-500', L('Reports use public DEX data and GoPlus checks. Not financial advice.', '报告基于公开 DEX 数据与 GoPlus 检测，不构成投资建议。', 'Los reportes usan datos públicos de DEX y chequeos de GoPlus. No es asesoramiento financiero.'))
   );
   chatBox.replaceChildren(card);
 }
+
+// ===================================================================
+// Smart quick reports: a rule-based assistant over the loaded data.
+// Runs entirely in the browser (no AI service, no cost).
+// ===================================================================
+const SEV_ORDER = { bad: 0, warn: 1, info: 2, ok: 3 };
+const SEV_ICON = { bad: '⛔', warn: '⚠️', info: 'ℹ️', ok: '✅' };
+const pctTxt = v => `${+v.toFixed(1)}%`;
+
+// Combines market (DexScreener) and contract (GoPlus) signals into findings, worst first
+function riskFindings() {
+  const t = currentToken;
+  const s = security.status === 'ok' ? security.data : null;
+  const out = [];
+  const add = (lv, topic, text) => out.push({ lv, topic, text });
+
+  if (s) {
+    if (anyTrue(s.honeypot, s.cannotSell)) {
+      add('bad', 'contract', L('Honeypot or sell restriction detected: you might not be able to sell.', '检测到蜜罐或卖出限制：你可能无法卖出。', 'Se detectó honeypot o restricción de venta: podrías no poder vender.'));
+    } else if (s.honeypot === false) {
+      add('ok', 'contract', L('No honeypot detected: selling looks possible.', '未检测到蜜罐：看起来可以正常卖出。', 'No se detectó honeypot: vender parece posible.'));
+    }
+    if (s.buyTax != null || s.sellTax != null) {
+      const max = Math.max(s.buyTax ?? 0, s.sellTax ?? 0);
+      const both = `${s.buyTax == null ? '?' : pctTxt(s.buyTax)} / ${s.sellTax == null ? '?' : pctTxt(s.sellTax)}`;
+      if (max >= 30) add('bad', 'tax', L(`Extreme taxes (buy/sell ${both}): most of each trade would be lost.`, `极高税率（买/卖 ${both}）：每笔交易的大部分会被扣除。`, `Impuestos extremos (compra/venta ${both}): perderías gran parte de cada operación.`));
+      else if (max > 10) add('warn', 'tax', L(`High taxes (buy/sell ${both}).`, `税率偏高（买/卖 ${both}）。`, `Impuestos altos (compra/venta ${both}).`));
+      else add('ok', 'tax', L(`Low taxes (buy/sell ${both}).`, `税率较低（买/卖 ${both}）。`, `Impuestos bajos (compra/venta ${both}).`));
+    }
+    if (s.transferFee) add('warn', 'tax', L('The token charges a fee on every transfer.', '该代币每次转账都会收取手续费。', 'El token cobra una comisión en cada transferencia.'));
+    if (s.mintable) add('warn', 'permissions', L('Mint is enabled: new tokens can be created, diluting holders.', '增发权限开启：可以增发新币，稀释持有者。', 'El mint está activado: pueden crear tokens nuevos y diluir a los holders.'));
+    else if (s.mintable === false) add('ok', 'permissions', L('Mint is disabled: the supply cannot grow.', '增发已关闭：供应量不会增加。', 'El mint está desactivado: el supply no puede crecer.'));
+    if (s.freezable) add('warn', 'permissions', L('Freeze or blacklist is possible: wallets can be blocked.', '可冻结或拉黑：钱包可能被封禁。', 'Se puede congelar o usar lista negra: pueden bloquear billeteras.'));
+    else if (s.freezable === false) add('ok', 'permissions', L('No freeze or blacklist function.', '无冻结或黑名单功能。', 'No hay función de congelar ni lista negra.'));
+    if (s.mutable) add('warn', 'permissions', L('The contract is a proxy or its owner can change it.', '合约为代理合约或所有者可以修改。', 'El contrato es proxy o su dueño lo puede modificar.'));
+    if (s.lpLocked != null) {
+      if (s.lpLocked >= 90) add('ok', 'liquidity', L(`${pctTxt(s.lpLocked)} of the liquidity is locked or burned.`, `${pctTxt(s.lpLocked)} 的流动性已锁定或销毁。`, `El ${pctTxt(s.lpLocked)} de la liquidez está bloqueada o quemada.`));
+      else add(s.lpLocked >= 50 ? 'warn' : 'bad', 'liquidity', L(`Only ${pctTxt(s.lpLocked)} of the liquidity is locked: the rest can be withdrawn (rug pull risk).`, `仅 ${pctTxt(s.lpLocked)} 的流动性被锁定：其余可被撤出（跑路风险）。`, `Solo el ${pctTxt(s.lpLocked)} de la liquidez está bloqueada: el resto se puede retirar (riesgo de rug pull).`));
+    }
+    if (s.top10 != null) {
+      const v = pctTxt(s.top10);
+      if (s.top10 > 50) add('bad', 'holders', L(`The top 10 wallets hold ${v} of the supply: very concentrated.`, `前10名钱包持有 ${v} 的供应量：高度集中。`, `Las 10 billeteras principales tienen el ${v} del supply: muy concentrado.`));
+      else if (s.top10 > 30) add('warn', 'holders', L(`The top 10 wallets hold ${v} of the supply.`, `前10名钱包持有 ${v} 的供应量。`, `Las 10 billeteras principales tienen el ${v} del supply.`));
+      else add('ok', 'holders', L(`Holders are well distributed (top 10: ${v}).`, `持币分布较分散（前10名：${v}）。`, `Los holders están bien distribuidos (top 10: ${v}).`));
+    }
+  } else if (security.status === 'loading') {
+    add('info', 'contract', L('Contract checks are still loading.', '合约检测仍在加载中。', 'Los chequeos del contrato todavía se están cargando.'));
+  } else {
+    add('warn', 'contract', L('Contract checks are not available for this token: verify on-chain before trading.', '该代币暂无合约检测：交易前请先链上验证。', 'No hay chequeos de contrato para este token: verificá on-chain antes de operar.'));
+  }
+
+  if (t.liquidity < 20000) add('bad', 'liquidity', L(`Very low liquidity (${formatUsd(t.liquidity)}): big price impact and easy to manipulate.`, `流动性极低（${formatUsd(t.liquidity)}）：价格冲击大，容易被操纵。`, `Liquidez muy baja (${formatUsd(t.liquidity)}): mucho impacto en el precio y fácil de manipular.`));
+  else if (t.liquidity < 100000) add('warn', 'liquidity', L(`Low liquidity (${formatUsd(t.liquidity)}).`, `流动性偏低（${formatUsd(t.liquidity)}）。`, `Liquidez baja (${formatUsd(t.liquidity)}).`));
+  else add('ok', 'liquidity', L(`Solid liquidity (${formatUsd(t.liquidity)}).`, `流动性充足（${formatUsd(t.liquidity)}）。`, `Liquidez sólida (${formatUsd(t.liquidity)}).`));
+
+  const days = ageDays(t);
+  if (days != null) {
+    if (days < 1) add('bad', 'age', L(`The pair is less than a day old (${formatAge(days)}): most rug pulls happen at this stage.`, `交易对上线不到一天（${formatAge(days)}）：多数跑路发生在这个阶段。`, `El par tiene menos de un día (${formatAge(days)}): la mayoría de los rug pulls pasan en esta etapa.`));
+    else if (days < 7) add('warn', 'age', L(`New pair, only ${formatAge(days)} old.`, `新交易对，仅上线 ${formatAge(days)}。`, `Par nuevo, tiene solo ${formatAge(days)}.`));
+    else if (days >= 30) add('ok', 'age', L(`The pair has been trading for ${formatAge(days)}.`, `该交易对已交易 ${formatAge(days)}。`, `El par opera desde hace ${formatAge(days)}.`));
+  }
+
+  const ratio = t.liquidity ? t.volume / t.liquidity : 0;
+  if (t.volume < 10000) add('warn', 'activity', L(`Low trading activity (${formatUsd(t.volume)} in 24h).`, `交易不活跃（24小时 ${formatUsd(t.volume)}）。`, `Poca actividad (${formatUsd(t.volume)} en 24h).`));
+  else if (ratio > 20) add('warn', 'activity', L(`24h volume is ${ratio.toFixed(0)}x the liquidity: unusual, possibly wash trading.`, `24小时交易量是流动性的 ${ratio.toFixed(0)} 倍：异常，可能存在刷量。`, `El volumen de 24h es ${ratio.toFixed(0)} veces la liquidez: inusual, puede haber operaciones falsas.`));
+  if (t.buys != null && t.sells != null && t.buys + t.sells > 0) {
+    const r = t.buys / (t.buys + t.sells);
+    if (r > 0.75) add('warn', 'activity', L(`${Math.round(r * 100)}% of 24h trades are buys: hype can reverse quickly.`, `24小时内 ${Math.round(r * 100)}% 的交易是买入：热度可能迅速反转。`, `El ${Math.round(r * 100)}% de las operaciones de 24h son compras: el hype se puede dar vuelta rápido.`));
+    else if (r < 0.25) add('warn', 'activity', L(`${Math.round((1 - r) * 100)}% of 24h trades are sells: heavy selling pressure.`, `24小时内 ${Math.round((1 - r) * 100)}% 的交易是卖出：抛压很大。`, `El ${Math.round((1 - r) * 100)}% de las operaciones de 24h son ventas: mucha presión vendedora.`));
+  }
+
+  const ch = t.changes.h24;
+  if (ch != null && ch <= -30) add('warn', 'trend', L(`The price fell ${formatPct(ch)} in 24h.`, `价格24小时内下跌 ${formatPct(ch)}。`, `El precio cayó ${formatPct(ch)} en 24h.`));
+  else if (ch != null && ch >= 100) add('warn', 'trend', L(`The price rose ${formatPct(ch)} in 24h: very volatile.`, `价格24小时内上涨 ${formatPct(ch)}：波动极大。`, `El precio subió ${formatPct(ch)} en 24h: muy volátil.`));
+
+  if (!t.socials) add('warn', 'info', L('No website or social links are listed.', '未列出官网或社交媒体链接。', 'No tiene sitio web ni redes sociales listadas.'));
+
+  return out.sort((a, b) => SEV_ORDER[a.lv] - SEV_ORDER[b.lv]);
+}
+
+function riskVerdict(findings) {
+  if (findings.some(f => f.lv === 'bad')) return 'high';
+  if (findings.filter(f => f.lv === 'warn').length >= 2 || security.status !== 'ok') return 'medium';
+  return 'low';
+}
+
+function verdictLine(v) {
+  return {
+    high: L('🔴 Overall risk: HIGH', '🔴 整体风险：高', '🔴 Riesgo general: ALTO'),
+    medium: L('🟡 Overall risk: MEDIUM', '🟡 整体风险：中', '🟡 Riesgo general: MEDIO'),
+    low: L('🟢 Overall risk: LOW', '🟢 整体风险：低', '🟢 Riesgo general: BAJO')
+  }[v];
+}
+
+const findingLines = (list) => list.map(f => `${SEV_ICON[f.lv]} ${f.text}`);
+const disclaimer = () => L('Built from live DexScreener and GoPlus data. Not financial advice.', '基于 DexScreener 与 GoPlus 实时数据。不构成投资建议。', 'Basado en datos en vivo de DexScreener y GoPlus. No es asesoramiento financiero.');
 
 function reportText(type) {
   const t = currentToken, s = `$${t.symbol}`;
@@ -1240,10 +1343,43 @@ function reportText(type) {
   const ratio = (t.liquidity ? t.volume / t.liquidity : 0).toFixed(2);
   const sec = security.status === 'ok' ? security.data : null;
   const yn = v => (v == null ? 'N/A' : v ? L('YES ⚠️', '是 ⚠️', 'SÍ ⚠️') : L('no ✓', '否 ✓', 'no ✓'));
+  const findings = riskFindings();
+  const verdict = riskVerdict(findings);
+  const about = topics => findingLines(findings.filter(f => topics.includes(f.topic)));
+  const examples = [
+    L('• "Is it safe?"', '• “安全吗？”', '• "¿Es seguro?"'),
+    L('• "Who holds the most?"', '• “谁持有最多？”', '• "¿Quién tiene más tokens?"'),
+    L('• "Should I buy?"', '• “值得买吗？”', '• "¿Me conviene comprar?"'),
+    L('• "Are there taxes?" / "Can they mint more?"', '• “有税吗？” / “能增发吗？”', '• "¿Tiene impuestos?" / "¿Pueden crear más tokens?"'),
+    L('• "How is the price doing?" / "Is the liquidity locked?"', '• “价格走势如何？” / “流动性锁了吗？”', '• "¿Cómo viene el precio?" / "¿La liquidez está bloqueada?"')
+  ];
+
   switch (type) {
+    case 'checklist': return [
+      L(`⚖️ Risk checklist for ${s}`, `⚖️ ${s} 风险清单`, `⚖️ Checklist de riesgo de ${s}`),
+      verdictLine(verdict), '',
+      ...findingLines(findings), '',
+      disclaimer()
+    ].join('\n');
+
+    case 'verdict': {
+      const risks = findings.filter(f => f.lv === 'bad' || f.lv === 'warn').slice(0, 3);
+      const goods = findings.filter(f => f.lv === 'ok').slice(0, 2);
+      return [
+        L(`🤔 Should you buy ${s}?`, `🤔 ${s} 值得买吗？`, `🤔 ¿Te conviene comprar ${s}?`),
+        L("I can't tell you whether to buy, but this is what the data shows:", '我无法告诉你是否该买，但数据显示：', 'No te puedo decir si comprar, pero esto es lo que muestran los datos:'),
+        verdictLine(verdict), '',
+        ...(risks.length ? [L('Main risks:', '主要风险：', 'Principales riesgos:'), ...findingLines(risks)] : []),
+        ...(goods.length ? [L('In favor:', '有利因素：', 'A favor:'), ...findingLines(goods)] : []), '',
+        L('If you decide to trade: only use money you can afford to lose, start small and use "Verify on-chain".', '如果决定交易：只用你能承受损失的资金，小额起步，并使用“链上验证”。', 'Si decidís operar: usá solo plata que puedas perder, empezá con poco y usá "Verificar on-chain".'),
+        disclaimer()
+      ].join('\n');
+    }
+
     case 'safety': {
       const lines = [
         L(`🛡️ Safety signals for ${s}`, `🛡️ ${s} 安全信号`, `🛡️ Señales de seguridad de ${s}`),
+        verdictLine(verdict),
         `• ${L('Market Health Score', '市场健康评分', 'Puntuación de salud del mercado')}: ${t.score}/100`,
         `• ${L('Pair age', '交易对年龄', 'Antigüedad del par')}: ${formatAge(days)}`
       ];
@@ -1260,8 +1396,30 @@ function reportText(type) {
       } else {
         lines.push(`• ${L('Honeypot, taxes, mint, ownership', '蜜罐、税率、铸币、所有权', 'Honeypot, impuestos, mint, propiedad')}: ${L('NOT verified. Use "Verify on-chain".', '未验证，请使用“链上验证”。', 'NO verificado. Usá "Verificar on-chain".')}`);
       }
+      const flags = findingLines(findings.filter(f => f.lv === 'bad' || f.lv === 'warn').slice(0, 3));
+      if (flags.length) lines.push('', L('Watch out:', '注意：', 'Ojo con:'), ...flags);
       return lines.join('\n');
     }
+
+    case 'tax': {
+      const lines = about(['tax']);
+      return [
+        L(`💸 Taxes for ${s}`, `💸 ${s} 税率`, `💸 Impuestos de ${s}`),
+        ...(lines.length ? lines : [L('No tax data is available for this token. Use "Verify on-chain".', '暂无该代币的税率数据。请使用“链上验证”。', 'No hay datos de impuestos para este token. Usá "Verificar on-chain".')])
+      ].join('\n');
+    }
+
+    case 'permissions': {
+      if (!sec) return [L(`🔑 Contract permissions for ${s}`, `🔑 ${s} 合约权限`, `🔑 Permisos del contrato de ${s}`), ...about(['contract'])].join('\n');
+      return [
+        L(`🔑 Contract permissions for ${s}`, `🔑 ${s} 合约权限`, `🔑 Permisos del contrato de ${s}`),
+        `• ${L('Mint authority', '增发权限', 'Permiso de mint')}: ${yn(sec.mintable)}`,
+        `• ${L('Freeze / blacklist', '冻结 / 黑名单', 'Congelar / lista negra')}: ${yn(sec.freezable)}`,
+        `• ${L('Proxy / mutable', '代理 / 可修改', 'Proxy / modificable')}: ${yn(sec.mutable)}`, '',
+        ...about(['permissions'])
+      ].join('\n');
+    }
+
     case 'holders': {
       if (!sec || !sec.holders.length) return `👥 ${tr('holders_na')}`;
       return [
@@ -1269,25 +1427,89 @@ function reportText(type) {
         `• ${tr('top10_ratio_label')}: ${sec.top10.toFixed(1)}%`,
         sec.holderCount != null ? `• ${tr('holder_count')}: ${formatCompact(sec.holderCount)}` : null,
         ...sec.holders.slice(0, 3).map((h, i) => `• #${i + 1} ${shortAddr(h.address)} — ${h.pct.toFixed(2)}%${h.tag ? ` (${h.tag})` : ''}`),
+        ...about(['holders']),
         L('Note: top wallets are often LPs, exchanges or burn addresses.', '注意：头部地址常为流动池、交易所或销毁地址。', 'Nota: las billeteras principales suelen ser pools de liquidez, exchanges o direcciones de quema.')
       ].filter(Boolean).join('\n');
     }
+
     case 'liquidity': return [
       L(`💧 Liquidity for ${s}`, `💧 ${s} 流动性`, `💧 Liquidez de ${s}`),
       `• ${L('Active pool', '当前池子', 'Pool activo')}: ${t.dexId || 'DEX'} ${t.symbol}/${t.quoteSymbol} — ${formatUsd(t.liquidity)}`,
       `• ${L('Pools found', '池子数量', 'Pools encontrados')}: ${currentPairs.length} (${formatUsd(currentPairs.reduce((a, p) => a + (p.liquidity?.usd || 0), 0))} ${L('total', '合计', 'en total')})`,
       `• FDV: ${t.fdv ? formatUsd(t.fdv) : '—'}`,
-      `• ${L('Volume / Liquidity', '交易量 / 流动性', 'Volumen / Liquidez')}: ${ratio}x`
+      `• ${L('Volume / Liquidity', '交易量 / 流动性', 'Volumen / Liquidez')}: ${ratio}x`,
+      ...about(['liquidity'])
     ].join('\n');
+
     case 'trend': return [
       L(`📈 Trend for ${s}`, `📈 ${s} 走势`, `📈 Tendencia de ${s}`),
       `• 5m: ${formatPct(t.changes.m5)} · 1h: ${formatPct(t.changes.h1)} · 6h: ${formatPct(t.changes.h6)} · 24h: ${formatPct(t.changes.h24)}`,
       `• ${L('Price', '价格', 'Precio')}: $${formatPrice(t.price)}`,
       `• ${L('24h volume', '24h 交易量', 'Volumen 24h')}: ${formatUsd(t.volume)}`,
-      t.buys != null ? `• ${L('Buys / Sells 24h', '24h 买 / 卖', 'Compras / Ventas 24h')}: ${formatCompact(t.buys)} / ${formatCompact(t.sells)}` : null
+      t.buys != null ? `• ${L('Buys / Sells 24h', '24h 买 / 卖', 'Compras / Ventas 24h')}: ${formatCompact(t.buys)} / ${formatCompact(t.sells)}` : null,
+      ...about(['trend'])
     ].filter(Boolean).join('\n');
-    default: return L('Try asking about: safety, holders, liquidity or trend.', '可尝试询问：安全、持币、流动性或走势。', 'Probá preguntar sobre: seguridad, holders, liquidez o tendencia.');
+
+    case 'activity': return [
+      L(`📊 Trading activity for ${s}`, `📊 ${s} 交易活跃度`, `📊 Actividad de ${s}`),
+      `• ${L('Pair age', '交易对年龄', 'Antigüedad del par')}: ${formatAge(days)}`,
+      `• ${L('24h volume', '24h 交易量', 'Volumen 24h')}: ${formatUsd(t.volume)}`,
+      t.buys != null ? `• ${L('Buys / Sells 24h', '24h 买 / 卖', 'Compras / Ventas 24h')}: ${formatCompact(t.buys)} / ${formatCompact(t.sells)}` : null,
+      `• ${L('Volume / Liquidity', '交易量 / 流动性', 'Volumen / Liquidez')}: ${ratio}x`,
+      ...about(['age', 'activity'])
+    ].filter(Boolean).join('\n');
+
+    case 'summary': {
+      const risks = findings.filter(f => f.lv === 'bad' || f.lv === 'warn').slice(0, 2);
+      return [
+        L(`📋 ${s} at a glance`, `📋 ${s} 概况`, `📋 ${s} de un vistazo`),
+        verdictLine(verdict),
+        `• ${L('Price', '价格', 'Precio')}: $${formatPrice(t.price)} (${formatPct(t.priceChange)} 24h)`,
+        `• ${L('Liquidity', '流动性', 'Liquidez')}: ${formatUsd(t.liquidity)} · FDV: ${t.fdv ? formatUsd(t.fdv) : '—'}`,
+        `• ${L('Market Health Score', '市场健康评分', 'Puntuación de salud del mercado')}: ${t.score}/100`,
+        ...(risks.length ? ['', ...findingLines(risks)] : []), '',
+        L('You can also ask, for example:', '你也可以这样问：', 'También podés preguntar, por ejemplo:'),
+        ...examples.slice(0, 3)
+      ].join('\n');
+    }
+
+    case 'greeting': return [
+      L(`👋 Hi! Ask me anything about ${s}. For example:`, `👋 你好！可以问我任何关于 ${s} 的问题，例如：`, `👋 ¡Hola! Preguntame lo que quieras sobre ${s}. Por ejemplo:`),
+      ...examples
+    ].join('\n');
+
+    default: return [
+      L('💡 I answer from this token\'s live data. Try asking:', '💡 我会根据该代币的实时数据回答。可以试试：', '💡 Respondo con los datos en vivo de este token. Probá preguntar:'),
+      ...examples
+    ].join('\n');
   }
+}
+
+// Detects what the user is asking about (accent-insensitive, EN / ES / ZH keywords)
+const INTENTS = [
+  ['verdict', /conviene|comprar|compro|invertir|invierto|vale la pena|deberia|\bbuy\b|\binvest|worth|should i|买吗|值得|投资|入场/],
+  ['checklist', /checklist|riesgos|\brisks\b|red flag|bandera|senal|peligro|danger|风险清单|红旗|危险/],
+  ['safety', /safe|segur|\brug|scam|estafa|honey|fraud|trampa|confiable|trust|legit|安全|蜜罐|跑路|骗|可信|风险/],
+  ['tax', /\btax|impuesto|comision|\bfees?\b|税|手续费/],
+  ['permissions', /\bmint|emitir|crear mas|inflacion|freeze|congel|blacklist|lista negra|proxy|owner|dueno|propietario|renounc|renunci|增发|冻结|黑名单|权限|所有者/],
+  ['holders', /holder|whale|ballena|concentra|distribu|wallet|billetera|quien tiene|who (holds|owns)|持币|巨鲸|集中|分布|钱包|谁持有/],
+  ['liquidity', /\bliq|pool|\blp\b|profundidad|depth|流动|池/],
+  ['trend', /price|precio|trend|tendencia|pump|dump|chart|grafic|sube|subio|baja|bajo|cae|cayo|volatil|走势|价格|涨|跌/],
+  ['activity', /volum|actividad|activity|trading|transacc|\btxn|compras|ventas|\bbuys\b|\bsells\b|edad|antigu|nuevo|\bnew\b|\bold\b|\bage\b|launch|lanz|creado|created|交易量|成交|年龄|活跃/],
+  ['summary', /resumen|summary|overview|analiza|analisis|analysis|que es|what is|\binfo|概况|总结|分析|介绍/],
+  ['help', /ayuda|\bhelp\b|que puedo|what can|como funciona|how does|帮助|怎么用/]
+];
+const GREETING_RE = /^(hola|buenas|hi|hello|hey)\b|^(你好|您好|嗨)/;
+
+function detectIntents(text) {
+  const q = text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  let found = INTENTS.filter(([, re]) => re.test(q)).map(([k]) => k);
+  // broader reports already include the narrower ones
+  if (found.includes('verdict')) found = found.filter(k => !['checklist', 'safety', 'summary'].includes(k));
+  if (found.includes('checklist')) found = found.filter(k => !['safety', 'summary'].includes(k));
+  if (found.length > 1) found = found.filter(k => k !== 'summary' && k !== 'help');
+  if (!found.length) return [GREETING_RE.test(q) ? 'greeting' : 'summary'];
+  return found.slice(0, 2);
 }
 
 function addMsg(text, isUser) {
@@ -1312,12 +1534,7 @@ function sendCopilotQuery() {
   if (!currentToken.loaded) return showToast(tr('waiting'));
   input.value = '';
   addMsg(text, true);
-  const q = text.toLowerCase();
-  const type = /safe|honey|rug|scam|risk|tax|mint|freeze|audit|segur|riesgo|estafa|impuesto|auditor|安全|蜜罐|风险|税|审计/.test(q) ? 'safety'
-    : /holder|whale|ballena|concentra|distribu|持币|巨鲸|集中|分布/.test(q) ? 'holders'
-    : /liq|pool|\blp\b|流动|池/.test(q) ? 'liquidity'
-    : /price|trend|pump|dump|chart|precio|tendencia|grafic|gráfic|sube|baja|走势|价格|涨|跌/.test(q) ? 'trend' : 'help';
-  addMsg(reportText(type), false);
+  detectIntents(text).forEach(type => addMsg(reportText(type), false));
 }
 
 // ===================================================================
