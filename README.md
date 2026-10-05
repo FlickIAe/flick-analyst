@@ -9,7 +9,7 @@
 - 🔍 **Token Search:** Paste a contract address (EVM or Solana) or a ticker. The app picks the token's most liquid pools and ignores pairs where it is only the quote token.
 - 🩺 **Market Health Score (0–100):** Liquidity, volume/liquidity ratio, pair age, buy/sell balance and socials, computed from live DexScreener data.
 - 🛡️ **Contract Checks (GoPlus):** Buy/sell tax, honeypot / sell restrictions, mint authority, freeze/blacklist, proxy/mutable code and LP lock. Shows "Not verified" when a check is unavailable.
-- 👤 **Creator & owner (GoPlus):** Who created the token and how much of the supply they still hold, whether the same creator made honeypots before (EVM) or is flagged as malicious (Solana), contract owner (renounced or not), verified source code, Solana mint authority and mutable metadata. All of it feeds the risk checklist and the chat ("who is the dev?"). On Solana, where GoPlus returns neither holders nor the creator for most tokens, both are read from the chain through the public Solana RPC (top 20 accounts, the mint's first transaction and the creator's current balance).
+- 👤 **Creator & owner (GoPlus):** Who created the token and how much of the supply they still hold, whether the same creator made honeypots before (EVM) or is flagged as malicious (Solana), contract owner (renounced or not), verified source code, Solana mint authority and mutable metadata. All of it feeds the risk checklist and the chat ("who is the dev?"). On Solana, where GoPlus returns neither holders nor the creator for most tokens, both are read from the chain through Solana RPC (top 20 accounts, the mint's first transaction and the creator's current balance), via the same-origin `/api/solana` proxy with public fallbacks. For higher limits, set `SOLANA_RPC_URL` (e.g. a free Helius or QuickNode URL) in Cloudflare Pages → Settings → Variables.
 - 📊 **Top Holders:** Top-10 supply concentration, holder count, approximate USD value and explorer links.
 - 📈 **Live Charts & Pools:** Embedded DexScreener chart, clickable list of the token's pools and live price polling every 12 s.
 - 🤖 **Smart Assistant (free, no AI service):** Ask in your own words ("is it safe?", "who holds the most?", "should I buy?") in English, Spanish or Chinese. A rule-based risk engine combines market and contract signals into a risk checklist with an overall LOW / MEDIUM / HIGH verdict, all computed in the browser.
@@ -44,6 +44,7 @@
 index.html              Page layout (landing + dashboard)
 app.js                  App logic: i18n, search, scoring, GoPlus, reports, polling
 functions/api/goplus.js Cloudflare Pages Function: same-origin GoPlus proxy
+functions/api/solana.js Cloudflare Pages Function: Solana RPC proxy (read-only methods; optional SOLANA_RPC_URL)
 flick-logo.webp         Optimized logo (flick-logo.png is the original source)
 favicon.png             Browser tab icon
 apple-touch-icon.png    Home-screen icon for iOS
