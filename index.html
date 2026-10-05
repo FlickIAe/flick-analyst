@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flick Analyst — On-Chain Intelligence Terminal</title>
+  <title>Flick Super Intelligence — Token Risk & Market Terminal</title>
   <meta name="description" content="Live DEX data, risk checklist, contract checks, top holders and price alerts for any token. Free, in English, Español and 中文.">
   <meta name="theme-color" content="#030508">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
@@ -19,17 +19,17 @@
   <!-- Link preview (WhatsApp, Telegram, X, Discord, Facebook...) -->
   <link rel="canonical" href="https://flick-app.pages.dev/">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Flick Analyst">
-  <meta property="og:title" content="Flick Analyst — Analyze any token. Never exit liquidity.">
+  <meta property="og:site_name" content="Flick Super Intelligence">
+  <meta property="og:title" content="Flick Super Intelligence — Analyze any token. Never exit liquidity.">
   <meta property="og:description" content="Live DEX data, risk checklist, contract checks, top holders and price alerts for any token. Free, in English, Español and 中文.">
   <meta property="og:url" content="https://flick-app.pages.dev/">
   <meta property="og:image" content="https://flick-app.pages.dev/og-image.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Flick Analyst: analyze any token, never exit liquidity">
+  <meta property="og:image:alt" content="Flick Super Intelligence: analyze any token, never exit liquidity">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Flick Analyst — Analyze any token. Never exit liquidity.">
+  <meta name="twitter:title" content="Flick Super Intelligence — Analyze any token. Never exit liquidity.">
   <meta name="twitter:description" content="Live DEX data, risk checklist, contract checks, top holders and price alerts for any token.">
   <meta name="twitter:image" content="https://flick-app.pages.dev/og-image.jpg">
 
@@ -125,6 +125,7 @@
     .scrollbar-none::-webkit-scrollbar { display: none; }
 
     :focus-visible { outline: 2px solid #F59E0B; outline-offset: 2px; }
+    h1, h2, h3 { text-wrap: balance; }
 
     .screen-fade {
       transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -154,7 +155,7 @@
     <div class="relative w-24 h-24 flex items-center justify-center">
       <div class="absolute inset-0 rounded-full border-2 border-amberCore/20 border-t-amberCore animate-spin"></div>
       <div class="absolute inset-2 rounded-full border-2 border-electricCyan/20 border-b-electricCyan animate-radar"></div>
-      <span class="text-2xl animate-bounce">⚡</span>
+      <span class="text-amberCore animate-bounce"><svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
     </div>
     <div class="text-center space-y-2">
       <h3 id="scanTitle" data-i18n="scanning_title" class="font-display font-bold text-lg text-white tracking-wide">ANALYZING TOKEN DATA...</h3>
@@ -167,29 +168,29 @@
   <!-- =================================================================== -->
   <section id="landingCover" class="screen-fade relative z-10 min-h-screen flex flex-col justify-between p-6 md:p-12 max-w-7xl mx-auto">
 
-    <header class="flex items-center justify-between gap-3 flex-wrap">
+    <header class="flex items-center justify-between gap-x-3 gap-y-4 flex-wrap">
       <div class="flex items-center gap-3">
         <!-- Logo Container -->
         <div class="w-10 h-10 rounded-xl bg-surface border border-amberCore/30 flex items-center justify-center p-2 shadow-lg shadow-amberCore/10">
           <img src="flick-logo.webp" width="40" height="40" alt="Flick Logo" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23F59E0B\'><path d=\'M13 2L3 14h9l-1 8 10-12h-9l1-8z\'/></svg>'" />
         </div>
         <!-- Brand Name -->
-        <span class="text-xl font-bold tracking-wider text-white">Flick Super Intelligence</span>
+        <span class="text-lg sm:text-xl font-bold tracking-wide text-white">Flick <span class="text-amberCore">Super Intelligence</span></span>
       </div>
 
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
         <!-- INSTALL APP (shown by app.js when the browser allows it) -->
-        <button type="button" id="installBtn" onclick="installApp()" class="hidden bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amberGlow font-semibold text-xs px-3 py-1.5 rounded-xl transition-all" data-i18n="install_app">📲 Install app</button>
+        <button type="button" id="installBtn" onclick="installApp()" class="hidden items-center gap-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amberGlow font-semibold text-xs px-3 py-1.5 rounded-xl transition-all [&:not(.hidden)]:inline-flex"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span data-i18n="install_app">Install app</span></button>
         <!-- LANGUAGE SELECTOR -->
         <div class="relative inline-block">
-          <select id="langSelectLanding" onchange="changeLanguage(this.value)" aria-label="Language" class="bg-white/5 hover:bg-white/10 border border-white/15 text-white font-mono text-xs px-3 py-1.5 rounded-xl transition-all focus:outline-none cursor-pointer">
+          <select id="langSelectLanding" onchange="changeLanguage(this.value)" aria-label="Language" class="bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs px-3 py-1.5 rounded-xl transition-all focus:outline-none cursor-pointer">
             <option value="en" class="bg-slate-900 text-white">English (EN)</option>
             <option value="es" class="bg-slate-900 text-white">Español (ES)</option>
             <option value="zh" class="bg-slate-900 text-white">简体中文 (ZH)</option>
           </select>
         </div>
 
-        <span class="hidden sm:inline-flex items-center gap-2 text-xs font-mono px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-slate-300">
+        <span class="hidden md:inline-flex items-center gap-2 text-xs px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-slate-300">
           <span class="w-2 h-2 rounded-full bg-cyberGreen animate-ping"></span>
           <span data-i18n="mainnet_active">Live DEX Data</span>
         </span>
@@ -199,29 +200,29 @@
       </div>
     </header>
 
-    <div class="my-auto py-10 flex flex-col items-center text-center max-w-3xl mx-auto space-y-7">
+    <div class="my-auto py-10 flex flex-col items-center text-center max-w-4xl mx-auto space-y-7 w-full">
 
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amberCore text-xs font-mono font-medium tracking-wide">
-        <span data-i18n="badge_landing">📡 LIVE DEX DATA & CONTRACT RISK SIGNALS</span>
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amberCore text-[11px] sm:text-xs font-semibold tracking-wider">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg><span data-i18n="badge_landing">LIVE DEX DATA & CONTRACT RISK SIGNALS</span>
       </div>
 
-      <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.15] text-white" data-i18n="hero_title">
+      <h1 class="font-display text-[2.1rem] sm:text-5xl lg:text-[3.6rem] font-bold tracking-tight leading-[1.08] text-white max-w-4xl" data-i18n="hero_title">
         Navigate Web3 Markets <br>
         <span class="bg-gradient-to-r from-amberCore via-amberGlow to-white bg-clip-text text-transparent">Never Exit Liquidity</span>
       </h1>
 
-      <p class="text-slate-400 text-sm sm:text-base max-w-xl leading-relaxed font-normal" data-i18n="hero_desc">
+      <p class="text-slate-300/80 text-sm sm:text-base max-w-xl leading-relaxed font-normal" data-i18n="hero_desc">
         Real-time DEX charts, market-health scoring, contract checks and holder distribution for traders.
       </p>
 
       <div class="w-full max-w-xl space-y-3">
         <div class="glass-panel p-2 rounded-2xl flex flex-col sm:flex-row items-center gap-2 border border-amber-500/25 shadow-2xl shadow-amber-500/10 focus-within:border-amberCore/60 transition-all">
           <div class="flex items-center gap-2.5 px-3 w-full flex-1">
-            <span class="text-slate-500 text-sm" aria-hidden="true">🔍</span>
+            <span class="text-slate-500"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
             <input type="text" id="landingCaInput" placeholder="Paste contract address (CA) or ticker..." data-i18n-ph="ca_placeholder"
               aria-label="Contract address or ticker" autocomplete="off" spellcheck="false"
               onkeydown="if(event.key === 'Enter') triggerScanAndEnter()"
-              class="w-full bg-transparent py-2 text-xs sm:text-sm font-mono text-amberGlow placeholder-slate-500 focus:outline-none" />
+              class="w-full bg-transparent py-2 text-sm text-amberGlow placeholder-slate-500 focus:outline-none" />
           </div>
           <button type="button" onclick="triggerScanAndEnter()" class="w-full sm:w-auto bg-gradient-to-r from-amberCore to-amberGlow hover:brightness-110 text-black font-bold text-xs sm:text-sm px-7 py-3 rounded-xl transition-all shadow-md shadow-amber-500/20 active:scale-95 flex items-center justify-center gap-2 shrink-0">
             <span data-i18n="analyze_btn">Analyze Token</span>
@@ -235,29 +236,29 @@
       <!-- TRENDING TOKENS (filled by app.js from DexScreener boosts) -->
       <section class="w-full text-left space-y-2.5" aria-labelledby="trendingTitle">
         <div class="flex items-center justify-between gap-3">
-          <h2 id="trendingTitle" class="text-sm font-bold text-white font-display" data-i18n="trending_title">🔥 Trending on DexScreener</h2>
-          <button type="button" onclick="loadTrending(true)" class="text-[11px] font-mono text-slate-400 hover:text-amberGlow transition-all" data-i18n="trending_refresh">Refresh</button>
+          <h2 id="trendingTitle" class="flex items-center gap-2 text-sm font-bold text-white font-display"><span class="text-amberCore"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span><span data-i18n="trending_title">Trending on DexScreener</span></h2>
+          <button type="button" onclick="loadTrending(true)" class="text-xs text-slate-400 hover:text-amberGlow transition-all" data-i18n="trending_refresh">Refresh</button>
         </div>
         <div id="trendingStatus"></div>
         <div id="trendingGrid" class="grid grid-cols-2 md:grid-cols-4 gap-2.5"></div>
-        <p class="text-[10px] text-slate-500 leading-relaxed" data-i18n="trending_note">Most boosted tokens on DexScreener (boosts are paid promotions), sorted by real 24h volume. Not a recommendation: open one and check its risk checklist before trading.</p>
+        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="trending_note">Most boosted tokens on DexScreener (boosts are paid promotions), sorted by real 24h volume. Not a recommendation: open one and check its risk checklist before trading.</p>
       </section>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-4 text-left">
         <div class="glass-panel glass-card-hover p-4 rounded-2xl space-y-2 border border-white/5 animate-float" style="animation-delay: 0s;">
-          <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amberCore font-bold text-base">🛡️</div>
+          <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amberCore"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           <h3 class="font-bold text-xs sm:text-sm text-white font-display" data-i18n="audit_score_title">Market Health Score</h3>
           <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed" data-i18n="audit_score_desc">Scores liquidity, volume, pair age, buy/sell balance and socials from live DEX data, plus GoPlus contract checks.</p>
         </div>
 
         <div class="glass-panel glass-card-hover p-4 rounded-2xl space-y-2 border border-white/5 animate-float" style="animation-delay: 1.5s;">
-          <div class="w-8 h-8 rounded-lg bg-electricCyan/10 border border-electricCyan/20 flex items-center justify-center text-electricCyan font-bold text-base">📊</div>
+          <div class="w-8 h-8 rounded-lg bg-electricCyan/10 border border-electricCyan/20 flex items-center justify-center text-electricCyan"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
           <h3 class="font-bold text-xs sm:text-sm text-white font-display" data-i18n="dex_stream_title">Live DEX Stream</h3>
           <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed" data-i18n="dex_stream_desc">Embedded real-time charts for pools on Raydium, Uniswap, PancakeSwap and more.</p>
         </div>
 
         <div class="glass-panel glass-card-hover p-4 rounded-2xl space-y-2 border border-white/5 animate-float" style="animation-delay: 3s;">
-          <div class="w-8 h-8 rounded-lg bg-cyberGreen/10 border border-cyberGreen/20 flex items-center justify-center text-cyberGreen font-bold text-base">🤖</div>
+          <div class="w-8 h-8 rounded-lg bg-cyberGreen/10 border border-cyberGreen/20 flex items-center justify-center text-cyberGreen"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
           <h3 class="font-bold text-xs sm:text-sm text-white font-display" data-i18n="copilot_title">Quick Reports</h3>
           <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed" data-i18n="copilot_desc">Instant reports on safety, holders, liquidity and trend for any token.</p>
         </div>
@@ -265,10 +266,10 @@
 
     </div>
 
-    <footer class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 border-t border-white/5 pt-5 gap-3">
+    <footer class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 border-t border-white/5 pt-5 gap-3">
       <p data-i18n="footer_copyright">© 2026 Flick Analyst. Web3 Intelligence Platform. Not financial advice.</p>
       <div class="flex items-center gap-6">
-        <button type="button" onclick="enterApp()" class="text-amberCore hover:underline font-mono text-xs"><span data-i18n="open_terminal">Open Terminal →</span></button>
+        <button type="button" onclick="enterApp()" class="text-amberCore hover:underline font-semibold text-xs"><span data-i18n="open_terminal">Open Terminal →</span></button>
       </div>
     </footer>
 
@@ -280,44 +281,44 @@
   <!-- =================================================================== -->
   <section id="appDashboard" class="screen-fade hidden opacity-0 scale-95 relative z-10 min-h-screen flex flex-col">
 
-    <header class="border-b border-white/10 bg-void/90 backdrop-blur-xl sticky top-0 z-40 px-4 md:px-8 py-3 flex items-center justify-between gap-4">
+    <header class="border-b border-white/10 bg-void/90 backdrop-blur-xl sticky top-0 z-40 px-4 md:px-8 py-3 flex flex-wrap md:flex-nowrap items-center justify-between gap-x-4 gap-y-2.5">
 
       <div class="flex items-center gap-3">
         <button type="button" onclick="exitToLanding()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all text-xs flex items-center gap-1.5" title="Back to cover" data-i18n-title="back_title">
-          <span aria-hidden="true">←</span> <span class="hidden sm:inline" data-i18n="back_landing">Cover</span>
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg><span class="hidden sm:inline" data-i18n="back_landing">Cover</span>
         </button>
         <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amberCore to-amber-700 flex items-center justify-center text-xs shadow-md shadow-amber-500/20" aria-hidden="true">
-            ⚡
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amberCore to-amber-700 flex items-center justify-center text-black shadow-md shadow-amber-500/20">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
-          <span class="font-display font-bold text-sm tracking-normal text-white hidden md:inline">FLICK <span class="text-amberCore">TERMINAL</span></span>
+          <span class="font-display font-bold text-sm tracking-wide text-white">FLICK <span class="text-amberCore hidden lg:inline">SUPER INTELLIGENCE</span><span class="text-amberCore lg:hidden">SI</span></span>
         </div>
       </div>
 
-      <div class="w-full max-w-md relative">
+      <div class="order-last md:order-none w-full md:max-w-md relative">
         <div class="relative flex items-center">
-          <span class="absolute left-3.5 text-slate-500 text-xs" aria-hidden="true">🔍</span>
+          <span class="absolute left-3.5 text-slate-500"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
           <input type="text" id="dashboardCaInput" placeholder="Paste contract address (CA) or ticker..." data-i18n-ph="ca_placeholder"
             aria-label="Contract address or ticker" autocomplete="off" spellcheck="false"
             onkeydown="if(event.key === 'Enter') triggerScanFromDashboard()"
-            class="w-full bg-slate-900/90 border border-white/10 rounded-xl pl-9 pr-12 py-2 text-xs font-mono text-amberGlow placeholder-slate-500 focus:outline-none focus:border-amberCore transition-all" />
-          <span class="absolute right-3 text-[10px] font-mono text-slate-500 bg-white/5 px-1.5 py-0.5 rounded border border-white/10" aria-hidden="true">/</span>
+            class="w-full bg-slate-900/90 border border-white/10 rounded-xl pl-9 pr-12 py-2.5 md:py-2 text-sm md:text-xs text-amberGlow placeholder-slate-500 focus:outline-none focus:border-amberCore transition-all" />
+          <span class="absolute right-3 hidden md:inline text-[10px] font-mono text-slate-500 bg-white/5 px-1.5 py-0.5 rounded border border-white/10" aria-hidden="true">/</span>
         </div>
       </div>
 
       <div class="flex items-center gap-3">
         <!-- LIVE STATUS POLLING DOT -->
-        <span class="inline-flex items-center gap-1.5 text-[10px] font-mono px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
+        <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
           <span class="relative flex h-2 w-2">
             <span id="livePulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyberGreen opacity-75"></span>
             <span id="liveDot" class="relative inline-flex rounded-full h-2 w-2 bg-cyberGreen"></span>
           </span>
           <span class="hidden sm:inline" data-i18n="live">LIVE</span>
-          <span id="lastUpdated" class="hidden lg:inline text-slate-500"></span>
+          <span id="lastUpdated" class="hidden lg:inline text-slate-500 font-normal"></span>
         </span>
 
         <!-- LANGUAGE SELECTOR TERMINAL -->
-        <select id="langSelectDashboard" onchange="changeLanguage(this.value)" aria-label="Language" class="bg-white/5 hover:bg-white/10 border border-white/15 text-white font-mono text-xs px-2.5 py-1.5 rounded-xl transition-all focus:outline-none cursor-pointer">
+        <select id="langSelectDashboard" onchange="changeLanguage(this.value)" aria-label="Language" class="bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs px-2.5 py-1.5 rounded-xl transition-all focus:outline-none cursor-pointer">
           <option value="en" class="bg-slate-900 text-white">EN</option>
           <option value="es" class="bg-slate-900 text-white">ES</option>
           <option value="zh" class="bg-slate-900 text-white">简体中文</option>
@@ -329,61 +330,66 @@
     <main class="max-w-[1720px] mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 w-full">
 
       <!-- TOKEN HEADER WITH REAL LOGO, NAME & METRICS -->
-      <div class="lg:col-span-12 glass-panel rounded-2xl p-4 md:p-5 flex flex-wrap items-center justify-between gap-4 border-l-4 border-l-amberCore">
+      <div class="lg:col-span-12 order-1 lg:order-none glass-panel rounded-2xl p-4 md:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-l-4 border-l-amberCore">
         <div class="flex items-center gap-4 min-w-0">
           <!-- DYNAMIC LOGO CONTAINER WITH FALLBACK -->
           <div id="tokenLogoContainer" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-700/10 border border-amber-500/30 flex items-center justify-center text-xl shadow-inner overflow-hidden shrink-0">
-            <span aria-hidden="true">⚡</span>
+            <span class="text-amberCore"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
           </div>
           <div class="min-w-0">
             <div class="flex items-center gap-2.5 flex-wrap">
               <h1 class="text-xl font-extrabold text-white font-display tracking-tight" id="activeTokenSymbol">—</h1>
-              <span class="text-xs font-semibold text-slate-400 font-mono truncate max-w-[200px]" id="activeTokenName"></span>
+              <span class="text-xs font-semibold text-slate-400 truncate max-w-[200px]" id="activeTokenName"></span>
               <!-- Chain + DEX of the active pool (replaces the old always-green "Verified Pair" badge) -->
-              <button type="button" id="watchBtn" onclick="toggleWatch()" aria-pressed="false" data-i18n-title="watch_title" title="Add to or remove from your watchlist" class="hidden text-[11px] font-bold px-2.5 py-0.5 rounded-full border bg-white/5 text-slate-300 border-white/15">☆ Watch</button>
+              <button type="button" id="watchBtn" onclick="toggleWatch()" aria-pressed="false" data-i18n-title="watch_title" title="Add to or remove from your watchlist" class="hidden items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border bg-white/5 text-slate-300 border-white/15 [&:not(.hidden)]:inline-flex">Watch</button>
               <span id="activeChainBadge" class="hidden text-[11px] font-medium bg-electricCyan/10 text-electricCyan border border-electricCyan/30 px-2.5 py-0.5 rounded-full font-mono"></span>
             </div>
             <p class="text-xs font-mono text-slate-400 mt-1 flex items-center gap-2">
               <span id="activeTokenCa">CA: —</span>
-              <button type="button" id="copyCaBtn" onclick="copyContractAddress()" class="hidden px-1.5 py-0.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-amberGlow transition-all" title="Copy contract address" data-i18n-title="copy_ca">⧉</button>
+              <button type="button" id="copyCaBtn" onclick="copyContractAddress()" class="hidden px-1.5 py-0.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-amberGlow transition-all" title="Copy contract address" data-i18n-title="copy_ca"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
             </p>
           </div>
         </div>
 
-        <div class="flex items-center gap-6 md:gap-8 text-xs flex-wrap">
-          <div class="border-r border-white/10 pr-6">
-            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5" data-i18n="live_price">Live Price</p>
-            <p class="font-mono text-sm sm:text-base font-bold text-white transition-all duration-300" id="statPrice">—</p>
+        <!-- Stats: 2-column grid on phones, one row on desktop -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:items-center gap-x-6 gap-y-3 text-xs">
+          <div class="lg:border-r lg:border-white/10 lg:pr-6 min-w-0">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold tracking-wider mb-0.5" data-i18n="live_price">Live Price</p>
+            <p class="font-mono text-base font-bold text-white truncate transition-all duration-300" id="statPrice">—</p>
           </div>
-          <div class="border-r border-white/10 pr-6">
-            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5" data-i18n="pool_liquidity">Pool Liquidity</p>
-            <p class="font-mono text-sm sm:text-base font-bold text-white" id="statLiquidity">—</p>
+          <div class="lg:border-r lg:border-white/10 lg:pr-6 min-w-0">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold tracking-wider mb-0.5" data-i18n="pool_liquidity">Pool Liquidity</p>
+            <p class="font-mono text-base font-bold text-white truncate transition-all duration-300" id="statLiquidity">—</p>
           </div>
-          <div class="border-r border-white/10 pr-6">
-            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5" data-i18n="volume_24h">24h Volume</p>
-            <p class="font-mono text-sm sm:text-base font-bold text-white" id="statVolume">—</p>
+          <div class="lg:border-r lg:border-white/10 lg:pr-6 min-w-0">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold tracking-wider mb-0.5" data-i18n="volume_24h">24h Volume</p>
+            <p class="font-mono text-base font-bold text-white truncate transition-all duration-300" id="statVolume">—</p>
           </div>
-          <div class="border-r border-white/10 pr-6">
-            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5" data-i18n="fdv">FDV</p>
-            <p class="font-mono text-sm sm:text-base font-bold text-white" id="statFdv">—</p>
+          <div class="lg:border-r lg:border-white/10 lg:pr-6 min-w-0">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold tracking-wider mb-0.5" data-i18n="fdv">FDV</p>
+            <p class="font-mono text-base font-bold text-white truncate transition-all duration-300" id="statFdv">—</p>
           </div>
-          <div>
-            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5" data-i18n="security_score">Market Health</p>
-            <div class="flex items-center gap-1.5">
+          <div class="lg:border-r lg:border-white/10 lg:pr-6">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold tracking-wider mb-0.5" data-i18n="security_score">Market Health</p>
+            <div class="flex items-baseline gap-1.5">
               <span class="font-mono text-lg font-extrabold text-slate-400" id="statSecurityScore">—</span>
               <span class="text-slate-500 font-mono text-xs">/ 100</span>
             </div>
+          </div>
+          <div>
+            <p class="text-[11px] text-slate-400 uppercase font-semibold tracking-wider mb-0.5" data-i18n="risk_label">Risk</p>
+            <span id="statRisk" class="inline-flex items-center gap-1.5 mt-0.5 px-2.5 py-1 rounded-lg text-xs font-extrabold tracking-wide text-slate-400 bg-white/5 border border-white/10">—</span>
           </div>
         </div>
       </div>
 
       <!-- LEFT COLUMN: REAL-TIME DEX EMBED CHART -->
-      <section class="lg:col-span-7 flex flex-col gap-4">
+      <section class="lg:col-span-7 order-3 lg:order-none flex flex-col gap-4">
 
-        <div class="glass-panel rounded-2xl p-2 h-[460px] md:h-[580px] flex flex-col overflow-hidden relative">
+        <div class="glass-panel rounded-2xl p-2 h-[400px] sm:h-[480px] lg:h-[580px] flex flex-col overflow-hidden relative">
           <div class="flex items-center justify-between px-3 py-2 border-b border-white/10 text-xs">
             <div class="flex items-center gap-2">
-              <span class="font-semibold text-slate-300 font-mono" data-i18n="stream_dex">DexScreener Real-Time Chart</span>
+              <span class="font-semibold text-slate-300" data-i18n="stream_dex">DexScreener Real-Time Chart</span>
             </div>
           </div>
 
@@ -404,10 +410,10 @@
           </div>
           <div class="flex items-center gap-2">
             <a id="raydiumBtn" href="#" target="_blank" rel="noopener noreferrer" class="hidden bg-white/5 hover:bg-white/10 border border-white/10 text-amberGlow font-bold text-xs px-3.5 py-2 rounded-xl transition-all items-center gap-2 [&:not(.hidden)]:inline-flex">
-              ⚡ Raydium
+              Raydium
             </a>
             <a id="jupiterBtn" href="#" target="_blank" rel="noopener noreferrer" class="hidden bg-white/5 hover:bg-white/10 border border-white/10 text-electricCyan font-bold text-xs px-3.5 py-2 rounded-xl transition-all items-center gap-2 [&:not(.hidden)]:inline-flex">
-              🪐 Jupiter
+              Jupiter
             </a>
           </div>
         </div>
@@ -415,37 +421,37 @@
       </section>
 
       <!-- RIGHT COLUMN: AUDIT / REPORTS / TOP HOLDERS -->
-      <section class="lg:col-span-5 flex flex-col gap-4">
+      <section class="lg:col-span-5 order-2 lg:order-none flex flex-col gap-4">
 
-        <div class="glass-panel rounded-2xl p-5 h-[700px] flex flex-col">
+        <div class="glass-panel rounded-2xl p-4 sm:p-5 lg:h-[700px] flex flex-col">
 
-          <div class="flex border-b border-white/10 pb-3 gap-2 text-xs font-bold" role="tablist">
+          <div class="flex border-b border-white/10 pb-3 gap-1.5 sm:gap-2" role="tablist">
             <button type="button" onclick="switchTab('audit')" id="tabBtn-audit" role="tab" aria-selected="true" aria-controls="tabContent-audit"
-              class="flex-1 py-2 px-3 rounded-xl bg-amber-500/10 text-amberGlow border border-amber-500/30 transition-all flex items-center justify-center gap-1.5 font-bold">
-              <span data-i18n="tab_audit">🛡️ Audit</span>
+              class="flex-1 py-2 px-2 rounded-xl transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 font-bold text-[11px] sm:text-xs border bg-amber-500/10 text-amberGlow border-amber-500/30">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-i18n="tab_audit">Audit</span>
             </button>
             <button type="button" onclick="switchTab('ai')" id="tabBtn-ai" role="tab" aria-selected="false" aria-controls="tabContent-ai" tabindex="-1"
-              class="flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent transition-all flex items-center justify-center gap-1.5 font-bold">
-              <span data-i18n="tab_ai">🤖 Reports</span>
+              class="flex-1 py-2 px-2 rounded-xl transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 font-bold text-[11px] sm:text-xs border text-slate-400 hover:text-slate-200 hover:bg-white/5 border-transparent">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span data-i18n="tab_ai">Reports</span>
             </button>
             <button type="button" onclick="switchTab('holders')" id="tabBtn-holders" role="tab" aria-selected="false" aria-controls="tabContent-holders" tabindex="-1"
-              class="flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent transition-all flex items-center justify-center gap-1.5 font-bold">
-              <span data-i18n="tab_holders">📊 Holders</span>
+              class="flex-1 py-2 px-2 rounded-xl transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 font-bold text-[11px] sm:text-xs border text-slate-400 hover:text-slate-200 hover:bg-white/5 border-transparent">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="tab_holders">Holders</span>
             </button>
             <button type="button" onclick="switchTab('watch')" id="tabBtn-watch" role="tab" aria-selected="false" aria-controls="tabContent-watch" tabindex="-1"
-              class="flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent transition-all flex items-center justify-center gap-1.5 font-bold">
-              <span data-i18n="tab_watch">⭐ Watchlist</span>
+              class="flex-1 py-2 px-2 rounded-xl transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 font-bold text-[11px] sm:text-xs border text-slate-400 hover:text-slate-200 hover:bg-white/5 border-transparent">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span data-i18n="tab_watch">Watchlist</span>
               <span id="watchCount" class="hidden min-w-[16px] px-1 rounded-full bg-amberCore text-black text-[9px] leading-4 text-center"></span>
             </button>
           </div>
 
           <!-- TAB 1: AUDIT -->
-          <div id="tabContent-audit" role="tabpanel" aria-labelledby="tabBtn-audit" class="space-y-3.5 overflow-y-auto pr-1 mt-4 flex-1">
+          <div id="tabContent-audit" role="tabpanel" aria-labelledby="tabBtn-audit" class="space-y-3.5 lg:overflow-y-auto lg:pr-1 mt-4 flex-1">
 
             <!-- STATUS BANNER (filled by app.js; neutral until real data arrives) -->
             <div id="honeypotBanner" class="p-3.5 rounded-xl border flex items-center justify-between gap-3 bg-white/5 border-white/10" aria-live="polite">
               <div class="flex items-center gap-3 min-w-0">
-                <span class="text-xl" id="honeypotIcon" aria-hidden="true">⏳</span>
+                <span class="text-slate-400 shrink-0" id="honeypotIcon" aria-hidden="true"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
                 <div class="min-w-0">
                   <p class="text-xs font-bold text-slate-400" id="honeypotTitle">Waiting for data…</p>
                   <p class="text-[11px] text-slate-400" id="honeypotSub"></p>
@@ -482,7 +488,7 @@
 
             <!-- MARKET SIGNALS (DexScreener) -->
             <div class="space-y-1.5">
-              <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500" data-i18n="sec_market">Market signals · DexScreener</p>
+              <p class="text-[11px] uppercase tracking-wider font-bold text-slate-400" data-i18n="sec_market">Market signals · DexScreener</p>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                 <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-0.5">
                   <div class="flex items-center justify-between gap-1">
@@ -510,7 +516,7 @@
 
             <!-- CONTRACT CHECKS (GoPlus) -->
             <div class="space-y-1.5">
-              <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500" data-i18n="sec_contract">Contract checks · GoPlus</p>
+              <p class="text-[11px] uppercase tracking-wider font-bold text-slate-400" data-i18n="sec_contract">Contract checks · GoPlus</p>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                 <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-0.5">
                   <div class="flex items-center justify-between gap-1">
@@ -578,33 +584,33 @@
 
             <div class="pt-1 flex flex-wrap justify-end gap-2">
               <a id="verifyBtn" href="#" target="_blank" rel="noopener noreferrer"
-                class="hidden items-center gap-1.5 px-3.5 py-2 rounded-xl bg-electricCyan/10 hover:bg-electricCyan/20 border border-electricCyan/30 text-electricCyan text-xs font-mono transition-all [&:not(.hidden)]:flex">
+                class="hidden items-center gap-1.5 px-3.5 py-2 rounded-xl bg-electricCyan/10 hover:bg-electricCyan/20 border border-electricCyan/30 text-electricCyan text-xs font-semibold transition-all [&:not(.hidden)]:flex">
                 <span data-i18n="verify">Verify on-chain ↗</span>
               </a>
               <button type="button" onclick="copySocialShareCard()"
-                class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amberCore/10 hover:bg-amberCore/20 border border-amberCore/30 text-amberGlow text-xs font-mono transition-all active:scale-95">
-                <span data-i18n="share_btn">📤 Share Analysis</span>
+                class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amberCore/10 hover:bg-amberCore/20 border border-amberCore/30 text-amberGlow text-xs font-semibold transition-all active:scale-95">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span data-i18n="share_btn">Share Analysis</span>
               </button>
             </div>
 
           </div>
 
           <!-- TAB 2: QUICK REPORTS (CHAT) -->
-          <div id="tabContent-ai" role="tabpanel" aria-labelledby="tabBtn-ai" class="hidden flex-1 flex-col justify-between mt-4 overflow-hidden">
+          <div id="tabContent-ai" role="tabpanel" aria-labelledby="tabBtn-ai" class="hidden flex-1 flex-col justify-between mt-4 lg:overflow-hidden">
 
             <!-- QUICK PROMPT CHIPS -->
-            <div class="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-white/5 text-[10px] scrollbar-none">
-              <button type="button" onclick="quickCopilotQuery('checklist')" class="shrink-0 px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amberGlow transition-all font-mono" data-i18n="chip_checklist">⚖️ Risk Checklist</button>
-              <button type="button" onclick="quickCopilotQuery('safety')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_safety">🛡️ Safety Check</button>
-              <button type="button" onclick="quickCopilotQuery('holders')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_holders">📊 Holders Risk</button>
-              <button type="button" onclick="quickCopilotQuery('liquidity')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_liquidity">💧 Liquidity Depth</button>
-              <button type="button" onclick="quickCopilotQuery('trend')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_price">📈 Technical Trend</button>
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-white/5 text-[11px] scrollbar-none">
+              <button type="button" onclick="quickCopilotQuery('checklist')" class="shrink-0 px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amberGlow transition-all font-medium" data-i18n="chip_checklist">Risk Checklist</button>
+              <button type="button" onclick="quickCopilotQuery('safety')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-medium" data-i18n="chip_safety">Safety Check</button>
+              <button type="button" onclick="quickCopilotQuery('holders')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-medium" data-i18n="chip_holders">Holders Risk</button>
+              <button type="button" onclick="quickCopilotQuery('liquidity')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-medium" data-i18n="chip_liquidity">Liquidity Depth</button>
+              <button type="button" onclick="quickCopilotQuery('trend')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-medium" data-i18n="chip_price">Technical Trend</button>
             </div>
 
             <!-- CHAT BOX CONTAINER -->
-            <div id="copilotChatBox" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs my-2" aria-live="polite">
-              <div class="p-3 bg-slate-900/80 rounded-xl border border-amber-500/20 text-xs font-mono text-slate-200 leading-relaxed" data-i18n="chat_intro">
-                🤖 Ask about this token in your own words (e.g. "is it safe?", "who holds the most?", "should I buy?") or use the buttons above. Answers are built instantly from live data.
+            <div id="copilotChatBox" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs my-2 min-h-[260px] max-h-[60vh] lg:max-h-none" aria-live="polite">
+              <div class="p-3 bg-slate-900/80 rounded-xl border border-amber-500/20 text-xs text-slate-200 leading-relaxed" data-i18n="chat_intro">
+                Ask about this token in your own words (e.g. "is it safe?", "who holds the most?", "should I buy?") or use the buttons above. Answers are built instantly from live data.
               </div>
             </div>
 
@@ -613,7 +619,7 @@
               <input type="text" id="copilotInput" placeholder="Ask about safety, holders, liquidity or trend..." data-i18n-ph="ai_placeholder"
                 aria-label="Question" autocomplete="off" maxlength="300"
                 onkeydown="if(event.key === 'Enter') sendCopilotQuery()"
-                class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-electricCyan font-sans" />
+                class="flex-1 min-w-0 bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 lg:py-2 text-sm lg:text-xs text-white placeholder-slate-500 focus:outline-none focus:border-electricCyan font-sans" />
 
               <button type="button" onclick="sendCopilotQuery()" class="bg-electricCyan hover:brightness-110 text-black font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-md shadow-cyan-500/20 active:scale-95">
                 <span data-i18n="send">Send</span>
@@ -623,14 +629,14 @@
           </div>
 
           <!-- TAB 4: WATCHLIST & PRICE ALERTS (saved in this browser) -->
-          <div id="tabContent-watch" role="tabpanel" aria-labelledby="tabBtn-watch" class="hidden overflow-y-auto pr-1 mt-4 flex-1 space-y-3">
+          <div id="tabContent-watch" role="tabpanel" aria-labelledby="tabBtn-watch" class="hidden lg:overflow-y-auto lg:pr-1 mt-4 flex-1 space-y-3">
             <div id="notifyControl"></div>
             <div id="watchlistBody" class="space-y-2"></div>
-            <p class="text-[10px] text-slate-500 leading-relaxed" data-i18n="watch_note">Prices refresh every minute while Flick is open, even in a background tab. Your list is saved only in this browser.</p>
+            <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="watch_note">Prices refresh every minute while Flick is open, even in a background tab. Your list is saved only in this browser.</p>
           </div>
 
           <!-- TAB 3: TOP HOLDERS (GoPlus) -->
-          <div id="tabContent-holders" role="tabpanel" aria-labelledby="tabBtn-holders" class="hidden overflow-y-auto pr-1 mt-4 flex-1 space-y-3">
+          <div id="tabContent-holders" role="tabpanel" aria-labelledby="tabBtn-holders" class="hidden overflow-x-auto lg:overflow-y-auto lg:pr-1 mt-4 flex-1 space-y-3">
             <div id="holdersSummary" class="hidden p-3 rounded-xl bg-white/5 border border-white/5 space-y-1.5 text-[11px]"></div>
             <table class="w-full text-left text-xs font-mono">
               <thead>

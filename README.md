@@ -1,6 +1,6 @@
-# Flick Analyst ⚡
+# Flick Super Intelligence ⚡
 
-**Flick Analyst** is a real-time Web3 token analytics terminal for crypto traders. Paste a contract address or ticker to get live DEX market data, a market-health score, contract security checks and holder distribution — all from public APIs, with no fabricated data.
+**Flick Super Intelligence** is a real-time Web3 token analytics terminal for crypto traders. Paste a contract address or ticker to get live DEX market data, a market-health score, contract security checks and holder distribution — all from public APIs, with no fabricated data.
 
 ---
 
