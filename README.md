@@ -14,6 +14,8 @@
 - 🤖 **Smart Assistant (free, no AI service):** Ask in your own words ("is it safe?", "who holds the most?", "should I buy?") in English, Spanish or Chinese. A rule-based risk engine combines market and contract signals into a risk checklist with an overall LOW / MEDIUM / HIGH verdict, all computed in the browser.
 - 🔥 **Trending on the landing page:** DexScreener's most boosted tokens (boosts are paid promotions, and the page says so), enriched with real pair data, sorted by 24h volume and flagged for low liquidity or pairs under 24h old. Click a card to analyze it.
 - ⭐ **Watchlist & Price Alerts:** Follow up to 20 tokens with ☆ Watch. Prices refresh every minute while the page is open (even in a background tab), and a toast plus a browser notification fire when a token moves ±5/10/20/50% (configurable per token). Saved only in the browser (localStorage).
+- 📲 **Installable app (PWA):** "Install app" button on Android/desktop (instructions on iPhone), opens offline, and alert notifications go through the service worker so they also work on Android.
+- 🔗 **Link previews:** Open Graph / Twitter card with a 1200×630 image, so shared links show a title, description and picture.
 - 🌐 **Languages:** English, Español and 简体中文 (`EN`, `ES`, `ZH`), auto-detected from the browser.
 - ⚡ **Extras:** Recent searches, shareable deep links (`?ca=…&chain=…`), copy-CA button, `/` keyboard shortcut to search.
 
@@ -40,6 +42,10 @@ functions/api/goplus.js Cloudflare Pages Function: same-origin GoPlus proxy
 flick-logo.webp         Optimized logo (flick-logo.png is the original source)
 favicon.png             Browser tab icon
 apple-touch-icon.png    Home-screen icon for iOS
+manifest.webmanifest    Web app manifest (name, colors, icons)
+sw.js                   Service worker: offline app shell, alert notifications
+icon-*.png              App icons (192, 512 and maskable 512)
+og-image.jpg            Link preview image (1200×630)
 ```
 
 ---
