@@ -434,6 +434,16 @@
           </div>
         </div>
 
+        <!-- MOMENTUM SIGNAL (last 6h of the active pool, see app.js) -->
+        <div class="glass-panel rounded-2xl p-4 space-y-3">
+          <div>
+            <h4 class="flex items-center gap-2 text-sm font-bold text-white font-display"><span class="text-amberCore"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span><span data-i18n="mo_title">Momentum</span></h4>
+            <p class="text-[11px] text-slate-400" data-i18n="mo_desc">Is it gaining or losing strength? Last 6h of the active pool.</p>
+          </div>
+          <div id="momentumBody" class="space-y-2.5" aria-live="polite"><p class="text-[11px] text-slate-400">—</p></div>
+          <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="mo_note">Short-term signal: price direction, buys vs sells and whether volume is speeding up. It can reverse any time.</p>
+        </div>
+
         <!-- PRICE IMPACT SIMULATOR (constant-product estimate, see app.js) -->
         <div class="glass-panel rounded-2xl p-4 space-y-3">
           <div>
@@ -613,6 +623,15 @@
               </div>
             </div>
 
+            <!-- RISK HISTORY (snapshots saved in this browser) -->
+            <div class="space-y-1.5">
+              <p class="text-[11px] uppercase tracking-wider font-bold text-slate-400" data-i18n="sec_history">Risk history · this browser</p>
+              <div id="riskHistoryBox" class="p-3 rounded-xl bg-white/5 border border-white/5 space-y-2">
+                <p class="text-[11px] text-slate-400">—</p>
+              </div>
+              <p class="text-[10px] text-slate-500 leading-relaxed" data-i18n="hist_note">Flick saves a snapshot when you open a token (then every 30 min while it stays open) and every 30 min for tokens in your watchlist. Saved only in this browser.</p>
+            </div>
+
             <!-- SUMMARY -->
             <div class="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-2 text-xs">
               <p class="font-bold text-slate-200 border-b border-white/10 pb-1.5 font-display" data-i18n="security_summary_title">Market & Contract Summary</p>
@@ -655,6 +674,8 @@
               <button type="button" onclick="quickCopilotQuery('holders')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-medium" data-i18n="chip_holders">Holders Risk</button>
               <button type="button" onclick="quickCopilotQuery('liquidity')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-medium" data-i18n="chip_liquidity">Liquidity Depth</button>
               <button type="button" onclick="quickCopilotQuery('trend')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-medium" data-i18n="chip_price">Technical Trend</button>
+              <button type="button" onclick="quickCopilotQuery('momentum')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-medium" data-i18n="chip_momentum">Momentum</button>
+              <button type="button" onclick="quickCopilotQuery('history')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-medium" data-i18n="chip_history">Risk history</button>
             </div>
 
             <!-- CHAT BOX CONTAINER -->

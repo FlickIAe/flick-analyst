@@ -158,6 +158,36 @@ const TRANSLATIONS = {
     chip_price: "Technical Trend",
     tab_watch: "Watchlist",
     tab_compare: "Compare",
+    mo_title: "Momentum",
+    mo_desc: "Is it gaining or losing strength? Last 6h of the active pool.",
+    mo_strong: "Accelerating",
+    mo_up: "Gaining strength",
+    mo_flat: "Neutral",
+    mo_down: "Losing steam",
+    mo_dump: "Falling hard",
+    mo_na: "Not enough recent trading to read momentum.",
+    mo_vol: "Volume 1h",
+    mo_vol_sub: "vs 6h average",
+    mo_buys: "Buys 1h",
+    mo_buys_sub: "6h: {pct}",
+    mo_price: "Price 1h",
+    mo_price_sub: "5m {m5} · 6h {h6}",
+    mo_note: "Short-term signal: price direction, buys vs sells and whether volume is speeding up. It can reverse any time.",
+    chip_momentum: "Momentum",
+    chip_history: "Risk history",
+    cmp_r_momentum: "Momentum",
+    sec_history: "Risk history · this browser",
+    hist_since: "Since {date} · {n} snapshots",
+    hist_first: "Tracking started. Flick will compare each new snapshot with the previous ones and list what changed here.",
+    hist_none: "No relevant changes since {date}.",
+    hist_note: "Flick saves a snapshot when you open a token (then every 30 min while it stays open) and every 30 min for tokens in your watchlist. Saved only in this browser.",
+    hist_risk: "Overall risk {from} → {to}",
+    hist_contract: "Contract checks {from} → {to}",
+    hist_liq: "Liquidity {pct} ({from} → {to})",
+    hist_creator_sold: "The creator sold or moved all their tokens",
+    hist_creator: "Creator holdings {from} → {to}",
+    hist_top10: "Top 10 holders {from} → {to}",
+    hist_holders: "Holders {from} → {to}",
     cmp_add_ph: "Paste a contract address or ticker",
     cmp_add: "Add",
     cmp_quick: "Quick add:",
@@ -433,6 +463,36 @@ const TRANSLATIONS = {
     chip_price: "技术走势",
     tab_watch: "自选",
     tab_compare: "对比",
+    mo_title: "动能",
+    mo_desc: "在增强还是减弱？基于当前池子最近6小时。",
+    mo_strong: "加速中",
+    mo_up: "增强",
+    mo_flat: "中性",
+    mo_down: "减弱",
+    mo_dump: "急跌",
+    mo_na: "近期交易不足，无法判断动能。",
+    mo_vol: "1小时交易量",
+    mo_vol_sub: "对比6小时平均",
+    mo_buys: "1小时买入",
+    mo_buys_sub: "6小时：{pct}",
+    mo_price: "1小时价格",
+    mo_price_sub: "5分 {m5} · 6小时 {h6}",
+    mo_note: "短期信号：价格方向、买卖对比以及交易量是否加速。随时可能反转。",
+    chip_momentum: "动能",
+    chip_history: "风险历史",
+    cmp_r_momentum: "动能",
+    sec_history: "风险历史 · 此浏览器",
+    hist_since: "自 {date} 起 · {n} 个快照",
+    hist_first: "已开始记录。Flick 会将每个新快照与之前的对比，并在此列出变化。",
+    hist_none: "自 {date} 以来没有重要变化。",
+    hist_note: "打开代币时 Flick 会保存快照（保持打开时每30分钟一次），自选代币每30分钟一次。仅保存在此浏览器中。",
+    hist_risk: "整体风险 {from} → {to}",
+    hist_contract: "合约检测 {from} → {to}",
+    hist_liq: "流动性 {pct}（{from} → {to}）",
+    hist_creator_sold: "创建者已卖出或转出全部代币",
+    hist_creator: "创建者持有 {from} → {to}",
+    hist_top10: "前10持币 {from} → {to}",
+    hist_holders: "持币人数 {from} → {to}",
     cmp_add_ph: "粘贴合约地址或代币符号",
     cmp_add: "添加",
     cmp_quick: "快速添加：",
@@ -708,6 +768,36 @@ const TRANSLATIONS = {
     chip_price: "Tendencia técnica",
     tab_watch: "Watchlist",
     tab_compare: "Comparar",
+    mo_title: "Impulso",
+    mo_desc: "¿Gana o pierde fuerza? Últimas 6h del pool activo.",
+    mo_strong: "Acelerando",
+    mo_up: "Ganando fuerza",
+    mo_flat: "Neutral",
+    mo_down: "Perdiendo fuerza",
+    mo_dump: "Cayendo fuerte",
+    mo_na: "No hay suficiente actividad reciente para medir el impulso.",
+    mo_vol: "Volumen 1h",
+    mo_vol_sub: "vs promedio 6h",
+    mo_buys: "Compras 1h",
+    mo_buys_sub: "6h: {pct}",
+    mo_price: "Precio 1h",
+    mo_price_sub: "5m {m5} · 6h {h6}",
+    mo_note: "Señal de corto plazo: hacia dónde va el precio, compras vs ventas y si el volumen se acelera. Se puede dar vuelta en cualquier momento.",
+    chip_momentum: "Impulso",
+    chip_history: "Historial de riesgo",
+    cmp_r_momentum: "Impulso",
+    sec_history: "Historial de riesgo · este navegador",
+    hist_since: "Desde {date} · {n} registros",
+    hist_first: "Empezó el seguimiento. Flick va a comparar cada registro nuevo con los anteriores y acá vas a ver qué cambió.",
+    hist_none: "Sin cambios importantes desde {date}.",
+    hist_note: "Flick guarda un registro cuando abrís un token (y cada 30 min mientras siga abierto) y cada 30 min para los tokens de tu watchlist. Se guarda solo en este navegador.",
+    hist_risk: "Riesgo general {from} → {to}",
+    hist_contract: "Chequeos del contrato {from} → {to}",
+    hist_liq: "Liquidez {pct} ({from} → {to})",
+    hist_creator_sold: "El creador vendió o movió todos sus tokens",
+    hist_creator: "Lo que tiene el creador {from} → {to}",
+    hist_top10: "Top 10 holders {from} → {to}",
+    hist_holders: "Holders {from} → {to}",
     cmp_add_ph: "Pegá un contrato o ticker",
     cmp_add: "Agregar",
     cmp_quick: "Agregar rápido:",
@@ -904,7 +994,7 @@ function blankToken() {
   return {
     loaded: false, symbol: '—', quoteSymbol: '', name: '', ca: '', chainId: '', dexId: '',
     pairAddress: '', pairUrl: '', price: 0, priceChange: 0, changes: {}, liquidity: 0, volume: 0, fdv: 0,
-    imageUrl: '', buys: null, sells: null, pairCreatedAt: null, socials: 0, score: 0,
+    imageUrl: '', buys: null, sells: null, pairCreatedAt: null, socials: 0, score: 0, vols: {}, tx: {},
     parts: { liq: 0, vol: 0, age: 0, bal: 0 }, updatedAt: 0
   };
 }
@@ -952,6 +1042,8 @@ function changeLanguage(lang) {
   renderSimulator();
   renderTelegramCard();
   renderCompare();
+  renderMomentum();
+  renderRiskHistory();
   if (tgLinked) scheduleTgSync();
 }
 
@@ -1177,6 +1269,8 @@ function applyMetrics(pair, t = currentToken) {
   t.fdv = pair.fdv || pair.marketCap || 0;
   t.buys = pair.txns?.h24?.buys ?? null;
   t.sells = pair.txns?.h24?.sells ?? null;
+  t.vols = { m5: num(pair.volume?.m5), h1: num(pair.volume?.h1), h6: num(pair.volume?.h6), h24: num(pair.volume?.h24) };
+  t.tx = { h1: pair.txns?.h1 || null, h6: pair.txns?.h6 || null };
   t.pairCreatedAt = pair.pairCreatedAt || null;
   t.socials = (pair.info?.websites?.length || 0) + (pair.info?.socials?.length || 0);
   t.updatedAt = Date.now();
@@ -1255,6 +1349,7 @@ function updateUI(full = true) {
   sc.className = `font-mono text-lg font-extrabold ${TXT[level(t.score)]}`;
   renderAuditTab();
   renderLastUpdated();
+  renderMomentum();
   if (!full) return;
 
   $('activeTokenSymbol').textContent = `${t.symbol} / ${t.quoteSymbol}`;
@@ -1923,6 +2018,8 @@ function renderAuditTab() {
   const t = currentToken;
   if (!$('honeypotBanner')) return;
   if (compareTabVisible()) renderCompare();
+  trackCurrentHistory();
+  renderRiskHistory();
 
   renderRiskBadge();
   renderSimulator();
@@ -2146,7 +2243,8 @@ function reportText(type) {
     L('• "Who holds the most?"', '• “谁持有最多？”', '• "¿Quién tiene más tokens?"'),
     L('• "Should I buy?"', '• “值得买吗？”', '• "¿Me conviene comprar?"'),
     L('• "Are there taxes?" / "Can they mint more?"', '• “有税吗？” / “能增发吗？”', '• "¿Tiene impuestos?" / "¿Pueden crear más tokens?"'),
-    L('• "How is the price doing?" / "Is the liquidity locked?"', '• “价格走势如何？” / “流动性锁了吗？”', '• "¿Cómo viene el precio?" / "¿La liquidez está bloqueada?"')
+    L('• "How is the price doing?" / "Is the liquidity locked?"', '• “价格走势如何？” / “流动性锁了吗？”', '• "¿Cómo viene el precio?" / "¿La liquidez está bloqueada?"'),
+    L('• "Is it gaining momentum?" / "What changed?"', '• “动能在增强吗？” / “有什么变化？”', '• "¿Tiene impulso?" / "¿Qué cambió?"')
   ];
 
   switch (type) {
@@ -2254,6 +2352,30 @@ function reportText(type) {
       ...about(['trend'])
     ].filter(Boolean).join('\n');
 
+    case 'momentum': {
+      const m = computeMomentum(t);
+      if (!m) return [L(`⚡ Momentum of ${s}`, `⚡ ${s} 动能`, `⚡ Impulso de ${s}`), tr('mo_na')].join('\n');
+      return [
+        L(`⚡ Momentum of ${s}`, `⚡ ${s} 动能`, `⚡ Impulso de ${s}`),
+        `${{ strong: '🚀', up: '🟢', flat: '⚪', down: '🟠', dump: '🔴' }[m.level]} ${tr(`mo_${m.level}`)} (${m.score > 0 ? '+' : ''}${m.score})`, '',
+        ...momentumReasons(t, m).map(r => `• ${r}`), '',
+        L('Short-term signal from the last 6h of the main pool: it can reverse any time. Not financial advice.', '基于主池最近6小时的短期信号，随时可能反转。不构成投资建议。', 'Señal de corto plazo de las últimas 6h del pool principal: se puede dar vuelta en cualquier momento. No es asesoramiento financiero.')
+      ].join('\n');
+    }
+
+    case 'history': {
+      const list = riskHistory[tokenKey(t)] || [];
+      const head = L(`🕓 Risk history of ${s}`, `🕓 ${s} 风险历史`, `🕓 Historial de riesgo de ${s}`);
+      if (list.length < 2) return [head, tr('hist_first')].join('\n');
+      const events = historyEvents(list).reverse().slice(0, 8);
+      return [
+        head,
+        tr('hist_since', { date: histDate(list[0].at), n: list.length }), '',
+        ...(events.length ? events.map(e => `${e.worse ? '▼' : '▲'} ${histDate(e.at)} · ${tr(e.key, e.vars)}`) : [tr('hist_none', { date: histDate(list[0].at) })]), '',
+        tr('hist_note')
+      ].join('\n');
+    }
+
     case 'activity': return [
       L(`📊 Trading activity for ${s}`, `📊 ${s} 交易活跃度`, `📊 Actividad de ${s}`),
       `• ${L('Pair age', '交易对年龄', 'Antigüedad del par')}: ${formatAge(days)}`,
@@ -2299,6 +2421,8 @@ const INTENTS = [
   ['permissions', /\bmint|emitir|crear mas|inflacion|freeze|congel|blacklist|lista negra|proxy|增发|冻结|黑名单|权限/],
   ['holders', /holder|whale|ballena|concentra|distribu|wallet|billetera|quien tiene|who (holds|owns)|持币|巨鲸|集中|分布|钱包|谁持有/],
   ['liquidity', /\bliq|pool|\blp\b|profundidad|depth|流动|池/],
+  ['momentum', /momentum|impulso|fuerza|acelera|traccion|calentando|enfriando|hype|动能|势头|加速/],
+  ['history', /historial|history|ha cambiado|cambio el riesgo|como cambio|que cambio|changed|evolucion|evolution|历史|变化/],
   ['trend', /price|precio|trend|tendencia|pump|dump|chart|grafic|sube|subio|baja|bajo|cae|cayo|volatil|走势|价格|涨|跌/],
   ['activity', /volum|actividad|activity|trading|transacc|\btxn|compras|ventas|\bbuys\b|\bsells\b|edad|antigu|nuevo|\bnew\b|\bold\b|\bage\b|launch|lanz|creado|created|cuando se creo|cuando (se )?lanzo|how old|交易量|成交|年龄|活跃/],
   ['summary', /resumen|summary|overview|analiza|analisis|analysis|que es|what is|\binfo|概况|总结|分析|介绍/],
@@ -3020,6 +3144,250 @@ function feedCard(item, isLaunch = false) {
 }
 
 // ===================================================================
+// 11e. MOMENTUM SIGNAL (last 6h of the active pool, DexScreener)
+// Is the token gaining or losing strength? Combines the price direction
+// (5m / 1h / 6h), who dominates the last hour (buys vs sells, and vs the
+// 6h average) and whether volume is speeding up or fading.
+// ===================================================================
+const moLevel = score => (score >= 40 ? 'strong' : score >= 15 ? 'up' : score > -15 ? 'flat' : score > -40 ? 'down' : 'dump');
+const MO_STYLE = {
+  strong: { txt: 'text-cyberGreen', bar: 'bg-cyberGreen' },
+  up: { txt: 'text-cyberGreen', bar: 'bg-cyberGreen' },
+  flat: { txt: 'text-slate-300', bar: 'bg-slate-500' },
+  down: { txt: 'text-amberGlow', bar: 'bg-amberGlow' },
+  dump: { txt: 'text-crimsonRisk', bar: 'bg-crimsonRisk' }
+};
+
+function computeMomentum(t) {
+  const v6 = t.vols?.h6, v1 = t.vols?.h1;
+  const tx6 = t.tx?.h6, tx1 = t.tx?.h1;
+  const n6 = tx6 ? (tx6.buys || 0) + (tx6.sells || 0) : 0;
+  if (!(v6 >= 1000) || n6 < 10) return null; // not enough recent trading to say anything
+  const n1 = tx1 ? (tx1.buys || 0) + (tx1.sells || 0) : 0;
+  const buy6 = tx6.buys / n6;
+  const buy1 = n1 >= 5 ? tx1.buys / n1 : null;
+  const volRatio = v1 != null ? v1 / (v6 / 6) : null;
+  const ch = t.changes || {};
+
+  let score = 0;
+  if (ch.h1 != null) score += ch.h1 > 5 ? 25 : ch.h1 > 1 ? 10 : ch.h1 < -5 ? -25 : ch.h1 < -1 ? -10 : 0;
+  if (ch.m5 != null) score += ch.m5 > 1 ? 10 : ch.m5 < -1 ? -10 : 0;
+  if (ch.h6 != null) score += ch.h6 > 10 ? 15 : ch.h6 > 2 ? 5 : ch.h6 < -10 ? -15 : ch.h6 < -2 ? -5 : 0;
+  if (buy1 != null) {
+    score += buy1 >= 0.6 ? 15 : buy1 <= 0.4 ? -15 : 0;
+    const d = buy1 - buy6;
+    score += d >= 0.08 ? 10 : d <= -0.08 ? -10 : 0;
+  }
+  if (volRatio != null) {
+    if (volRatio >= 1.5) score *= 1.3;        // moves backed by rising volume count more
+    else if (volRatio <= 0.6) score = score * 0.7 - 10; // interest is fading
+  }
+  score = Math.max(-100, Math.min(100, Math.round(score)));
+  return { score, level: moLevel(score), volRatio, buy1, buy6 };
+}
+
+// Plain-language reasons, used by the chat
+function momentumReasons(t, m) {
+  const out = [];
+  if (m.volRatio != null) {
+    if (m.volRatio >= 1.5) out.push(L(`Volume is speeding up: the last hour is ${m.volRatio.toFixed(1)}x the 6h average.`, `交易量在加速：最近1小时是6小时平均的 ${m.volRatio.toFixed(1)} 倍。`, `El volumen se acelera: la última hora es ${m.volRatio.toFixed(1)} veces el promedio de 6h.`));
+    else if (m.volRatio <= 0.6) out.push(L(`Volume is fading: the last hour is only ${m.volRatio.toFixed(1)}x the 6h average.`, `交易量在减弱：最近1小时仅为6小时平均的 ${m.volRatio.toFixed(1)} 倍。`, `El volumen se apaga: la última hora es solo ${m.volRatio.toFixed(1)} veces el promedio de 6h.`));
+    else out.push(L(`Volume is steady (${m.volRatio.toFixed(1)}x the 6h average).`, `交易量平稳（6小时平均的 ${m.volRatio.toFixed(1)} 倍）。`, `El volumen está estable (${m.volRatio.toFixed(1)} veces el promedio de 6h).`));
+  }
+  if (m.buy1 != null) {
+    const b1 = Math.round(m.buy1 * 100), b6 = Math.round(m.buy6 * 100);
+    if (m.buy1 >= 0.6) out.push(L(`Buyers dominate the last hour (${b1}% of trades; 6h: ${b6}%).`, `最近1小时买方占优（${b1}% 的交易；6小时：${b6}%）。`, `Los compradores dominan la última hora (${b1}% de las operaciones; 6h: ${b6}%).`));
+    else if (m.buy1 <= 0.4) out.push(L(`Sellers dominate the last hour (buys ${b1}%; 6h: ${b6}%).`, `最近1小时卖方占优（买入 ${b1}%；6小时：${b6}%）。`, `Los vendedores dominan la última hora (compras ${b1}%; 6h: ${b6}%).`));
+    else out.push(L(`Buys and sells are balanced in the last hour (buys ${b1}%; 6h: ${b6}%).`, `最近1小时买卖均衡（买入 ${b1}%；6小时：${b6}%）。`, `Compras y ventas parejas en la última hora (compras ${b1}%; 6h: ${b6}%).`));
+  }
+  out.push(`${L('Price', '价格', 'Precio')}: 5m ${formatPct(t.changes.m5)} · 1h ${formatPct(t.changes.h1)} · 6h ${formatPct(t.changes.h6)}`);
+  return out;
+}
+
+function renderMomentum() {
+  const box = $('momentumBody');
+  if (!box) return;
+  const t = currentToken;
+  if (!t.loaded) return box.replaceChildren(el('p', 'text-[11px] text-slate-400', '—'));
+  const m = computeMomentum(t);
+  if (!m) return box.replaceChildren(el('p', 'text-[11px] text-slate-400', tr('mo_na')));
+  const style = MO_STYLE[m.level];
+
+  const head = el('div', 'flex items-baseline justify-between gap-2');
+  head.append(
+    el('p', `text-base font-extrabold font-display ${style.txt}`, tr(`mo_${m.level}`)),
+    el('span', `font-mono text-xs font-bold ${style.txt}`, `${m.score > 0 ? '+' : ''}${m.score}`)
+  );
+  // Gauge: fills from the center to the left (losing strength) or right (gaining)
+  const gauge = el('div', 'relative h-1.5 rounded-full bg-white/10 overflow-hidden');
+  const fill = el('div', `absolute top-0 bottom-0 ${style.bar}`);
+  const half = Math.abs(m.score) / 2;
+  fill.style.left = m.score >= 0 ? '50%' : `${50 - half}%`;
+  fill.style.width = `${half}%`;
+  gauge.append(fill, el('div', 'absolute top-0 bottom-0 left-1/2 w-px bg-white/40'));
+
+  const tile = (label, value, sub, cls = 'text-slate-200') => {
+    const d = el('div', 'p-2 rounded-xl bg-white/5 border border-white/5 min-w-0');
+    d.append(el('p', 'text-[10px] text-slate-400 truncate', label), el('p', `font-mono text-xs font-bold truncate ${cls}`, value), el('p', 'text-[10px] text-slate-500 font-mono truncate', sub));
+    return d;
+  };
+  const chCls = v => (v == null ? 'text-slate-400' : v >= 0 ? 'text-cyberGreen' : 'text-crimsonRisk');
+  const tiles = el('div', 'grid grid-cols-3 gap-2');
+  tiles.append(
+    tile(tr('mo_vol'), m.volRatio == null ? 'N/A' : `${m.volRatio.toFixed(1)}x`, tr('mo_vol_sub'), m.volRatio >= 1.5 ? 'text-cyberGreen' : m.volRatio != null && m.volRatio <= 0.6 ? 'text-amberGlow' : 'text-slate-200'),
+    tile(tr('mo_buys'), m.buy1 == null ? 'N/A' : `${Math.round(m.buy1 * 100)}%`, tr('mo_buys_sub', { pct: `${Math.round(m.buy6 * 100)}%` }), m.buy1 == null ? 'text-slate-400' : m.buy1 >= 0.6 ? 'text-cyberGreen' : m.buy1 <= 0.4 ? 'text-crimsonRisk' : 'text-slate-200'),
+    tile(tr('mo_price'), formatPct(t.changes.h1), tr('mo_price_sub', { m5: formatPct(t.changes.m5), h6: formatPct(t.changes.h6) }), chCls(t.changes.h1))
+  );
+  box.replaceChildren(head, gauge, tiles);
+}
+
+// ===================================================================
+// 11f. RISK HISTORY (snapshots saved in this browser)
+// A snapshot is saved when a token is opened (then at most every 30 min
+// while it stays open) and every 30 min for watchlist tokens. Comparing
+// them shows what changed: risk level, contract checks, liquidity,
+// creator holdings, top 10 and holder count.
+// ===================================================================
+const HIST_KEY = 'flickRiskHistory';
+const HIST_TOKENS = 40;
+const HIST_POINTS = 60;
+const HIST_GAP = 30 * 60e3;
+let riskHistory = loadRiskHistory();
+
+function loadRiskHistory() {
+  const v = safeStorage(() => JSON.parse(localStorage.getItem(HIST_KEY) || '{}'));
+  return v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+}
+
+function saveRiskHistory() {
+  const keys = Object.keys(riskHistory);
+  if (keys.length > HIST_TOKENS) {
+    keys.sort((a, b) => (riskHistory[b].at(-1)?.at || 0) - (riskHistory[a].at(-1)?.at || 0))
+      .slice(HIST_TOKENS).forEach(k => delete riskHistory[k]);
+  }
+  safeStorage(() => localStorage.setItem(HIST_KEY, JSON.stringify(riskHistory)));
+}
+
+// Last known (non-empty) value of a field
+const lastKnown = (list, f) => { for (let i = list.length - 1; i >= 0; i--) if (list[i][f] != null) return list[i][f]; return null; };
+
+function recordHistory(t, st) {
+  if (!t.loaded && !t.ca) return;
+  if (st.status === 'loading' || st.status === 'idle' || st.data?.creator?.pending) return;
+  const key = tokenKey(t);
+  const list = riskHistory[key] || [];
+  // Fill holders/creator gaps with the last known values so the verdict stays comparable
+  let data = st.status === 'ok' ? { ...st.data, creator: { ...(st.data.creator || {}) } } : null;
+  if (data) {
+    if (data.top10 == null) data.top10 = lastKnown(list, 't10');
+    if (data.creator.pct == null) data.creator.pct = lastKnown(list, 'cr');
+  }
+  const stx = data ? { status: 'ok', data } : st;
+  const snap = {
+    at: Date.now(),
+    v: riskVerdict(riskFindings(t, stx), stx),
+    c: data ? contractRisk(data) : null,
+    liq: Math.round(t.liquidity || 0),
+    s: t.score ?? null,
+    t10: data?.top10 != null ? +data.top10.toFixed(2) : null,
+    cr: data?.creator?.pct != null ? +data.creator.pct.toFixed(3) : null,
+    h: data?.holderCount ?? null
+  };
+  const last = list.at(-1);
+  if (last && snap.at - last.at < HIST_GAP && last.v === snap.v && last.c === snap.c) {
+    let changed = false;
+    ['t10', 'cr', 'h'].forEach(f => { if (last[f] == null && snap[f] != null) { last[f] = snap[f]; changed = true; } });
+    if (changed) saveRiskHistory();
+    return changed;
+  }
+  list.push(snap);
+  riskHistory[key] = list.slice(-HIST_POINTS);
+  saveRiskHistory();
+  return true;
+}
+
+// What changed between snapshots (each field against its previous known value)
+function historyEvents(list) {
+  const out = [];
+  const RANK = { low: 0, medium: 1, high: 2, ok: 0, warn: 1, bad: 2 };
+  for (let i = 1; i < list.length; i++) {
+    const a = list[i], prev = list.slice(0, i);
+    const p = f => lastKnown(prev, f);
+    const push = (worse, key, vars) => out.push({ at: a.at, worse, key, vars });
+    if (p('v') && a.v && a.v !== p('v')) push(RANK[a.v] > RANK[p('v')], 'hist_risk', { from: tr(`rv_${p('v')}`), to: tr(`rv_${a.v}`) });
+    if (p('c') && a.c && a.c !== p('c')) push(RANK[a.c] > RANK[p('c')], 'hist_contract', { from: tr(`risk_${p('c')}`), to: tr(`risk_${a.c}`) });
+    const l0 = p('liq');
+    if (l0 > 0 && a.liq != null && Math.abs(a.liq - l0) >= 1000 && Math.abs(a.liq - l0) / l0 >= 0.25) {
+      push(a.liq < l0, 'hist_liq', { pct: formatPct(((a.liq - l0) / l0) * 100, 0), from: formatUsd(l0), to: formatUsd(a.liq) });
+    }
+    const c0 = p('cr');
+    if (c0 != null && a.cr != null) {
+      if (c0 >= 1 && a.cr < 0.01) push(true, 'hist_creator_sold', {});
+      else if (Math.abs(a.cr - c0) >= 5) push(a.cr > c0, 'hist_creator', { from: pctTxt(c0), to: pctTxt(a.cr) });
+    }
+    const t0 = p('t10');
+    if (t0 != null && a.t10 != null && Math.abs(a.t10 - t0) >= 10) push(a.t10 > t0, 'hist_top10', { from: pctTxt(t0), to: pctTxt(a.t10) });
+    const h0 = p('h');
+    if (h0 > 0 && a.h != null && Math.abs(a.h - h0) >= 50 && Math.abs(a.h - h0) / h0 >= 0.25) push(a.h < h0, 'hist_holders', { from: formatCompact(h0), to: formatCompact(a.h) });
+  }
+  return out;
+}
+
+const histDate = ms => new Intl.DateTimeFormat({ zh: 'zh-CN', es: 'es' }[currentLang] || 'en', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(ms);
+
+// Liquidity line with one dot per snapshot, colored by the risk level at that moment
+function historySparkline(list) {
+  const W = 300, H = 44, P = 4;
+  const vals = list.map(s => s.liq || 0);
+  const max = Math.max(...vals), min = Math.min(...vals);
+  const x = i => P + (i * (W - 2 * P)) / Math.max(1, list.length - 1);
+  const y = v => (max === min ? H / 2 : H - P - ((v - min) * (H - 2 * P)) / (max - min));
+  const color = { low: '#10B981', medium: '#F97316', high: '#FF3366' };
+  const pts = list.map((s, i) => `${x(i).toFixed(1)},${y(vals[i]).toFixed(1)}`).join(' ');
+  const t = document.createElement('template');
+  t.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-11" preserveAspectRatio="none" aria-hidden="true">`
+    + `<polyline points="${pts}" fill="none" stroke="rgba(148,163,184,0.5)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>`
+    + list.map((s, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(vals[i]).toFixed(1)}" r="2.5" fill="${color[s.v] || '#94a3b8'}"/>`).join('')
+    + '</svg>';
+  return t.content.firstChild;
+}
+
+function renderRiskHistory() {
+  const box = $('riskHistoryBox');
+  if (!box) return;
+  const t = currentToken;
+  const list = t.loaded ? riskHistory[tokenKey(t)] || [] : [];
+  if (!list.length) return box.replaceChildren(el('p', 'text-[11px] text-slate-400', '—'));
+  const parts = [];
+  if (list.length < 2) {
+    parts.push(el('p', 'text-[11px] text-slate-400 leading-relaxed', tr('hist_first')));
+  } else {
+    const legend = el('div', 'flex items-center justify-between gap-2 text-[10px] text-slate-500');
+    legend.append(el('span', '', tr('hist_since', { date: histDate(list[0].at), n: list.length })), el('span', 'font-mono', `${tr('t_liq')} ${formatUsd(list.at(-1).liq)}`));
+    parts.push(historySparkline(list), legend);
+    const events = historyEvents(list).reverse().slice(0, 6);
+    if (!events.length) parts.push(el('p', 'text-[11px] text-slate-400', tr('hist_none', { date: histDate(list[0].at) })));
+    else {
+      const ul = el('ul', 'space-y-1');
+      ul.append(...events.map(e => {
+        const li = el('li', `flex gap-2 text-[11px] ${e.worse ? 'text-crimsonRisk' : 'text-cyberGreen'}`);
+        li.append(el('span', 'shrink-0 text-slate-500 font-mono', histDate(e.at)), el('span', 'min-w-0', `${e.worse ? '▼' : '▲'} ${tr(e.key, e.vars)}`));
+        return li;
+      }));
+      parts.push(ul);
+    }
+  }
+  box.replaceChildren(...parts);
+}
+
+// Saves a snapshot of the token on screen when its checks are complete
+function trackCurrentHistory() {
+  const t = currentToken;
+  if (!t.loaded || security.key !== tokenKey(t)) return;
+  if (recordHistory(t, security)) renderRiskHistory();
+}
+
+// ===================================================================
 // 12. WATCHLIST & PRICE ALERTS (localStorage; checked every minute while the page is open)
 // ===================================================================
 const WATCH_KEY = 'flickWatchlist';
@@ -3273,7 +3641,12 @@ async function checkRiskSignals(w, pair, own) {
       const result = d?.result || {};
       const raw = result[w.ca] || result[w.ca.toLowerCase()] || Object.values(result)[0];
       if (raw && typeof raw === 'object') {
-        const risk = contractRisk(normalizeSecurity(raw, w.chainId === 'solana'));
+        const sec = normalizeSecurity(raw, w.chainId === 'solana');
+        const risk = contractRisk(sec);
+        const t = blankToken();
+        Object.assign(t, { ca: w.ca, chainId: w.chainId, symbol: w.symbol, loaded: true });
+        applyMetrics(pair, t);
+        recordHistory(t, { status: 'ok', data: sec });
         if (w.lastRisk && RISK_RANK[risk] > RISK_RANK[w.lastRisk]) fire('contract', tr('ra_contract', { s, level: tr(`risk_${risk}`) }));
         w.lastRisk = risk;
       }
@@ -3439,6 +3812,7 @@ const CMP_ROWS = [
   { k: 'cmp_r_age', v: c => ageDays(c.t), f: formatAge, better: 'high' },
   { k: 'cmp_r_buys', v: c => (c.t.buys != null && c.t.sells != null && c.t.buys + c.t.sells > 0 ? (c.t.buys / (c.t.buys + c.t.sells)) * 100 : null), f: v => `${Math.round(v)}%` },
   { k: 'cmp_r_health', v: c => c.t.score, f: v => `${v}/100`, better: 'high' },
+  { k: 'cmp_r_momentum', v: c => computeMomentum(c.t)?.score ?? null, f: v => `${v >= 15 ? '▲' : v <= -15 ? '▼' : '•'} ${v > 0 ? '+' : ''}${v}`, better: 'high', color: v => MO_STYLE[moLevel(v)].txt },
   { section: 'cmp_security' },
   { k: 'cmp_r_risk', v: c => ({ low: 0, medium: 1, high: 2 })[c.verdict], f: v => tr(`rv_${['low', 'medium', 'high'][v]}`), better: 'low', color: v => ['text-cyberGreen', 'text-amberGlow', 'text-crimsonRisk'][v] },
   { k: 'cmp_r_tax', v: c => (c.s && (c.s.buyTax != null || c.s.sellTax != null) ? Math.max(c.s.buyTax ?? 0, c.s.sellTax ?? 0) : null), f: (v, c) => `${c.s.buyTax == null ? '?' : pctTxt(c.s.buyTax)} / ${c.s.sellTax == null ? '?' : pctTxt(c.s.sellTax)}`, better: 'low' },
