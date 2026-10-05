@@ -1354,20 +1354,98 @@ async function solanaTopHolders(mint, supply) {
     .sort((a, b) => b.pct - a.pct);
 }
 
-async function solanaCreatorWallet(mint) {
-  let before;
-  for (let page = 0; page < SOL_SIG_PAGES; page++) {
-    const sigs = await solRpc('getSignaturesForAddress', [mint, before ? { limit: 1000, before } : { limit: 1000 }]);
-    if (!Array.isArray(sigs) || !sigs.length) return null;
+// Metaplex metadata account of a mint (a PDA). It is written when the token is
+// created and almost never touched again, so its first transaction is easy to
+// reach even for tokens with millions of trades.
+const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+const METADATA_PROGRAM = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s';
+
+function b58decode(str) {
+  let n = 0n;
+  for (const ch of str) {
+    const v = B58.indexOf(ch);
+    if (v < 0) throw new Error('bad base58');
+    n = n * 58n + BigInt(v);
+  }
+  const bytes = [];
+  while (n > 0n) { bytes.unshift(Number(n & 255n)); n >>= 8n; }
+  for (const ch of str) { if (ch !== '1') break; bytes.unshift(0); }
+  return Uint8Array.from(bytes);
+}
+
+function b58encode(bytes) {
+  let n = 0n;
+  for (const b of bytes) n = (n << 8n) | BigInt(b);
+  let out = '';
+  while (n > 0n) { out = B58[Number(n % 58n)] + out; n /= 58n; }
+  for (const b of bytes) { if (b !== 0) break; out = '1' + out; }
+  return out;
+}
+
+// ed25519 point check (a valid PDA must NOT be a point on the curve)
+const ED_P = 2n ** 255n - 19n;
+const modP = x => ((x % ED_P) + ED_P) % ED_P;
+function powP(b, e) {
+  let r = 1n;
+  b = modP(b);
+  while (e > 0n) { if (e & 1n) r = (r * b) % ED_P; b = (b * b) % ED_P; e >>= 1n; }
+  return r;
+}
+const ED_D = modP(-121665n * powP(121666n, ED_P - 2n));
+function isOnCurve(bytes) {
+  let y = 0n;
+  for (let i = 31; i >= 0; i--) y = (y << 8n) | BigInt(i === 31 ? bytes[i] & 0x7f : bytes[i]);
+  const y2 = modP(y * y);
+  const w = modP((y2 - 1n) * powP(ED_D * y2 + 1n, ED_P - 2n)); // x² = (y²-1)/(d·y²+1)
+  return w === 0n || powP(w, (ED_P - 1n) / 2n) === 1n;
+}
+
+async function findProgramAddress(seeds, programId) {
+  const prog = b58decode(programId);
+  const marker = new TextEncoder().encode('ProgramDerivedAddress');
+  for (let bump = 255; bump >= 0; bump--) {
+    const parts = [...seeds, Uint8Array.of(bump), prog, marker];
+    const buf = new Uint8Array(parts.reduce((a, p) => a + p.length, 0));
+    let o = 0;
+    parts.forEach(p => { buf.set(p, o); o += p.length; });
+    const hash = new Uint8Array(await crypto.subtle.digest('SHA-256', buf));
+    if (!isOnCurve(hash)) return b58encode(hash);
+  }
+  return null;
+}
+
+const metadataAddress = mint => findProgramAddress(
+  [new TextEncoder().encode('metadata'), b58decode(METADATA_PROGRAM), b58decode(mint)], METADATA_PROGRAM);
+
+// Fee payer of the oldest transaction that touched `address`.
+// Returns { payer } when found, or { before } when there are older pages left.
+async function oldestPayer(address, pages, before) {
+  for (let page = 0; page < pages; page++) {
+    const sigs = await solRpc('getSignaturesForAddress', [address, before ? { limit: 1000, before } : { limit: 1000 }]);
+    if (!Array.isArray(sigs) || !sigs.length) return { payer: null };
     if (sigs.length < 1000) {
       const tx = await solRpc('getTransaction', [sigs[sigs.length - 1].signature, { encoding: 'json', maxSupportedTransactionVersion: 0 }]);
       const keys = tx?.transaction?.message?.accountKeys;
       const payer = Array.isArray(keys) ? (typeof keys[0] === 'string' ? keys[0] : keys[0]?.pubkey) : null;
-      return payer && SOL_RE.test(payer) ? payer : null;
+      return { payer: payer && SOL_RE.test(payer) ? payer : null };
     }
     before = sigs[sigs.length - 1].signature;
   }
-  return null; // very active or old token: the creation is too far back
+  return { before };
+}
+
+async function solanaCreatorWallet(mint) {
+  // Quiet token: its whole history fits in one page
+  const first = await oldestPayer(mint, 1);
+  if (!first.before) return first.payer;
+  // Busy token: the metadata account only has a handful of transactions
+  const meta = await metadataAddress(mint).catch(() => null);
+  if (meta) {
+    const viaMeta = await oldestPayer(meta, 1);
+    if (viaMeta.payer) return viaMeta.payer;
+  }
+  const rest = await oldestPayer(mint, SOL_SIG_PAGES - 1, first.before);
+  return rest.payer || null; // very old or active token without Metaplex metadata
 }
 
 async function solanaWalletBalance(owner, mint) {
