@@ -328,14 +328,17 @@ function contractRisk(raw, isSol) {
     const st = o => flag(o?.status);
     const hook = Array.isArray(raw.transfer_hook) && raw.transfer_hook.length > 0;
     const fee = raw.transfer_fee && typeof raw.transfer_fee === 'object' && Object.keys(raw.transfer_fee).length > 0;
-    if (flag(raw.non_transferable)) return 'bad';
+    const creators = Array.isArray(raw.creators) ? raw.creators : [];
+    const auth = Array.isArray(raw.mintable?.authority) ? raw.mintable.authority : [];
+    if (flag(raw.non_transferable) || [...creators, ...auth].some(c => flag(c?.malicious_address))) return 'bad';
     if (st(raw.mintable) || st(raw.freezable) || st(raw.balance_mutable_authority) || st(raw.closable) || hook || fee) return 'warn';
     return 'ok';
   }
   const maxTax = Math.max((num(raw.buy_tax) ?? 0) * 100, (num(raw.sell_tax) ?? 0) * 100);
-  if (flag(raw.is_honeypot) || flag(raw.cannot_sell_all) || maxTax >= 30) return 'bad';
+  if (flag(raw.is_honeypot) || flag(raw.cannot_sell_all) || maxTax >= 30 || flag(raw.honeypot_with_same_creator)) return 'bad';
   if (maxTax > 10 || flag(raw.is_mintable) || flag(raw.is_blacklisted) || flag(raw.transfer_pausable)
-    || flag(raw.is_proxy) || flag(raw.can_take_back_ownership) || flag(raw.owner_change_balance) || flag(raw.hidden_owner)) return 'warn';
+    || flag(raw.is_proxy) || flag(raw.can_take_back_ownership) || flag(raw.owner_change_balance) || flag(raw.hidden_owner)
+    || flag(raw.is_open_source) === false) return 'warn';
   return 'ok';
 }
 
