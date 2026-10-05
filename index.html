@@ -4,10 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flick Analyst — On-Chain Intelligence Terminal</title>
-  <meta name="description" content="Real-time DEX charts, market-health scoring, GoPlus contract checks and holder distribution for any token.">
+  <meta name="description" content="Live DEX data, risk checklist, contract checks, top holders and price alerts for any token. Free, in English, Español and 中文.">
   <meta name="theme-color" content="#030508">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <!-- Installable app (PWA) -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Flick">
+
+  <!-- Link preview (WhatsApp, Telegram, X, Discord, Facebook...) -->
+  <link rel="canonical" href="https://flick-analyst.pages.dev/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Flick Analyst">
+  <meta property="og:title" content="Flick Analyst — Analyze any token. Never exit liquidity.">
+  <meta property="og:description" content="Live DEX data, risk checklist, contract checks, top holders and price alerts for any token. Free, in English, Español and 中文.">
+  <meta property="og:url" content="https://flick-analyst.pages.dev/">
+  <meta property="og:image" content="https://flick-analyst.pages.dev/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Flick Analyst: analyze any token, never exit liquidity">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Flick Analyst — Analyze any token. Never exit liquidity.">
+  <meta name="twitter:description" content="Live DEX data, risk checklist, contract checks, top holders and price alerts for any token.">
+  <meta name="twitter:image" content="https://flick-analyst.pages.dev/og-image.jpg">
 
   <!-- Tailwind CSS CDN (fine for a static site; use the Tailwind CLI for a production build) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -154,6 +178,8 @@
       </div>
 
       <div class="flex items-center gap-4">
+        <!-- INSTALL APP (shown by app.js when the browser allows it) -->
+        <button type="button" id="installBtn" onclick="installApp()" class="hidden bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amberGlow font-semibold text-xs px-3 py-1.5 rounded-xl transition-all" data-i18n="install_app">📲 Install app</button>
         <!-- LANGUAGE SELECTOR -->
         <div class="relative inline-block">
           <select id="langSelectLanding" onchange="changeLanguage(this.value)" aria-label="Language" class="bg-white/5 hover:bg-white/10 border border-white/15 text-white font-mono text-xs px-3 py-1.5 rounded-xl transition-all focus:outline-none cursor-pointer">

@@ -186,7 +186,10 @@ const TRANSLATIONS = {
     t_liq: "Liq",
     t_new: "⚠️ <24h old",
     t_lowliq: "⚠️ Low liquidity",
-    t_open: "Analyze this token"
+    t_open: "Analyze this token",
+    install_app: "📲 Install app",
+    installed: "Flick was installed on your device!",
+    ios_install: "On iPhone/iPad: tap Share ⬆️ and then “Add to Home Screen”."
   },
   zh: {
     mainnet_active: "实时 DEX 数据",
@@ -357,7 +360,10 @@ const TRANSLATIONS = {
     t_liq: "流动性",
     t_new: "⚠️ 不到24小时",
     t_lowliq: "⚠️ 流动性低",
-    t_open: "分析该代币"
+    t_open: "分析该代币",
+    install_app: "📲 安装应用",
+    installed: "Flick 已安装到你的设备！",
+    ios_install: "在 iPhone/iPad 上：点击分享 ⬆️，然后选择“添加到主屏幕”。"
   },
   es: {
     mainnet_active: "Datos DEX en vivo",
@@ -528,7 +534,10 @@ const TRANSLATIONS = {
     t_liq: "Liq",
     t_new: "⚠️ <24h de vida",
     t_lowliq: "⚠️ Poca liquidez",
-    t_open: "Analizar este token"
+    t_open: "Analizar este token",
+    install_app: "📲 Instalar app",
+    installed: "¡Flick se instaló en tu dispositivo!",
+    ios_install: "En iPhone/iPad: tocá Compartir ⬆️ y después “Agregar a inicio”."
   }
 };
 
@@ -2202,12 +2211,27 @@ function sendAlert(w, change, price) {
   const msg = tr(change > 0 ? 'alert_up' : 'alert_down', { s: `$${w.symbol}`, pct: formatPct(change), price: `$${formatPrice(price)}` });
   showToast(msg);
   if ('Notification' in window && Notification.permission === 'granted') {
-    try {
-      const n = new Notification('Flick Analyst', { body: msg, icon: 'favicon.png', tag: watchKey(w) });
-      n.onclick = () => { window.focus(); runScanSequence(w.ca, { chain: w.chainId, onDone: ok => { if (ok && !isDashboardVisible()) enterApp(); } }); n.close(); };
-    } catch (e) { /* some mobile browsers only allow notifications from a service worker */ }
+    const opts = {
+      body: msg, icon: 'icon-192.png', badge: 'favicon.png', tag: watchKey(w),
+      data: { ca: w.ca, chain: w.chainId, url: `/?ca=${encodeURIComponent(w.ca)}&chain=${encodeURIComponent(w.chainId)}` }
+    };
+    const viaPage = () => {
+      try {
+        const n = new Notification('Flick Analyst', opts);
+        n.onclick = () => { window.focus(); openTokenFromAlert(w.ca, w.chainId); n.close(); };
+      } catch (e) { /* this browser only allows notifications from a service worker */ }
+    };
+    // Android only shows notifications created by the service worker (sw.js handles the tap)
+    if (navigator.serviceWorker?.getRegistration) {
+      navigator.serviceWorker.getRegistration().then(reg => (reg ? reg.showNotification('Flick Analyst', opts) : viaPage())).catch(viaPage);
+    } else viaPage();
   }
   if (document.hidden && !document.title.startsWith('🔔')) document.title = `🔔 ${document.title}`;
+}
+
+function openTokenFromAlert(ca, chain) {
+  if (!ca) return;
+  runScanSequence(ca, { chain: chain || '', onDone: ok => { if (ok && !isDashboardVisible()) enterApp(); } });
 }
 
 async function refreshWatchItem(w) {
@@ -2249,6 +2273,50 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ===================================================================
+// 12b. INSTALLABLE APP (PWA): service worker + install button
+// ===================================================================
+let installPrompt = null;
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+function showInstallButton(show) {
+  const btn = $('installBtn');
+  if (btn) btn.classList.toggle('hidden', !show);
+}
+
+async function installApp() {
+  if (installPrompt) {
+    installPrompt.prompt();
+    try { await installPrompt.userChoice; } catch (e) { /* dismissed */ }
+    installPrompt = null;
+    showInstallButton(false);
+  } else if (isIOS()) {
+    showToast(tr('ios_install')); // Safari has no install prompt
+  }
+}
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); // show our own button instead of the browser's mini-bar
+  installPrompt = e;
+  showInstallButton(true);
+});
+window.addEventListener('appinstalled', () => {
+  installPrompt = null;
+  showInstallButton(false);
+  showToast(tr('installed'));
+});
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(err => console.warn('Service worker not registered:', err));
+  });
+  // A tapped alert notification asks this page to open its token
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data?.type === 'open-token') openTokenFromAlert(e.data.ca, e.data.chain);
+  });
+}
+
+// ===================================================================
 // 13. INIT (saved language, ?ca=&chain= deep link)
 // ===================================================================
 (function init() {
@@ -2257,6 +2325,7 @@ document.addEventListener('visibilitychange', () => {
   changeLanguage(saved || (nav.startsWith('zh') ? 'zh' : nav.startsWith('es') ? 'es' : 'en'));
   if (watchlist.length) setTimeout(checkWatchlist, 2000);
   loadTrending();
+  if (isIOS() && !isStandalone()) showInstallButton(true);
   const params = new URLSearchParams(location.search);
   const ca = params.get('ca');
   if (ca) {
