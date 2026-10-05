@@ -233,15 +233,25 @@
         <div id="recentSearches" class="hidden flex flex-wrap items-center justify-center gap-1.5 text-[11px] font-mono"></div>
       </div>
 
-      <!-- TRENDING TOKENS (filled by app.js from DexScreener boosts) -->
-      <section class="w-full text-left space-y-2.5" aria-labelledby="trendingTitle">
+      <!-- TOKEN FEED: Trending (DexScreener boosts) | New launches filtered by the risk engine -->
+      <section class="w-full text-left space-y-2.5" aria-label="Token feed">
         <div class="flex items-center justify-between gap-3">
-          <h2 id="trendingTitle" class="flex items-center gap-2 text-sm font-bold text-white font-display"><span class="text-amberCore"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span><span data-i18n="trending_title">Trending on DexScreener</span></h2>
-          <button type="button" onclick="loadTrending(true)" class="text-xs text-slate-400 hover:text-amberGlow transition-all" data-i18n="trending_refresh">Refresh</button>
+          <div class="flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/10" role="tablist">
+            <button type="button" id="feedBtn-trending" role="tab" onclick="setFeed('trending')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span data-i18n="feed_trending">Trending</span></button>
+            <button type="button" id="feedBtn-launches" role="tab" onclick="setFeed('launches')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.8L20 10.7l-6.1 1.9L12 18.4l-1.9-5.8L4 10.7l6.1-1.9z"/></svg><span data-i18n="feed_launches">New · filtered</span></button>
+          </div>
+          <button type="button" onclick="refreshFeed()" class="text-xs text-slate-400 hover:text-amberGlow transition-all shrink-0" data-i18n="trending_refresh">Refresh</button>
         </div>
-        <div id="trendingStatus"></div>
-        <div id="trendingGrid" class="grid grid-cols-2 md:grid-cols-4 gap-2.5"></div>
-        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="trending_note">Most boosted tokens on DexScreener (boosts are paid promotions), sorted by real 24h volume. Not a recommendation: open one and check its risk checklist before trading.</p>
+        <div id="feed-trending" class="space-y-2.5">
+          <div id="trendingStatus"></div>
+          <div id="trendingGrid" class="grid grid-cols-2 md:grid-cols-4 gap-2.5"></div>
+          <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="trending_note">Most boosted tokens on DexScreener (boosts are paid promotions), sorted by real 24h volume. Not a recommendation: open one and check its risk checklist before trading.</p>
+        </div>
+        <div id="feed-launches" class="hidden space-y-2.5">
+          <div id="launchStatus"></div>
+          <div id="launchGrid" class="grid grid-cols-2 md:grid-cols-4 gap-2.5"></div>
+          <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="launch_note">Tokens launched in the last 72h on DexScreener, checked automatically (liquidity, age, activity and GoPlus contract checks). High-risk ones are hidden. Passing the filter doesn't make a token safe: new launches are always risky.</p>
+        </div>
       </section>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-4 text-left">
@@ -416,6 +426,28 @@
               Jupiter
             </a>
           </div>
+        </div>
+
+        <!-- PRICE IMPACT SIMULATOR (constant-product estimate, see app.js) -->
+        <div class="glass-panel rounded-2xl p-4 space-y-3">
+          <div>
+            <h4 class="flex items-center gap-2 text-sm font-bold text-white font-display"><span class="text-amberCore"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="12" y1="10" x2="12.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="12" y1="14" x2="12.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span><span data-i18n="sim_title">Price impact simulator</span></h4>
+            <p class="text-[11px] text-slate-400" data-i18n="sim_desc">How much the price moves if you buy now.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <label class="relative flex items-center">
+              <span class="absolute left-3 text-slate-400 text-sm font-mono" aria-hidden="true">$</span>
+              <input id="simAmount" type="number" min="1" step="any" value="100" inputmode="decimal" aria-label="USD"
+                oninput="renderSimulator()"
+                class="w-28 bg-slate-900 border border-white/10 rounded-xl pl-7 pr-3 py-2 text-sm font-mono text-white focus:outline-none focus:border-amberCore" />
+            </label>
+            <button type="button" data-sim-amt="100" onclick="setSimAmount(100)">$100</button>
+            <button type="button" data-sim-amt="500" onclick="setSimAmount(500)">$500</button>
+            <button type="button" data-sim-amt="1000" onclick="setSimAmount(1000)">$1K</button>
+            <button type="button" data-sim-amt="5000" onclick="setSimAmount(5000)">$5K</button>
+          </div>
+          <div id="simResult" class="grid grid-cols-2 gap-2"></div>
+          <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="sim_note">Estimate for a standard pool (x·y=k) using the active pool's liquidity, a 0.3% DEX fee and GoPlus taxes. Concentrated-liquidity pools (Uniswap v3, Raydium CLMM, Meteora) can differ.</p>
         </div>
 
       </section>
@@ -631,6 +663,10 @@
           <!-- TAB 4: WATCHLIST & PRICE ALERTS (saved in this browser) -->
           <div id="tabContent-watch" role="tabpanel" aria-labelledby="tabBtn-watch" class="hidden lg:overflow-y-auto lg:pr-1 mt-4 flex-1 space-y-3">
             <div id="notifyControl"></div>
+            <label class="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/5 border border-white/10 cursor-pointer">
+              <input type="checkbox" id="riskAlertToggle" checked onchange="setRiskAlerts(this.checked)" class="mt-0.5 accent-amber-500" />
+              <span class="text-xs text-slate-300 leading-snug" data-i18n="ra_toggle">Risk alerts: liquidity drain, heavy selling and worse contract checks</span>
+            </label>
             <div id="watchlistBody" class="space-y-2"></div>
             <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="watch_note">Prices refresh every minute while Flick is open, even in a background tab. Your list is saved only in this browser.</p>
           </div>
