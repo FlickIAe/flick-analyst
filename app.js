@@ -155,7 +155,27 @@ const TRANSLATIONS = {
     chip_safety: "🛡️ Safety Check",
     chip_holders: "📊 Holders Risk",
     chip_liquidity: "💧 Liquidity Depth",
-    chip_price: "📈 Technical Trend"
+    chip_price: "📈 Technical Trend",
+    tab_watch: "⭐ Watchlist",
+    watch: "☆ Watch",
+    watching: "★ Watching",
+    watch_title: "Add to or remove from your watchlist",
+    watch_added: "{s} added to your watchlist",
+    watch_removed: "{s} removed from your watchlist",
+    watch_full: "Your watchlist is full (max {n} tokens)",
+    watch_empty: "Your watchlist is empty. Load a token and tap ☆ Watch next to its name.",
+    watch_note: "Prices refresh every minute while Flick is open, even in a background tab. Your list is saved only in this browser.",
+    w_since: "Since added",
+    w_alert: "Alert",
+    w_off: "Off",
+    w_remove: "Remove",
+    w_open: "Open this token",
+    notify_enable: "🔔 Enable notifications",
+    notify_on: "🔔 Notifications on",
+    notify_blocked: "Notifications are blocked in your browser settings. Alerts will show inside the page.",
+    notify_unsupported: "This browser doesn't support notifications. Alerts will show inside the page.",
+    alert_up: "📈 {s} is up {pct} → {price}",
+    alert_down: "📉 {s} is down {pct} → {price}"
   },
   zh: {
     mainnet_active: "实时 DEX 数据",
@@ -295,7 +315,27 @@ const TRANSLATIONS = {
     chip_safety: "🛡️ 安全检测",
     chip_holders: "📊 持仓风险",
     chip_liquidity: "💧 流动性深度",
-    chip_price: "📈 技术走势"
+    chip_price: "📈 技术走势",
+    tab_watch: "⭐ 自选",
+    watch: "☆ 自选",
+    watching: "★ 已自选",
+    watch_title: "加入或移出自选",
+    watch_added: "{s} 已加入自选",
+    watch_removed: "{s} 已移出自选",
+    watch_full: "自选已满（最多 {n} 个）",
+    watch_empty: "自选列表为空。加载一个代币，然后点击名称旁的 ☆ 自选。",
+    watch_note: "Flick 打开期间（包括后台标签页）每分钟刷新价格。列表仅保存在此浏览器中。",
+    w_since: "加入以来",
+    w_alert: "提醒",
+    w_off: "关闭",
+    w_remove: "移除",
+    w_open: "打开该代币",
+    notify_enable: "🔔 开启通知",
+    notify_on: "🔔 通知已开启",
+    notify_blocked: "浏览器设置已阻止通知。提醒将显示在页面内。",
+    notify_unsupported: "此浏览器不支持通知。提醒将显示在页面内。",
+    alert_up: "📈 {s} 上涨 {pct} → {price}",
+    alert_down: "📉 {s} 下跌 {pct} → {price}"
   },
   es: {
     mainnet_active: "Datos DEX en vivo",
@@ -435,7 +475,27 @@ const TRANSLATIONS = {
     chip_safety: "🛡️ Seguridad",
     chip_holders: "📊 Riesgo de holders",
     chip_liquidity: "💧 Profundidad de liquidez",
-    chip_price: "📈 Tendencia técnica"
+    chip_price: "📈 Tendencia técnica",
+    tab_watch: "⭐ Watchlist",
+    watch: "☆ Seguir",
+    watching: "★ Siguiendo",
+    watch_title: "Agregar o quitar de tu watchlist",
+    watch_added: "{s} se agregó a tu watchlist",
+    watch_removed: "Quitaste {s} de tu watchlist",
+    watch_full: "Tu watchlist está llena (máximo {n} tokens)",
+    watch_empty: "Tu watchlist está vacía. Cargá un token y tocá ☆ Seguir al lado de su nombre.",
+    watch_note: "Los precios se actualizan cada minuto mientras Flick esté abierto, aunque sea en otra pestaña. La lista se guarda solo en este navegador.",
+    w_since: "Desde que lo agregaste",
+    w_alert: "Alerta",
+    w_off: "Apagada",
+    w_remove: "Quitar",
+    w_open: "Abrir este token",
+    notify_enable: "🔔 Activar notificaciones",
+    notify_on: "🔔 Notificaciones activadas",
+    notify_blocked: "Las notificaciones están bloqueadas en tu navegador. Las alertas se van a mostrar dentro de la página.",
+    notify_unsupported: "Este navegador no soporta notificaciones. Las alertas se van a mostrar dentro de la página.",
+    alert_up: "📈 {s} subió {pct} → {price}",
+    alert_down: "📉 {s} bajó {pct} → {price}"
   }
 };
 
@@ -508,6 +568,8 @@ function changeLanguage(lang) {
   renderHoldersTable();
   renderMultiPairs();
   renderLastUpdated();
+  renderWatchButton();
+  renderWatchlist();
 }
 
 // ===================================================================
@@ -849,6 +911,7 @@ function updateUI(full = true) {
   if (vl) vb.href = vl;
 
   renderHoldersTable();
+  renderWatchButton();
   if (chatKey !== tokenKey(t)) {
     chatKey = tokenKey(t);
     renderAiWelcome();
@@ -1541,7 +1604,7 @@ function sendCopilotQuery() {
 // 9. UI TABS & LIVE POLLING
 // ===================================================================
 function switchTab(tab) {
-  ['audit', 'ai', 'holders'].forEach(t => {
+  ['audit', 'ai', 'holders', 'watch'].forEach(t => {
     const btn = $(`tabBtn-${t}`);
     const content = $(`tabContent-${t}`);
     const active = t === tab;
@@ -1821,12 +1884,212 @@ if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 }
 
 // ===================================================================
-// 12. INIT (saved language, ?ca=&chain= deep link)
+// 12. WATCHLIST & PRICE ALERTS (localStorage; checked every minute while the page is open)
+// ===================================================================
+const WATCH_KEY = 'flickWatchlist';
+const WATCH_MAX = 20;
+const WATCH_INTERVAL = 60000;
+const ALERT_STEPS = [0, 5, 10, 20, 50]; // ± % move that triggers an alert (0 = off)
+const watchKey = w => `${w.chainId}:${w.ca}`;
+let watchlist = loadWatchlist();
+let watchPrices = {};      // watchKey -> { price, change24 }
+let watchInFlight = false;
+
+function loadWatchlist() {
+  const v = safeStorage(() => JSON.parse(localStorage.getItem(WATCH_KEY) || '[]'));
+  return Array.isArray(v)
+    ? v.filter(w => w && typeof w.ca === 'string' && typeof w.chainId === 'string' && typeof w.symbol === 'string').slice(0, WATCH_MAX)
+    : [];
+}
+
+function saveWatchlist() {
+  safeStorage(() => localStorage.setItem(WATCH_KEY, JSON.stringify(watchlist)));
+}
+
+const findWatch = t => watchlist.find(w => w.ca === t.ca && w.chainId === t.chainId);
+
+function toggleWatch() {
+  const t = currentToken;
+  if (!t.loaded) return;
+  const existing = findWatch(t);
+  if (existing) {
+    watchlist = watchlist.filter(w => w !== existing);
+    showToast(tr('watch_removed', { s: `$${t.symbol}` }));
+  } else {
+    if (watchlist.length >= WATCH_MAX) return showToast(tr('watch_full', { n: WATCH_MAX }));
+    const price = t.price || 0;
+    watchlist.push({
+      ca: t.ca, chainId: t.chainId, symbol: t.symbol.slice(0, 12), pairAddress: t.pairAddress,
+      addedAt: Date.now(), addedPrice: price, refPrice: price, alertPct: 10
+    });
+    watchPrices[`${t.chainId}:${t.ca}`] = { price, change24: t.priceChange };
+    showToast(tr('watch_added', { s: `$${t.symbol}` }));
+  }
+  saveWatchlist();
+  renderWatchButton();
+  renderWatchlist();
+}
+
+function removeWatch(key) {
+  watchlist = watchlist.filter(w => watchKey(w) !== key);
+  saveWatchlist();
+  renderWatchButton();
+  renderWatchlist();
+}
+
+function setWatchAlert(key, pct) {
+  const w = watchlist.find(x => watchKey(x) === key);
+  if (!w) return;
+  w.alertPct = ALERT_STEPS.includes(pct) ? pct : 10;
+  w.refPrice = watchPrices[key]?.price || w.refPrice; // measure the next move from now
+  saveWatchlist();
+  if (w.alertPct && 'Notification' in window && Notification.permission === 'default') renderNotifyControl(true);
+}
+
+function renderWatchButton() {
+  const btn = $('watchBtn');
+  if (!btn) return;
+  const t = currentToken;
+  btn.classList.toggle('hidden', !t.loaded);
+  if (!t.loaded) return;
+  const on = !!findWatch(t);
+  btn.textContent = tr(on ? 'watching' : 'watch');
+  btn.setAttribute('aria-pressed', String(on));
+  btn.className = `text-[11px] font-bold px-2.5 py-0.5 rounded-full border transition-all ${on ? 'bg-amber-500/20 text-amberGlow border-amber-500/40' : 'bg-white/5 text-slate-300 border-white/15 hover:text-amberGlow hover:border-amber-500/40'}`;
+}
+
+function renderNotifyControl(highlight = false) {
+  const box = $('notifyControl');
+  if (!box) return;
+  if (!('Notification' in window)) return box.replaceChildren(el('p', 'text-[10px] text-slate-500', tr('notify_unsupported')));
+  const perm = Notification.permission;
+  if (perm === 'granted') return box.replaceChildren(el('p', 'text-[11px] text-cyberGreen font-mono', tr('notify_on')));
+  if (perm === 'denied') return box.replaceChildren(el('p', 'text-[10px] text-slate-500', tr('notify_blocked')));
+  const btn = el('button', `w-full px-3 py-2 rounded-xl text-xs font-mono border transition-all ${highlight ? 'bg-amber-500/20 border-amber-500/50 text-amberGlow' : 'bg-white/5 border-white/10 text-slate-300 hover:text-amberGlow'}`, tr('notify_enable'));
+  btn.type = 'button';
+  btn.onclick = async () => {
+    try { await Notification.requestPermission(); } catch (e) { /* ignored */ }
+    renderNotifyControl();
+  };
+  box.replaceChildren(btn);
+}
+
+function renderWatchlist() {
+  const list = $('watchlistBody');
+  const count = $('watchCount');
+  if (count) {
+    count.textContent = watchlist.length ? String(watchlist.length) : '';
+    count.classList.toggle('hidden', !watchlist.length);
+  }
+  if (!list) return;
+  renderNotifyControl();
+  if (!watchlist.length) {
+    list.replaceChildren(el('p', 'py-6 text-center text-slate-500 text-[11px] leading-relaxed', tr('watch_empty')));
+    return;
+  }
+  list.replaceChildren(...watchlist.map(w => {
+    const key = watchKey(w);
+    const live = watchPrices[key];
+    const price = live?.price;
+    const since = price && w.addedPrice ? ((price - w.addedPrice) / w.addedPrice) * 100 : null;
+    const color = v => (v == null || !Number.isFinite(v) ? 'text-slate-400' : v >= 0 ? 'text-cyberGreen' : 'text-crimsonRisk');
+
+    const row = el('div', 'p-2.5 rounded-xl bg-white/5 border border-white/5 hover:border-amber-500/30 transition-all space-y-1.5');
+    const top = el('div', 'flex items-center justify-between gap-2');
+    const open = el('button', 'flex items-center gap-2 min-w-0 text-left');
+    open.type = 'button';
+    open.title = tr('w_open');
+    open.onclick = () => runScanSequence(w.ca, { chain: w.chainId });
+    open.append(el('span', 'font-bold text-white text-xs truncate', `$${w.symbol}`), el('span', 'text-[10px] text-slate-500 font-mono', chainName(w.chainId)));
+    const remove = el('button', 'text-slate-500 hover:text-crimsonRisk text-xs px-1.5', '✕');
+    remove.type = 'button';
+    remove.title = tr('w_remove');
+    remove.setAttribute('aria-label', `${tr('w_remove')} $${w.symbol}`);
+    remove.onclick = () => removeWatch(key);
+    top.append(open, remove);
+
+    const mid = el('div', 'flex items-center justify-between gap-2 text-[11px] font-mono');
+    const prices = el('div', 'flex items-center gap-2 flex-wrap');
+    prices.append(
+      el('span', 'text-slate-200 font-semibold', price ? `$${formatPrice(price)}` : '—'),
+      el('span', color(live?.change24), `${formatPct(live?.change24)} 24h`),
+      el('span', color(since), `${formatPct(since)} ${tr('w_since').toLowerCase()}`)
+    );
+    const alertWrap = el('label', 'flex items-center gap-1 text-[10px] text-slate-400 shrink-0');
+    const select = el('select', 'bg-slate-900 border border-white/10 rounded-md px-1 py-0.5 text-[10px] text-slate-200 focus:outline-none focus:border-amberCore');
+    ALERT_STEPS.forEach(v => {
+      const o = el('option', '', v ? `±${v}%` : tr('w_off'));
+      o.value = String(v);
+      if ((w.alertPct ?? 10) === v) o.selected = true;
+      select.appendChild(o);
+    });
+    select.onchange = () => setWatchAlert(key, Number(select.value));
+    alertWrap.append(`🔔 ${tr('w_alert')}`, select);
+    mid.append(prices, alertWrap);
+
+    row.append(top, mid);
+    return row;
+  }));
+}
+
+function sendAlert(w, change, price) {
+  const msg = tr(change > 0 ? 'alert_up' : 'alert_down', { s: `$${w.symbol}`, pct: formatPct(change), price: `$${formatPrice(price)}` });
+  showToast(msg);
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      const n = new Notification('Flick Analyst', { body: msg, icon: 'favicon.png', tag: watchKey(w) });
+      n.onclick = () => { window.focus(); runScanSequence(w.ca, { chain: w.chainId, onDone: ok => { if (ok && !isDashboardVisible()) enterApp(); } }); n.close(); };
+    } catch (e) { /* some mobile browsers only allow notifications from a service worker */ }
+  }
+  if (document.hidden && !document.title.startsWith('🔔')) document.title = `🔔 ${document.title}`;
+}
+
+async function refreshWatchItem(w) {
+  const d = await fetchJson(`${DEX_API}/tokens/${encodeURIComponent(w.ca)}`, { timeout: 10000 });
+  const own = (d.pairs || []).filter(p => p.chainId === w.chainId && sameAddress(p.baseToken?.address, w.ca));
+  if (!own.length) return;
+  const pair = own.find(p => p.pairAddress === w.pairAddress) || own.sort(byLiquidity)[0];
+  const price = parseFloat(pair.priceUsd);
+  if (!(price > 0)) return;
+  watchPrices[watchKey(w)] = { price, change24: Number(pair.priceChange?.h24) };
+  if (!w.addedPrice) w.addedPrice = price;
+  if (!w.refPrice) w.refPrice = price;
+  if (!w.alertPct) return;
+  const change = ((price - w.refPrice) / w.refPrice) * 100;
+  if (Math.abs(change) >= w.alertPct) {
+    w.refPrice = price; // the next alert is measured from this price
+    sendAlert(w, change, price);
+  }
+}
+
+async function checkWatchlist() {
+  if (!watchlist.length || watchInFlight) return;
+  watchInFlight = true;
+  try {
+    const items = [...watchlist];
+    for (let i = 0; i < items.length; i += 4) { // 4 requests at a time, well under DexScreener's rate limit
+      await Promise.all(items.slice(i, i + 4).map(w => refreshWatchItem(w).catch(err => console.warn('Watchlist refresh failed:', w.symbol, err))));
+    }
+    saveWatchlist();
+  } finally {
+    watchInFlight = false;
+    renderWatchlist();
+  }
+}
+
+setInterval(checkWatchlist, WATCH_INTERVAL);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && document.title.startsWith('🔔 ')) document.title = document.title.slice(3);
+});
+
+// ===================================================================
+// 13. INIT (saved language, ?ca=&chain= deep link)
 // ===================================================================
 (function init() {
   const saved = safeStorage(() => localStorage.getItem('flickLang'));
   const nav = (navigator.language || '').toLowerCase();
   changeLanguage(saved || (nav.startsWith('zh') ? 'zh' : nav.startsWith('es') ? 'es' : 'en'));
+  if (watchlist.length) setTimeout(checkWatchlist, 2000);
   const params = new URLSearchParams(location.search);
   const ca = params.get('ca');
   if (ca) {
