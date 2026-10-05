@@ -225,7 +225,26 @@ const TRANSLATIONS = {
     tg_disconnect: "Disconnect",
     tg_privacy: "To alert you with Flick closed, your watched tokens (addresses and alert settings only, no personal data) are stored on Flick's server. Disconnect anytime to delete them.",
     tg_connected_toast: "Telegram connected! You'll get alerts there too.",
-    tg_error: "Couldn't reach the alerts server. Try again."
+    tg_error: "Couldn't reach the alerts server. Try again.",
+    sec_creator: "Creator & owner · GoPlus",
+    cr_na: "Creator data isn't available for this token.",
+    cr_creator: "Creator",
+    cr_holds: "holds {pct}",
+    cr_history: "Track record",
+    cr_past_hp: "Made honeypots before",
+    cr_clean: "No known honeypots",
+    cr_wallet: "Creator wallet",
+    cr_malicious: "Flagged as malicious",
+    cr_no_reports: "No reports",
+    cr_owner: "Contract owner",
+    cr_renounced: "Renounced",
+    cr_code: "Contract code",
+    cr_verified: "Verified",
+    cr_unverified: "Not verified",
+    cr_mint_auth: "Mint authority",
+    cr_metadata: "Name / image",
+    cr_changeable: "Can be changed",
+    cr_locked: "Locked"
   },
   zh: {
     mainnet_active: "实时 DEX 数据",
@@ -435,7 +454,26 @@ const TRANSLATIONS = {
     tg_disconnect: "断开",
     tg_privacy: "为了在 Flick 关闭时提醒你，你关注的代币（仅地址和提醒设置，无个人数据）会保存在 Flick 服务器上。随时断开即可删除。",
     tg_connected_toast: "Telegram 已连接！你也会在那里收到提醒。",
-    tg_error: "无法连接提醒服务器，请重试。"
+    tg_error: "无法连接提醒服务器，请重试。",
+    sec_creator: "创建者与所有者 · GoPlus",
+    cr_na: "暂无该代币的创建者数据。",
+    cr_creator: "创建者",
+    cr_holds: "持有 {pct}",
+    cr_history: "历史记录",
+    cr_past_hp: "曾发行蜜罐",
+    cr_clean: "无已知蜜罐",
+    cr_wallet: "创建者钱包",
+    cr_malicious: "被标记为恶意",
+    cr_no_reports: "无报告",
+    cr_owner: "合约所有者",
+    cr_renounced: "已放弃",
+    cr_code: "合约代码",
+    cr_verified: "已验证",
+    cr_unverified: "未验证",
+    cr_mint_auth: "增发权限",
+    cr_metadata: "名称 / 图片",
+    cr_changeable: "可更改",
+    cr_locked: "已锁定"
   },
   es: {
     mainnet_active: "Datos DEX en vivo",
@@ -645,7 +683,26 @@ const TRANSLATIONS = {
     tg_disconnect: "Desconectar",
     tg_privacy: "Para avisarte con Flick cerrado, tus tokens seguidos (solo direcciones y configuración de alertas, sin datos personales) se guardan en el servidor de Flick. Desconectate cuando quieras para borrarlos.",
     tg_connected_toast: "¡Telegram conectado! También vas a recibir las alertas ahí.",
-    tg_error: "No se pudo conectar con el servidor de alertas. Probá de nuevo."
+    tg_error: "No se pudo conectar con el servidor de alertas. Probá de nuevo.",
+    sec_creator: "Creador y dueño · GoPlus",
+    cr_na: "No hay datos del creador para este token.",
+    cr_creator: "Creador",
+    cr_holds: "tiene {pct}",
+    cr_history: "Historial",
+    cr_past_hp: "Ya lanzó honeypots",
+    cr_clean: "Sin honeypots conocidos",
+    cr_wallet: "Billetera del creador",
+    cr_malicious: "Marcada como maliciosa",
+    cr_no_reports: "Sin reportes",
+    cr_owner: "Dueño del contrato",
+    cr_renounced: "Renunciado",
+    cr_code: "Código del contrato",
+    cr_verified: "Verificado",
+    cr_unverified: "Sin verificar",
+    cr_mint_auth: "Autoridad de mint",
+    cr_metadata: "Nombre / imagen",
+    cr_changeable: "Se puede cambiar",
+    cr_locked: "Bloqueado"
   }
 };
 
@@ -1203,6 +1260,10 @@ function normalizeSecurity(r, isSol) {
     .sort((a, b) => b.pct - a.pct);
   const top10 = holders.length ? holders.slice(0, 10).reduce((s, h) => s + h.pct, 0) : null;
   const holderCount = toNum(r.holder_count);
+  const holderPct = addr => {
+    const h = addr && holders.find(x => sameAddress(x.address, addr));
+    return h ? h.pct : null;
+  };
 
   if (isSol) {
     const st = o => flag(o?.status);
@@ -1213,7 +1274,8 @@ function normalizeSecurity(r, isSol) {
       buyTax: null, sellTax: null, transferFee: fee,
       mintable: st(r.mintable), freezable: st(r.freezable),
       mutable: anyTrue(st(r.balance_mutable_authority), st(r.closable), hook),
-      lpLocked: null, holders, top10, holderCount
+      lpLocked: null, holders, top10, holderCount,
+      creator: solanaCreator(r, holderPct)
     };
   }
 
@@ -1230,15 +1292,55 @@ function normalizeSecurity(r, isSol) {
     mintable: flag(r.is_mintable),
     freezable: anyTrue(flag(r.is_blacklisted), flag(r.transfer_pausable)),
     mutable: anyTrue(flag(r.is_proxy), flag(r.can_take_back_ownership), flag(r.owner_change_balance), flag(r.hidden_owner)),
-    lpLocked, holders, top10, holderCount
+    lpLocked, holders, top10, holderCount,
+    creator: evmCreator(r, pct, holderPct)
+  };
+}
+
+// Who created the token, how much they still hold, and their track record (GoPlus)
+const isNullOwner = a => !a || /^0x0{40}$|^0x0{36}dead$/i.test(a);
+
+function evmCreator(r, pct, holderPct) {
+  const address = /^0x[a-fA-F0-9]{40}$/.test(r.creator_address || '') ? r.creator_address : null;
+  const ownerAddr = typeof r.owner_address === 'string' ? r.owner_address : null;
+  return {
+    address,
+    pct: pct(r.creator_percent) ?? holderPct(address),
+    pastHoneypots: flag(r.honeypot_with_same_creator),
+    malicious: null,
+    owner: ownerAddr == null ? null : {
+      renounced: isNullOwner(ownerAddr),
+      address: isNullOwner(ownerAddr) ? null : ownerAddr,
+      pct: isNullOwner(ownerAddr) ? null : (pct(r.owner_percent) ?? holderPct(ownerAddr))
+    },
+    openSource: flag(r.is_open_source),
+    mintAuthority: undefined, metadataMutable: null
+  };
+}
+
+function solanaCreator(r, holderPct) {
+  const creators = (Array.isArray(r.creators) ? r.creators : []).filter(c => c && typeof c.address === 'string');
+  const address = creators[0]?.address || null;
+  const auth = Array.isArray(r.mintable?.authority) ? r.mintable.authority.filter(a => a && a.address) : [];
+  const malicious = anyTrue(...creators.map(c => flag(c.malicious_address)), ...auth.map(a => flag(a.malicious_address)));
+  return {
+    address,
+    pct: holderPct(address),
+    pastHoneypots: null,
+    malicious,
+    owner: null,
+    openSource: null,
+    mintAuthority: flag(r.mintable?.status) === false ? null : (auth[0]?.address || null),
+    metadataMutable: flag(r.metadata_mutable?.status)
   };
 }
 
 function contractRisk(s) {
   if (!s) return null;
   const maxTax = Math.max(s.buyTax ?? 0, s.sellTax ?? 0);
-  if (s.honeypot || s.cannotSell || maxTax >= 30) return 'bad';
-  if (maxTax > 10 || s.mintable || s.freezable || s.mutable || s.transferFee) return 'warn';
+  const c = s.creator || {};
+  if (s.honeypot || s.cannotSell || maxTax >= 30 || c.pastHoneypots || c.malicious) return 'bad';
+  if (maxTax > 10 || s.mintable || s.freezable || s.mutable || s.transferFee || c.openSource === false) return 'warn';
   return 'ok';
 }
 
@@ -1415,12 +1517,59 @@ function renderRiskBadge() {
   b.replaceChildren(icon(style[1], 'w-3.5 h-3.5'), tr(`rv_${v}`));
 }
 
+// "Creator & owner" card in the Audit tab
+function renderCreatorBox() {
+  const box = $('creatorBox');
+  if (!box) return;
+  const t = currentToken;
+  if (!t.loaded || security.status === 'loading' || security.status === 'idle') {
+    box.replaceChildren(el('p', 'text-[11px] text-slate-400', t.loaded ? tr('checking') : '—'));
+    return;
+  }
+  const c = security.status === 'ok' ? security.data.creator : null;
+  if (!c) {
+    box.replaceChildren(el('p', 'text-[11px] text-slate-400', tr('cr_na')));
+    return;
+  }
+  const addrNode = addr => {
+    const link = explorerLink(t.chainId, addr);
+    const a = el(link ? 'a' : 'span', 'font-mono text-electricCyan hover:underline', shortAddr(addr));
+    if (link) { a.href = link; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.title = addr; }
+    return a;
+  };
+  const row = (label, lv, ...value) => {
+    const r = el('div', 'flex items-start justify-between gap-3');
+    const v = el('div', `text-right font-semibold ${TXT[lv]}`);
+    v.append(...value);
+    r.append(el('span', 'text-slate-400 shrink-0', label), v);
+    return r;
+  };
+  const rows = [];
+  if (c.address) {
+    const lv = c.pct == null ? 'na' : c.pct >= 20 ? 'bad' : c.pct >= 5 ? 'warn' : 'ok';
+    rows.push(row(tr('cr_creator'), lv, addrNode(c.address), c.pct == null ? '' : ` · ${tr('cr_holds', { pct: pctTxt(c.pct) })}`));
+  } else {
+    rows.push(row(tr('cr_creator'), 'na', 'N/A'));
+  }
+  if (c.pastHoneypots != null) rows.push(row(tr('cr_history'), c.pastHoneypots ? 'bad' : 'ok', tr(c.pastHoneypots ? 'cr_past_hp' : 'cr_clean')));
+  if (c.malicious != null) rows.push(row(tr('cr_wallet'), c.malicious ? 'bad' : 'ok', tr(c.malicious ? 'cr_malicious' : 'cr_no_reports')));
+  if (c.owner) {
+    if (c.owner.renounced) rows.push(row(tr('cr_owner'), 'ok', tr('cr_renounced')));
+    else if (c.owner.address) rows.push(row(tr('cr_owner'), c.owner.pct >= 5 ? 'warn' : 'na', addrNode(c.owner.address), c.owner.pct == null ? '' : ` · ${tr('cr_holds', { pct: pctTxt(c.owner.pct) })}`));
+  }
+  if (c.openSource != null) rows.push(row(tr('cr_code'), c.openSource ? 'ok' : 'warn', tr(c.openSource ? 'cr_verified' : 'cr_unverified')));
+  if (c.mintAuthority !== undefined && security.data.isSol) rows.push(row(tr('cr_mint_auth'), c.mintAuthority ? 'warn' : 'ok', c.mintAuthority ? addrNode(c.mintAuthority) : tr('cr_renounced')));
+  if (c.metadataMutable != null) rows.push(row(tr('cr_metadata'), c.metadataMutable ? 'warn' : 'ok', tr(c.metadataMutable ? 'cr_changeable' : 'cr_locked')));
+  box.replaceChildren(...rows);
+}
+
 function renderAuditTab() {
   const t = currentToken;
   if (!$('honeypotBanner')) return;
 
   renderRiskBadge();
   renderSimulator();
+  renderCreatorBox();
   if (!t.loaded) {
     setBanner('na', 'clock', tr('waiting'), '', '—');
     $('auditOverallScore').textContent = '—';
@@ -1558,6 +1707,21 @@ function riskFindings(t = currentToken, st = security) {
       else if (s.top10 > 30) add('warn', 'holders', L(`The top 10 wallets hold ${v} of the supply.`, `前10名钱包持有 ${v} 的供应量。`, `Las 10 billeteras principales tienen el ${v} del supply.`));
       else add('ok', 'holders', L(`Holders are well distributed (top 10: ${v}).`, `持币分布较分散（前10名：${v}）。`, `Los holders están bien distribuidos (top 10: ${v}).`));
     }
+    const c = s.creator;
+    if (c) {
+      if (c.pastHoneypots) add('bad', 'creator', L('This creator has made honeypot tokens before.', '该创建者以前发行过蜜罐代币。', 'Este creador ya lanzó tokens honeypot antes.'));
+      if (c.malicious) add('bad', 'creator', L('The creator wallet is flagged as malicious.', '创建者钱包被标记为恶意地址。', 'La billetera del creador está marcada como maliciosa.'));
+      if (c.pct != null) {
+        const v = pctTxt(c.pct);
+        if (c.pct >= 20) add('bad', 'creator', L(`The creator still holds ${v} of the supply: they could dump it at any time.`, `创建者仍持有 ${v} 的供应量：随时可能抛售。`, `El creador todavía tiene el ${v} del supply: lo podría vender de golpe.`));
+        else if (c.pct >= 5) add('warn', 'creator', L(`The creator still holds ${v} of the supply.`, `创建者仍持有 ${v} 的供应量。`, `El creador todavía tiene el ${v} del supply.`));
+        else add('ok', 'creator', L(`The creator holds little of the supply (${v}).`, `创建者持有的供应量很少（${v}）。`, `El creador tiene poco del supply (${v}).`));
+      }
+      if (c.owner?.renounced) add('ok', 'creator', L('Contract ownership was renounced.', '合约所有权已放弃。', 'La propiedad del contrato fue renunciada.'));
+      else if (c.owner?.pct >= 5) add('warn', 'creator', L(`The contract owner holds ${pctTxt(c.owner.pct)} of the supply.`, `合约所有者持有 ${pctTxt(c.owner.pct)} 的供应量。`, `El dueño del contrato tiene el ${pctTxt(c.owner.pct)} del supply.`));
+      if (c.openSource === false) add('warn', 'creator', L("The contract code isn't verified: nobody can check what it does.", '合约代码未验证：无法查看其功能。', 'El código del contrato no está verificado: nadie puede revisar qué hace.'));
+      if (c.metadataMutable) add('warn', 'creator', L('The token name, symbol or image can still be changed.', '代币名称、符号或图片仍可更改。', 'El nombre, símbolo o imagen del token todavía se pueden cambiar.'));
+    }
   } else if (st.status === 'loading') {
     add('info', 'contract', L('Contract checks are still loading.', '合约检测仍在加载中。', 'Los chequeos del contrato todavía se están cargando.'));
   } else {
@@ -1693,6 +1857,15 @@ function reportText(type) {
       ].join('\n');
     }
 
+    case 'creator': {
+      const lines = about(['creator']);
+      return [
+        L(`👤 Creator of ${s}`, `👤 ${s} 的创建者`, `👤 Creador de ${s}`),
+        sec?.creator?.address ? `• ${L('Wallet', '钱包', 'Billetera')}: ${sec.creator.address}` : null,
+        ...(lines.length ? lines : [L('No creator data is available for this token. Use "Verify on-chain".', '暂无该代币的创建者数据。请使用“链上验证”。', 'No hay datos del creador para este token. Usá "Verificar on-chain".')])
+      ].filter(Boolean).join('\n');
+    }
+
     case 'holders': {
       if (!sec || !sec.holders.length) return `👥 ${tr('holders_na')}`;
       return [
@@ -1764,11 +1937,12 @@ const INTENTS = [
   ['checklist', /checklist|riesgos|\brisks\b|red flag|bandera|senal|peligro|danger|风险清单|红旗|危险/],
   ['safety', /safe|segur|\brug|scam|estafa|honey|fraud|trampa|confiable|trust|legit|安全|蜜罐|跑路|骗|可信|风险/],
   ['tax', /\btax|impuesto|comision|\bfees?\b|税|手续费/],
-  ['permissions', /\bmint|emitir|crear mas|inflacion|freeze|congel|blacklist|lista negra|proxy|owner|dueno|propietario|renounc|renunci|增发|冻结|黑名单|权限|所有者/],
+  ['creator', /creador|creator|\bdev\b|developer|desarrollador|deployer|owner|dueno|propietario|renounc|renunci|equipo|\bteam\b|quien lo (creo|hizo)|who (made|created)|创建|开发者|项目方|所有者/],
+  ['permissions', /\bmint|emitir|crear mas|inflacion|freeze|congel|blacklist|lista negra|proxy|增发|冻结|黑名单|权限/],
   ['holders', /holder|whale|ballena|concentra|distribu|wallet|billetera|quien tiene|who (holds|owns)|持币|巨鲸|集中|分布|钱包|谁持有/],
   ['liquidity', /\bliq|pool|\blp\b|profundidad|depth|流动|池/],
   ['trend', /price|precio|trend|tendencia|pump|dump|chart|grafic|sube|subio|baja|bajo|cae|cayo|volatil|走势|价格|涨|跌/],
-  ['activity', /volum|actividad|activity|trading|transacc|\btxn|compras|ventas|\bbuys\b|\bsells\b|edad|antigu|nuevo|\bnew\b|\bold\b|\bage\b|launch|lanz|creado|created|交易量|成交|年龄|活跃/],
+  ['activity', /volum|actividad|activity|trading|transacc|\btxn|compras|ventas|\bbuys\b|\bsells\b|edad|antigu|nuevo|\bnew\b|\bold\b|\bage\b|launch|lanz|creado|created|cuando se creo|cuando (se )?lanzo|how old|交易量|成交|年龄|活跃/],
   ['summary', /resumen|summary|overview|analiza|analisis|analysis|que es|what is|\binfo|概况|总结|分析|介绍/],
   ['help', /ayuda|\bhelp\b|que puedo|what can|como funciona|how does|帮助|怎么用/]
 ];
@@ -1778,6 +1952,7 @@ function detectIntents(text) {
   const q = text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   let found = INTENTS.filter(([, re]) => re.test(q)).map(([k]) => k);
   // broader reports already include the narrower ones
+  if (found.includes('creator')) found = found.filter(k => k !== 'permissions' && k !== 'activity'); // "who created it / dev / owner" questions
   if (found.includes('verdict')) found = found.filter(k => !['checklist', 'safety', 'summary'].includes(k));
   if (found.includes('checklist')) found = found.filter(k => !['safety', 'summary'].includes(k));
   if (found.length > 1) found = found.filter(k => k !== 'summary' && k !== 'help');
