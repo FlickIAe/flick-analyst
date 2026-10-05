@@ -138,7 +138,7 @@ const TRANSLATIONS = {
     top10_ratio_label: "Top 10 Holders Supply Ratio",
     holder_count: "Holders",
     holders_na: "Holder data is unavailable for this token. Use \"Verify on-chain\" in the Audit tab.",
-    holders_loading: "Loading holders from GoPlus…",
+    holders_loading: "Loading holders…",
     holders_usd_note: "USD value ≈ % supply × FDV",
     tag_contract: "Contract",
     tag_locked: "🔒 Locked",
@@ -244,7 +244,10 @@ const TRANSLATIONS = {
     cr_mint_auth: "Mint authority",
     cr_metadata: "Name / image",
     cr_changeable: "Can be changed",
-    cr_locked: "Locked"
+    cr_locked: "Locked",
+    cr_sold_all: "sold everything",
+    holders_sol_src: "Top 20 accounts · Solana RPC",
+    cr_not_found: "Couldn't identify (very active or old token)"
   },
   zh: {
     mainnet_active: "实时 DEX 数据",
@@ -368,7 +371,7 @@ const TRANSLATIONS = {
     top10_ratio_label: "前10名持币占比",
     holder_count: "持币地址",
     holders_na: "暂无该代币的持币数据。请使用审计页中的“链上验证”。",
-    holders_loading: "正在从 GoPlus 加载持币数据…",
+    holders_loading: "正在加载持币数据…",
     holders_usd_note: "USD 价值 ≈ 持仓占比 × FDV",
     tag_contract: "合约",
     tag_locked: "🔒 锁定",
@@ -473,7 +476,10 @@ const TRANSLATIONS = {
     cr_mint_auth: "增发权限",
     cr_metadata: "名称 / 图片",
     cr_changeable: "可更改",
-    cr_locked: "已锁定"
+    cr_locked: "已锁定",
+    cr_sold_all: "已全部卖出",
+    holders_sol_src: "前 20 个账户 · Solana RPC",
+    cr_not_found: "无法识别（代币过于活跃或较老）"
   },
   es: {
     mainnet_active: "Datos DEX en vivo",
@@ -597,7 +603,7 @@ const TRANSLATIONS = {
     top10_ratio_label: "Porcentaje del supply en el top 10",
     holder_count: "Holders",
     holders_na: "No hay datos de holders para este token. Usá \"Verificar on-chain\" en la pestaña Auditoría.",
-    holders_loading: "Cargando holders desde GoPlus…",
+    holders_loading: "Cargando holders…",
     holders_usd_note: "Valor USD ≈ % del supply × FDV",
     tag_contract: "Contrato",
     tag_locked: "🔒 Bloqueado",
@@ -702,7 +708,10 @@ const TRANSLATIONS = {
     cr_mint_auth: "Autoridad de mint",
     cr_metadata: "Nombre / imagen",
     cr_changeable: "Se puede cambiar",
-    cr_locked: "Bloqueado"
+    cr_locked: "Bloqueado",
+    cr_sold_all: "ya vendió todo",
+    holders_sol_src: "Top 20 cuentas · Solana RPC",
+    cr_not_found: "No se pudo identificar (token muy activo o antiguo)"
   }
 };
 
@@ -1245,6 +1254,112 @@ async function fetchSecurity() {
   }
   renderAuditTab();
   renderHoldersTable();
+  if (isSol && security.key === key && security.status === 'ok') enrichSolana(key, ca);
+}
+
+// ===================================================================
+// 5b. SOLANA ON-CHAIN ENRICHMENT (public RPC, free)
+// GoPlus doesn't return holders or the creator for most Solana tokens
+// (e.g. pump.fun launches), so they are read straight from the chain:
+//   top holders  → getTokenLargestAccounts + owners of those token accounts
+//   creator      → fee payer of the mint's first transaction
+//   creator now  → the creator's current balance of the token
+// ===================================================================
+const SOL_RPC = 'https://api.mainnet-beta.solana.com';
+const SOL_SIG_PAGES = 3; // up to 3,000 signatures back to find the creation transaction
+
+async function solRpc(method, params, timeout = 12000) {
+  const c = new AbortController();
+  const timer = setTimeout(() => c.abort(), timeout);
+  try {
+    const res = await fetch(SOL_RPC, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+      signal: c.signal
+    });
+    if (!res.ok) throw new Error(`RPC HTTP ${res.status}`);
+    const d = await res.json();
+    if (d.error) throw new Error(d.error.message || 'RPC error');
+    return d.result;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function solanaTopHolders(mint, supply) {
+  const largest = (await solRpc('getTokenLargestAccounts', [mint]))?.value || [];
+  if (!largest.length || !(supply > 0)) return [];
+  const accounts = (await solRpc('getMultipleAccounts', [largest.map(a => a.address), { encoding: 'jsonParsed' }]))?.value || [];
+  const byOwner = new Map();
+  largest.forEach((a, i) => {
+    const owner = accounts[i]?.data?.parsed?.info?.owner || a.address;
+    const amount = Number(a.uiAmountString ?? a.uiAmount) || 0;
+    byOwner.set(owner, (byOwner.get(owner) || 0) + amount);
+  });
+  return [...byOwner.entries()]
+    .map(([address, amount]) => ({ address, pct: (amount / supply) * 100, tag: '', isContract: false, isLocked: false }))
+    .filter(h => h.pct > 0)
+    .sort((a, b) => b.pct - a.pct);
+}
+
+async function solanaCreatorWallet(mint) {
+  let before;
+  for (let page = 0; page < SOL_SIG_PAGES; page++) {
+    const sigs = await solRpc('getSignaturesForAddress', [mint, before ? { limit: 1000, before } : { limit: 1000 }]);
+    if (!Array.isArray(sigs) || !sigs.length) return null;
+    if (sigs.length < 1000) {
+      const tx = await solRpc('getTransaction', [sigs[sigs.length - 1].signature, { encoding: 'json', maxSupportedTransactionVersion: 0 }]);
+      const keys = tx?.transaction?.message?.accountKeys;
+      const payer = Array.isArray(keys) ? (typeof keys[0] === 'string' ? keys[0] : keys[0]?.pubkey) : null;
+      return payer && SOL_RE.test(payer) ? payer : null;
+    }
+    before = sigs[sigs.length - 1].signature;
+  }
+  return null; // very active or old token: the creation is too far back
+}
+
+async function solanaWalletBalance(owner, mint) {
+  const res = await solRpc('getTokenAccountsByOwner', [owner, { mint }, { encoding: 'jsonParsed' }]);
+  return (res?.value || []).reduce((sum, a) => sum + (Number(a.account?.data?.parsed?.info?.tokenAmount?.uiAmountString) || 0), 0);
+}
+
+// Runs after GoPlus; fills holders/top 10 and the creator, then re-renders
+async function enrichSolana(key, mint) {
+  const data = security.data;
+  if (!data?.isSol) return;
+  data.creator.pending = true;
+  renderAuditTab();
+  renderHoldersTable();
+  try {
+    const supply = Number((await solRpc('getTokenSupply', [mint]))?.value?.uiAmountString) || 0;
+    const [holders, creator] = await Promise.all([
+      data.holders.length ? Promise.resolve(null) : solanaTopHolders(mint, supply).catch(err => { console.warn('Solana holders failed:', err); return null; }),
+      data.creator.address ? Promise.resolve(data.creator.address) : solanaCreatorWallet(mint).catch(err => { console.warn('Solana creator lookup failed:', err); return null; })
+    ]);
+    if (security.key !== key) return; // the user opened another token meanwhile
+    if (holders && holders.length) {
+      data.holders = holders;
+      data.top10 = holders.slice(0, 10).reduce((s, h) => s + h.pct, 0);
+    }
+    if (!creator && !data.creator.address) data.creator.notFound = true;
+    if (creator) {
+      data.creator.address = creator;
+      if (data.creator.pct == null && supply > 0) {
+        const bal = await solanaWalletBalance(creator, mint).catch(() => null);
+        if (security.key !== key) return;
+        if (bal != null) data.creator.pct = (bal / supply) * 100;
+      }
+    }
+  } catch (err) {
+    console.warn('Solana on-chain lookup failed:', err);
+  } finally {
+    if (security.key === key) {
+      data.creator.pending = false;
+      renderAuditTab();
+      renderHoldersTable();
+    }
+  }
 }
 
 function normalizeSecurity(r, isSol) {
@@ -1362,7 +1477,7 @@ function renderHoldersTable() {
   };
 
   if (!t.loaded) return message(tr('waiting'));
-  if (security.status === 'loading') return message(tr('holders_loading'));
+  if (security.status === 'loading' || (security.data?.isSol && security.data.creator?.pending && !security.data.holders.length)) return message(tr('holders_loading'));
   const s = security.status === 'ok' ? security.data : null;
   if (!s || !s.holders.length) return message(tr('holders_na'));
 
@@ -1375,7 +1490,7 @@ function renderHoldersTable() {
     fill.style.width = `${Math.min(100, s.top10)}%`;
     bar.appendChild(fill);
     const meta = el('div', 'flex items-center justify-between gap-2 text-[11px] text-slate-400');
-    meta.append(el('span', '', s.holderCount != null ? `${tr('holder_count')}: ${formatCompact(s.holderCount)}` : ''), el('span', '', tr('holders_usd_note')));
+    meta.append(el('span', '', s.holderCount != null ? `${tr('holder_count')}: ${formatCompact(s.holderCount)}` : (s.isSol ? tr('holders_sol_src') : '')), el('span', '', tr('holders_usd_note')));
     summary.replaceChildren(ratio, bar, meta);
     summary.classList.remove('hidden');
   }
@@ -1545,9 +1660,13 @@ function renderCreatorBox() {
     return r;
   };
   const rows = [];
-  if (c.address) {
+  if (!c.address && c.pending) {
+    rows.push(row(tr('cr_creator'), 'na', tr('checking')));
+  } else if (!c.address && c.notFound) {
+    rows.push(row(tr('cr_creator'), 'na', tr('cr_not_found')));
+  } else if (c.address) {
     const lv = c.pct == null ? 'na' : c.pct >= 20 ? 'bad' : c.pct >= 5 ? 'warn' : 'ok';
-    rows.push(row(tr('cr_creator'), lv, addrNode(c.address), c.pct == null ? '' : ` · ${tr('cr_holds', { pct: pctTxt(c.pct) })}`));
+    rows.push(row(tr('cr_creator'), lv, addrNode(c.address), c.pct == null ? '' : ` · ${c.pct < 0.01 ? tr('cr_sold_all') : tr('cr_holds', { pct: pctTxt(c.pct) })}`));
   } else {
     rows.push(row(tr('cr_creator'), 'na', 'N/A'));
   }
@@ -1715,6 +1834,7 @@ function riskFindings(t = currentToken, st = security) {
         const v = pctTxt(c.pct);
         if (c.pct >= 20) add('bad', 'creator', L(`The creator still holds ${v} of the supply: they could dump it at any time.`, `创建者仍持有 ${v} 的供应量：随时可能抛售。`, `El creador todavía tiene el ${v} del supply: lo podría vender de golpe.`));
         else if (c.pct >= 5) add('warn', 'creator', L(`The creator still holds ${v} of the supply.`, `创建者仍持有 ${v} 的供应量。`, `El creador todavía tiene el ${v} del supply.`));
+        else if (c.pct < 0.01) add('info', 'creator', L('The creator already sold or moved all their tokens.', '创建者已卖出或转出全部代币。', 'El creador ya vendió o movió todos sus tokens.'));
         else add('ok', 'creator', L(`The creator holds little of the supply (${v}).`, `创建者持有的供应量很少（${v}）。`, `El creador tiene poco del supply (${v}).`));
       }
       if (c.owner?.renounced) add('ok', 'creator', L('Contract ownership was renounced.', '合约所有权已放弃。', 'La propiedad del contrato fue renunciada.'));
