@@ -247,7 +247,8 @@ const TRANSLATIONS = {
     cr_locked: "Locked",
     cr_sold_all: "sold everything",
     holders_sol_src: "Top 20 accounts · Solana RPC",
-    cr_not_found: "Couldn't identify (very active or old token)"
+    cr_not_found: "Couldn't identify (very active or old token)",
+    cr_rpc_down: "Solana network busy, try again in a minute"
   },
   zh: {
     mainnet_active: "实时 DEX 数据",
@@ -479,7 +480,8 @@ const TRANSLATIONS = {
     cr_locked: "已锁定",
     cr_sold_all: "已全部卖出",
     holders_sol_src: "前 20 个账户 · Solana RPC",
-    cr_not_found: "无法识别（代币过于活跃或较老）"
+    cr_not_found: "无法识别（代币过于活跃或较老）",
+    cr_rpc_down: "Solana 网络繁忙，请稍后再试"
   },
   es: {
     mainnet_active: "Datos DEX en vivo",
@@ -711,7 +713,8 @@ const TRANSLATIONS = {
     cr_locked: "Bloqueado",
     cr_sold_all: "ya vendió todo",
     holders_sol_src: "Top 20 cuentas · Solana RPC",
-    cr_not_found: "No se pudo identificar (token muy activo o antiguo)"
+    cr_not_found: "No se pudo identificar (token muy activo o antiguo)",
+    cr_rpc_down: "Red de Solana ocupada, probá en un minuto"
   }
 };
 
@@ -1265,26 +1268,53 @@ async function fetchSecurity() {
 //   creator      → fee payer of the mint's first transaction
 //   creator now  → the creator's current balance of the token
 // ===================================================================
-const SOL_RPC = 'https://api.mainnet-beta.solana.com';
+// Tried in order; the first one that answers is remembered for the session.
+// "/api/solana" is our own Pages Function (server-side, avoids RPCs that block web pages).
+const SOL_RPCS = [
+  ...(location.protocol.startsWith('http') ? ['/api/solana'] : []),
+  'https://solana-rpc.publicnode.com',
+  'https://api.mainnet-beta.solana.com'
+];
 const SOL_SIG_PAGES = 3; // up to 3,000 signatures back to find the creation transaction
+const RPC_RETRY_CODES = [-32005, -32429, -32000, 429, 403];
+let solRpcIndex = 0;
 
-async function solRpc(method, params, timeout = 12000) {
+async function solRpcAt(url, method, params, timeout) {
   const c = new AbortController();
   const timer = setTimeout(() => c.abort(), timeout);
   try {
-    const res = await fetch(SOL_RPC, {
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
       signal: c.signal
     });
-    if (!res.ok) throw new Error(`RPC HTTP ${res.status}`);
-    const d = await res.json();
-    if (d.error) throw new Error(d.error.message || 'RPC error');
-    return d.result;
+    const d = await res.json().catch(() => null);
+    if (!res.ok || !d) return { retry: true, error: `HTTP ${res.status}` };
+    if (d.error) return { retry: RPC_RETRY_CODES.includes(d.error.code), error: d.error.message || 'RPC error' };
+    return { result: d.result };
+  } catch (err) {
+    return { retry: true, error: err.message || 'network error' };
   } finally {
     clearTimeout(timer);
   }
+}
+
+async function solRpc(method, params, timeout = 12000) {
+  let lastError = 'no RPC endpoint';
+  for (let n = 0; n < SOL_RPCS.length; n++) {
+    const i = (solRpcIndex + n) % SOL_RPCS.length;
+    const r = await solRpcAt(SOL_RPCS[i], method, params, timeout);
+    if (!('error' in r)) {
+      solRpcIndex = i;
+      return r.result;
+    }
+    lastError = `${SOL_RPCS[i]}: ${r.error}`;
+    if (!r.retry) break; // a real error (bad params...), another endpoint won't help
+  }
+  const err = new Error(lastError);
+  err.rpcDown = true;
+  throw err;
 }
 
 async function solanaTopHolders(mint, supply) {
@@ -1353,6 +1383,7 @@ async function enrichSolana(key, mint) {
     }
   } catch (err) {
     console.warn('Solana on-chain lookup failed:', err);
+    if (err.rpcDown && !data.creator.address) data.creator.rpcDown = true;
   } finally {
     if (security.key === key) {
       data.creator.pending = false;
@@ -1664,6 +1695,8 @@ function renderCreatorBox() {
     rows.push(row(tr('cr_creator'), 'na', tr('checking')));
   } else if (!c.address && c.notFound) {
     rows.push(row(tr('cr_creator'), 'na', tr('cr_not_found')));
+  } else if (!c.address && c.rpcDown) {
+    rows.push(row(tr('cr_creator'), 'na', tr('cr_rpc_down')));
   } else if (c.address) {
     const lv = c.pct == null ? 'na' : c.pct >= 20 ? 'bad' : c.pct >= 5 ? 'warn' : 'ok';
     rows.push(row(tr('cr_creator'), lv, addrNode(c.address), c.pct == null ? '' : ` · ${c.pct < 0.01 ? tr('cr_sold_all') : tr('cr_holds', { pct: pctTxt(c.pct) })}`));
