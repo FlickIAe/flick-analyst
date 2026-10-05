@@ -211,8 +211,15 @@ const TRANSLATIONS = {
     feed_launches: "New · filtered",
     launch_loading: "Analyzing new launches…",
     launch_empty: "No new launch passed the filter right now. Try again in a few minutes.",
+    launch_show_hidden: "Show {n} hidden (high risk)",
+    launch_hide_hidden: "Hide high-risk launches",
+    lr_contract: "Honeypot or sell restriction",
+    lr_tax: "Extreme taxes",
+    lr_liquidity: "Unlocked liquidity",
+    lr_holders: "Supply very concentrated",
+    lr_creator: "Risky creator",
     launch_error: "Couldn't load new launches.",
-    launch_note: "Tokens launched in the last 72h on DexScreener, checked automatically (liquidity, age, activity and GoPlus contract checks). High-risk ones are hidden. Passing the filter doesn't make a token safe: new launches are always risky.",
+    launch_note: "Tokens launched in the last 72h on DexScreener, checked automatically (liquidity, activity and GoPlus contract checks). High-risk ones are hidden; being new alone doesn't hide a token, since every launch here is new. Passing the filter doesn't make a token safe: new launches are always risky.",
     t_unverified: "⚠️ Contract not verified",
     tg_title: "Telegram alerts",
     tg_desc: "Get these alerts on Telegram, even with Flick closed.",
@@ -444,8 +451,15 @@ const TRANSLATIONS = {
     feed_launches: "新币 · 已过滤",
     launch_loading: "正在分析新上线代币…",
     launch_empty: "目前没有新代币通过过滤。请几分钟后再试。",
+    launch_show_hidden: "显示 {n} 个已隐藏（高风险）",
+    launch_hide_hidden: "隐藏高风险代币",
+    lr_contract: "蜜罐或卖出限制",
+    lr_tax: "税率极高",
+    lr_liquidity: "流动性未锁定",
+    lr_holders: "供应高度集中",
+    lr_creator: "创建者有风险",
     launch_error: "无法加载新上线代币。",
-    launch_note: "DexScreener 上近 72 小时上线的代币，自动检测（流动性、年龄、活跃度和 GoPlus 合约检测），高风险的已隐藏。通过过滤不代表安全：新币始终有风险。",
+    launch_note: "DexScreener 上近 72 小时上线的代币，自动检测（流动性、活跃度和 GoPlus 合约检测），高风险的已隐藏；不会仅因为是新币而隐藏，因为这里都是新币。通过过滤不代表安全：新币始终有风险。",
     t_unverified: "⚠️ 合约未验证",
     tg_title: "Telegram 提醒",
     tg_desc: "即使关闭 Flick，也能在 Telegram 上收到这些提醒。",
@@ -677,8 +691,15 @@ const TRANSLATIONS = {
     feed_launches: "Nuevos filtrados",
     launch_loading: "Analizando lanzamientos nuevos…",
     launch_empty: "Ningún lanzamiento nuevo pasó el filtro por ahora. Probá de nuevo en unos minutos.",
+    launch_show_hidden: "Ver {n} ocultos (riesgo alto)",
+    launch_hide_hidden: "Ocultar los de riesgo alto",
+    lr_contract: "Honeypot o restricción de venta",
+    lr_tax: "Impuestos extremos",
+    lr_liquidity: "Liquidez sin bloquear",
+    lr_holders: "Supply muy concentrado",
+    lr_creator: "Creador riesgoso",
     launch_error: "No se pudieron cargar los lanzamientos nuevos.",
-    launch_note: "Tokens lanzados en las últimas 72h en DexScreener, revisados automáticamente (liquidez, antigüedad, actividad y chequeos de contrato de GoPlus). Los de riesgo alto se ocultan. Pasar el filtro no hace seguro a un token: los lanzamientos nuevos siempre son riesgosos.",
+    launch_note: "Tokens lanzados en las últimas 72h en DexScreener, revisados automáticamente (liquidez, actividad y chequeos de contrato de GoPlus). Los de riesgo alto se ocultan; ser nuevo no alcanza para ocultarlo, porque acá todos son nuevos. Pasar el filtro no hace seguro a un token: los lanzamientos nuevos siempre son riesgosos.",
     t_unverified: "⚠️ Contrato sin verificar",
     tg_title: "Alertas por Telegram",
     tg_desc: "Recibí estas alertas en Telegram, aunque tengas Flick cerrado.",
@@ -2582,11 +2603,16 @@ function renderSimulator() {
 // ===================================================================
 // 11d. NEW LAUNCHES, FILTERED (landing page, next to Trending)
 // Latest token profiles on DexScreener, launched in the last 72h, run through
-// the same risk engine as the dashboard (market + GoPlus). High risk is hidden.
+// the same risk engine as the dashboard (market + GoPlus). High risk is hidden
+// (behind a "show" button). Age alone doesn't count: every launch is new, and
+// the dashboard's "under 24h = high risk" rule would hide all of them.
 // ===================================================================
-const LAUNCH_CACHE_KEY = 'flickLaunches';
+const LAUNCH_CACHE_KEY = 'flickLaunches2';
 const LAUNCH_MAX_AGE_DAYS = 3;
-let launches = { status: 'idle', items: [] };
+const LAUNCH_CANDIDATES = 60;
+const LAUNCH_CHECKED = 16; // GoPlus checks per refresh
+let launches = { status: 'idle', items: [], hidden: [] };
+let showHiddenLaunches = false;
 let feed = safeStorage(() => localStorage.getItem('flickFeed')) === 'launches' ? 'launches' : 'trending';
 
 function setFeed(f) {
@@ -2612,9 +2638,9 @@ function renderFeedTabs() {
   });
 }
 
-async function launchItem(profile) {
-  const d = await fetchJson(`${DEX_API}/tokens/${encodeURIComponent(profile.tokenAddress)}`, { timeout: 10000 });
-  const own = (d.pairs || [])
+// Builds a card item from the token's own pairs (null if older than 72h)
+function launchItem(profile, pairs) {
+  const own = pairs
     .filter(p => p.chainId === profile.chainId && sameAddress(p.baseToken?.address, profile.tokenAddress))
     .sort(byLiquidity);
   if (!own.length) return null;
@@ -2638,6 +2664,23 @@ async function launchItem(profile) {
   };
 }
 
+// Pairs for many tokens at once: /tokens/v1/{chain}/{up to 30 addresses}
+async function launchPairs(candidates) {
+  const byChain = new Map();
+  candidates.forEach(c => {
+    if (!byChain.has(c.chainId)) byChain.set(c.chainId, []);
+    byChain.get(c.chainId).push(c.tokenAddress);
+  });
+  const jobs = [];
+  byChain.forEach((cas, chain) => {
+    for (let i = 0; i < cas.length; i += 30) {
+      const url = `https://api.dexscreener.com/tokens/v1/${encodeURIComponent(chain)}/${cas.slice(i, i + 30).map(encodeURIComponent).join(',')}`;
+      jobs.push(fetchJson(url, { timeout: 12000 }).then(d => (Array.isArray(d) ? d : d?.pairs || [])).catch(() => []));
+    }
+  });
+  return (await Promise.all(jobs)).flat().filter(p => p && p.baseToken);
+}
+
 async function launchVerdict(item) {
   let st = { status: 'unsupported', data: null };
   if (item.chainId === 'solana' || GOPLUS_EVM[item.chainId]) {
@@ -2650,8 +2693,9 @@ async function launchVerdict(item) {
       st = { status: 'error', data: null };
     }
   }
-  const findings = riskFindings(item.tok, st);
+  const findings = riskFindings(item.tok, st).filter(f => f.topic !== 'age');
   item.verdict = riskVerdict(findings, st);
+  item.reason = findings.find(f => f.lv === 'bad')?.topic || '';
   item.checked = st.status === 'ok';
   return item;
 }
@@ -2661,44 +2705,48 @@ async function loadLaunches(force = false) {
   if (!force) {
     const cached = safeStorage(() => JSON.parse(sessionStorage.getItem(LAUNCH_CACHE_KEY) || 'null'));
     if (cached && Array.isArray(cached.items) && Date.now() - cached.at < TRENDING_TTL) {
-      launches = { status: 'ok', items: cached.items };
+      launches = { status: 'ok', items: cached.items, hidden: Array.isArray(cached.hidden) ? cached.hidden : [] };
       return renderLaunches();
     }
   }
-  launches = { status: 'loading', items: launches.items };
+  launches = { status: 'loading', items: launches.items, hidden: launches.hidden || [] };
   renderLaunches();
   try {
-    const profiles = await fetchJson('https://api.dexscreener.com/token-profiles/latest/v1', { timeout: 10000 });
+    // Newest token profiles + newest boosts: both lists are mostly fresh launches
+    const lists = await Promise.all([
+      'https://api.dexscreener.com/token-profiles/latest/v1',
+      'https://api.dexscreener.com/token-boosts/latest/v1'
+    ].map(u => fetchJson(u, { timeout: 10000 }).catch(() => null)));
+    if (lists.every(l => !Array.isArray(l))) throw new Error('DexScreener lists unavailable');
     const seen = new Set();
-    const candidates = (Array.isArray(profiles) ? profiles : [])
+    const candidates = lists.flatMap(l => (Array.isArray(l) ? l : []))
       .filter(p => p && typeof p.tokenAddress === 'string' && typeof p.chainId === 'string')
       .filter(p => {
-        const k = `${p.chainId}:${p.tokenAddress}`;
+        const k = `${p.chainId}:${p.chainId === 'solana' ? p.tokenAddress : p.tokenAddress.toLowerCase()}`;
         if (seen.has(k)) return false;
         seen.add(k);
         return true;
       })
-      .slice(0, 24);
-    let items = [];
-    for (let i = 0; i < candidates.length; i += 4) {
-      const batch = await Promise.all(candidates.slice(i, i + 4).map(p => launchItem(p).catch(() => null)));
-      items.push(...batch.filter(Boolean));
-    }
+      .slice(0, LAUNCH_CANDIDATES);
+    const pairs = await launchPairs(candidates);
+    let items = candidates.map(c => launchItem(c, pairs)).filter(Boolean);
     // Contract checks only for the most active ones (keeps GoPlus calls low)
-    items = items.sort((a, b) => b.vol - a.vol).slice(0, 12);
+    items = items.sort((a, b) => b.vol - a.vol).slice(0, LAUNCH_CHECKED);
     for (let i = 0; i < items.length; i += 4) {
       await Promise.all(items.slice(i, i + 4).map(launchVerdict));
     }
     const rank = { low: 0, medium: 1, high: 2 };
+    const strip = ({ tok, ...rest }) => rest;
     const passed = items.filter(x => x.verdict !== 'high')
       .sort((a, b) => rank[a.verdict] - rank[b.verdict] || b.vol - a.vol)
       .slice(0, TRENDING_SHOW)
-      .map(({ tok, ...rest }) => rest);
-    launches = { status: 'ok', items: passed };
-    safeStorage(() => sessionStorage.setItem(LAUNCH_CACHE_KEY, JSON.stringify({ at: Date.now(), items: passed })));
+      .map(strip);
+    const hidden = items.filter(x => x.verdict === 'high').slice(0, TRENDING_SHOW).map(strip);
+    launches = { status: 'ok', items: passed, hidden };
+    safeStorage(() => sessionStorage.setItem(LAUNCH_CACHE_KEY, JSON.stringify({ at: Date.now(), items: passed, hidden })));
   } catch (err) {
     console.warn('New launches load failed:', err);
-    launches = { status: 'error', items: [] };
+    launches = { status: 'error', items: [], hidden: [] };
   }
   renderLaunches();
 }
@@ -2721,13 +2769,20 @@ function renderLaunches() {
     status.replaceChildren(msg);
     return;
   }
-  if (launches.status === 'ok' && !launches.items.length) {
-    grid.replaceChildren();
-    status.replaceChildren(el('p', 'text-[11px] text-slate-400', tr('launch_empty')));
-    return;
+  // High-risk launches stay hidden unless the user asks to see them
+  const hidden = launches.hidden || [];
+  const parts = [];
+  if (launches.status === 'ok' && !launches.items.length) parts.push(el('p', 'text-[11px] text-slate-400', tr('launch_empty')));
+  if (hidden.length) {
+    const btn = el('button', 'text-[11px] font-semibold text-crimsonRisk hover:underline',
+      showHiddenLaunches ? tr('launch_hide_hidden') : tr('launch_show_hidden', { n: hidden.length }));
+    btn.type = 'button';
+    btn.onclick = () => { showHiddenLaunches = !showHiddenLaunches; renderLaunches(); };
+    parts.push(btn);
   }
-  status.replaceChildren();
-  grid.replaceChildren(...launches.items.map(item => feedCard(item, true)));
+  status.className = parts.length ? 'flex flex-wrap items-center gap-x-3 gap-y-1' : '';
+  status.replaceChildren(...parts);
+  grid.replaceChildren(...[...launches.items, ...(showHiddenLaunches ? hidden : [])].map(item => feedCard(item, true)));
 }
 
 // Card shared by "Trending" and "New launches"
@@ -2755,7 +2810,7 @@ function feedCard(item, isLaunch = false) {
   );
   head.append(logo, names);
   if (isLaunch && item.verdict) {
-    const style = { low: 'text-cyberGreen bg-cyberGreen/10 border-cyberGreen/30', medium: 'text-amberGlow bg-amberGlow/10 border-amberGlow/30' }[item.verdict] || 'text-slate-400 bg-white/5 border-white/10';
+    const style = { low: 'text-cyberGreen bg-cyberGreen/10 border-cyberGreen/30', medium: 'text-amberGlow bg-amberGlow/10 border-amberGlow/30', high: 'text-crimsonRisk bg-crimsonRisk/10 border-crimsonRisk/30' }[item.verdict] || 'text-slate-400 bg-white/5 border-white/10';
     head.appendChild(el('span', `shrink-0 px-1.5 py-0.5 rounded-md border text-[10px] font-extrabold ${style}`, tr(`rv_${item.verdict}`)));
   }
 
@@ -2772,6 +2827,9 @@ function feedCard(item, isLaunch = false) {
   if (item.liq < 20000) flags.push(tr('t_lowliq'));
   if (!isLaunch && item.ageDays != null && item.ageDays < 1) flags.push(tr('t_new'));
   if (isLaunch && item.checked === false) flags.push(tr('t_unverified'));
+  if (isLaunch && item.verdict === 'high' && item.reason && !(item.reason === 'liquidity' && item.liq < 20000)) {
+    card.appendChild(el('p', 'text-[11px] text-crimsonRisk truncate', `⛔ ${tr(`lr_${item.reason}`)}`));
+  }
   if (flags.length) card.appendChild(el('p', 'text-[11px] text-amberGlow truncate', flags.join(' · ')));
   return card;
 }
