@@ -1174,7 +1174,7 @@ async function copySocialShareCard() {
   const score = currentToken.score || 90;
 
   const shareText = 
-`⚡ FLICK ANALYST — On-Chain Diagnostic
+`⚡ FLICK Super Intelligence Diagnostic
 
 🪙 Token: $${currentToken.symbol} (${currentToken.chainId ? currentToken.chainId.toUpperCase() : 'SOL'})
 📍 CA: ${currentToken.ca}
@@ -1188,11 +1188,11 @@ async function copySocialShareCard() {
 • Taxes: Buy ${currentToken.buyTax || '0%'} / Sell ${currentToken.sellTax || '0%'}
 • Ownership: ${currentToken.ownership || 'Renounced'}
 
-🔍 Analyzed via Flick Analyst`;
+🔍 Analyzed via Flick SI`;
 
   try {
     await navigator.clipboard.writeText(shareText);
-    alert("¡Reporte copiado al portapapeles! Listo para pegar en X o Telegram.");
+    showToast("Report copied to clipboard! Ready to paste on X or Telegram.");
   } catch (err) {
     console.error("Error al copiar al portapapeles:", err);
   }
@@ -1228,4 +1228,19 @@ function renderMultiPairs(pairs) {
       </div>
     </div>
   `).join('');
+}
+
+function showToast(message) {
+  // Crear la notificación flotante con tu estilo ambar
+  const toast = document.createElement('div');
+  toast.className = 'fixed bottom-6 right-6 z-50 bg-[#1e1e24] text-white border border-amberCore/40 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-medium transition-all duration-300';
+  toast.innerHTML = `<span class="text-amberCore">⚡</span> ${message}`;
+  
+  document.body.appendChild(toast);
+  
+  // Desaparece sola en 2.5 segundos
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
 }

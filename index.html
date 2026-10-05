@@ -269,16 +269,7 @@
             <p class="text-xs font-mono text-slate-400 mt-1 flex items-center gap-2" id="activeTokenCa">CA: So11...1112</p>
           </div>
         </div>
-        <!-- TOGGLE LIVE POLL -->
-<div class="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10 text-xs font-mono">
-  <span class="relative flex h-2 w-2">
-    <span id="livePulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyberGreen opacity-75 hidden"></span>
-    <span id="liveDot" class="relative inline-flex rounded-full h-2 w-2 bg-slate-500"></span>
-  </span>
-  <span class="text-slate-400">Live 12s</span>
-  <input type="checkbox" id="toggleLiveCheckbox" onchange="toggleLivePolling(this.checked)" class="accent-amberCore cursor-pointer" />
-</div>
-
+        
         <div class="flex items-center gap-6 md:gap-10 text-xs flex-wrap">
           <div class="border-r border-white/10 pr-6">
             <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5" data-i18n="live_price">Live Price</p>
@@ -309,11 +300,6 @@
           <div class="flex items-center justify-between px-3 py-2 border-b border-white/10 text-xs">
             <div class="flex items-center gap-2">
               <span class="font-semibold text-slate-300 font-mono" data-i18n="stream_dex">Stream DexScreener Real-Time</span>
-            </div>
-            <div class="flex gap-1 font-mono text-[11px]">
-              <button onclick="setTimeframe(this)" class="px-2.5 py-0.5 rounded bg-amberCore/20 text-amberGlow font-bold border border-amberCore/30">1m</button>
-              <button onclick="setTimeframe(this)" class="px-2.5 py-0.5 rounded hover:bg-white/5 text-slate-400">5m</button>
-              <button onclick="setTimeframe(this)" class="px-2.5 py-0.5 rounded hover:bg-white/5 text-slate-400">1h</button>
             </div>
           </div>
 
