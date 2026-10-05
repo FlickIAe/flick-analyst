@@ -157,6 +157,41 @@ const TRANSLATIONS = {
     chip_liquidity: "Liquidity Depth",
     chip_price: "Technical Trend",
     tab_watch: "Watchlist",
+    tab_compare: "Compare",
+    cmp_add_ph: "Paste a contract address or ticker",
+    cmp_add: "Add",
+    cmp_quick: "Quick add:",
+    cmp_current: "Current",
+    cmp_remove: "Remove",
+    cmp_open: "Analyze",
+    cmp_empty: "Add up to 2 tokens to compare them side by side with the current one: liquidity, volume, age, taxes, holders and overall risk.",
+    cmp_max: "You can compare up to 3 tokens. Remove one first.",
+    cmp_same: "That token is already in the comparison.",
+    cmp_not_found: "Token not found.",
+    cmp_error: "Couldn't load",
+    cmp_best: "Lowest risk in this comparison: {s} ({risk} risk · health {score}/100).",
+    cmp_note: "Live data from DexScreener and GoPlus. ✓ marks the best value in each row. A comparison, not a recommendation.",
+    cmp_market: "Market",
+    cmp_security: "Security",
+    cmp_yes: "Yes",
+    cmp_no: "No",
+    cmp_r_price: "Price",
+    cmp_r_ch24: "24h change",
+    cmp_r_liq: "Liquidity",
+    cmp_r_vol: "24h volume",
+    cmp_r_fdv: "FDV",
+    cmp_r_age: "Age",
+    cmp_r_buys: "Buys (24h)",
+    cmp_r_health: "Health score",
+    cmp_r_risk: "Overall risk",
+    cmp_r_tax: "Buy / sell tax",
+    cmp_r_honeypot: "Honeypot",
+    cmp_r_mint: "Mint enabled",
+    cmp_r_freeze: "Freeze / blacklist",
+    cmp_r_lp: "LP locked",
+    cmp_r_top10: "Top 10 holders",
+    cmp_r_creator: "Creator holds",
+    cmp_r_holders: "Holders",
     watch: "Watch",
     watching: "Watching",
     watch_title: "Add to or remove from your watchlist",
@@ -397,6 +432,41 @@ const TRANSLATIONS = {
     chip_liquidity: "流动性深度",
     chip_price: "技术走势",
     tab_watch: "自选",
+    tab_compare: "对比",
+    cmp_add_ph: "粘贴合约地址或代币符号",
+    cmp_add: "添加",
+    cmp_quick: "快速添加：",
+    cmp_current: "当前",
+    cmp_remove: "移除",
+    cmp_open: "分析",
+    cmp_empty: "最多可再添加 2 个代币，与当前代币并排对比：流动性、交易量、年龄、税率、持币和整体风险。",
+    cmp_max: "最多对比 3 个代币，请先移除一个。",
+    cmp_same: "该代币已在对比中。",
+    cmp_not_found: "未找到代币。",
+    cmp_error: "无法加载",
+    cmp_best: "本次对比中风险最低：{s}（{risk}风险 · 健康度 {score}/100）。",
+    cmp_note: "DexScreener 与 GoPlus 实时数据。✓ 表示每行的最佳值。仅为对比，不构成推荐。",
+    cmp_market: "市场",
+    cmp_security: "安全",
+    cmp_yes: "是",
+    cmp_no: "否",
+    cmp_r_price: "价格",
+    cmp_r_ch24: "24小时涨跌",
+    cmp_r_liq: "流动性",
+    cmp_r_vol: "24小时交易量",
+    cmp_r_fdv: "FDV",
+    cmp_r_age: "年龄",
+    cmp_r_buys: "买入占比（24h）",
+    cmp_r_health: "健康评分",
+    cmp_r_risk: "整体风险",
+    cmp_r_tax: "买 / 卖税",
+    cmp_r_honeypot: "蜜罐",
+    cmp_r_mint: "可增发",
+    cmp_r_freeze: "冻结 / 黑名单",
+    cmp_r_lp: "LP 锁定",
+    cmp_r_top10: "前10持币",
+    cmp_r_creator: "创建者持有",
+    cmp_r_holders: "持币人数",
     watch: "自选",
     watching: "已自选",
     watch_title: "加入或移出自选",
@@ -637,6 +707,41 @@ const TRANSLATIONS = {
     chip_liquidity: "Profundidad de liquidez",
     chip_price: "Tendencia técnica",
     tab_watch: "Watchlist",
+    tab_compare: "Comparar",
+    cmp_add_ph: "Pegá un contrato o ticker",
+    cmp_add: "Agregar",
+    cmp_quick: "Agregar rápido:",
+    cmp_current: "Actual",
+    cmp_remove: "Quitar",
+    cmp_open: "Analizar",
+    cmp_empty: "Agregá hasta 2 tokens para compararlos lado a lado con el actual: liquidez, volumen, antigüedad, impuestos, holders y riesgo general.",
+    cmp_max: "Podés comparar hasta 3 tokens. Quitá uno primero.",
+    cmp_same: "Ese token ya está en la comparación.",
+    cmp_not_found: "No se encontró el token.",
+    cmp_error: "No se pudo cargar",
+    cmp_best: "Menor riesgo de esta comparación: {s} (riesgo {risk} · salud {score}/100).",
+    cmp_note: "Datos en vivo de DexScreener y GoPlus. ✓ marca el mejor valor de cada fila. Es una comparación, no una recomendación.",
+    cmp_market: "Mercado",
+    cmp_security: "Seguridad",
+    cmp_yes: "Sí",
+    cmp_no: "No",
+    cmp_r_price: "Precio",
+    cmp_r_ch24: "Cambio 24h",
+    cmp_r_liq: "Liquidez",
+    cmp_r_vol: "Volumen 24h",
+    cmp_r_fdv: "FDV",
+    cmp_r_age: "Antigüedad",
+    cmp_r_buys: "Compras (24h)",
+    cmp_r_health: "Puntaje de salud",
+    cmp_r_risk: "Riesgo general",
+    cmp_r_tax: "Impuesto compra / venta",
+    cmp_r_honeypot: "Honeypot",
+    cmp_r_mint: "Mint activo",
+    cmp_r_freeze: "Congelar / lista negra",
+    cmp_r_lp: "LP bloqueada",
+    cmp_r_top10: "Top 10 holders",
+    cmp_r_creator: "Tiene el creador",
+    cmp_r_holders: "Holders",
     watch: "Seguir",
     watching: "Siguiendo",
     watch_title: "Agregar o quitar de tu watchlist",
@@ -846,6 +951,7 @@ function changeLanguage(lang) {
   renderFeedTabs();
   renderSimulator();
   renderTelegramCard();
+  renderCompare();
   if (tgLinked) scheduleTgSync();
 }
 
@@ -1058,8 +1164,7 @@ function computeHealthScore(t) {
 }
 
 // Shared by the search and the live poll
-function applyMetrics(pair) {
-  const t = currentToken;
+function applyMetrics(pair, t = currentToken) {
   const num = v => (Number.isFinite(Number(v)) ? Number(v) : null);
   t.price = parseFloat(pair.priceUsd) || 0;
   t.changes = {
@@ -1817,6 +1922,7 @@ function renderCreatorBox() {
 function renderAuditTab() {
   const t = currentToken;
   if (!$('honeypotBanner')) return;
+  if (compareTabVisible()) renderCompare();
 
   renderRiskBadge();
   renderSimulator();
@@ -2241,17 +2347,18 @@ function sendCopilotQuery() {
 // 9. UI TABS & LIVE POLLING
 // ===================================================================
 function switchTab(tab) {
-  ['audit', 'ai', 'holders', 'watch'].forEach(t => {
+  ['audit', 'ai', 'holders', 'watch', 'compare'].forEach(t => {
     const btn = $(`tabBtn-${t}`);
     const content = $(`tabContent-${t}`);
     const active = t === tab;
     btn.setAttribute('aria-selected', String(active));
     btn.tabIndex = active ? 0 : -1;
-    btn.className = 'flex-1 py-2 px-2 rounded-xl transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 font-bold text-[11px] sm:text-xs border '
+    btn.className = 'flex-1 min-w-0 py-2 px-1 sm:px-2 rounded-xl transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 font-bold text-[11px] sm:text-xs border '
       + (active ? 'bg-amber-500/10 text-amberGlow border-amber-500/30' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border-transparent');
     content.classList.toggle('hidden', !active);
     if (t === 'ai') content.classList.toggle('flex', active);
   });
+  if (tab === 'compare') refreshCompare();
 }
 
 let liveInterval = null;
@@ -3193,6 +3300,287 @@ setInterval(checkWatchlist, WATCH_INTERVAL);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && document.title.startsWith('🔔 ')) document.title = document.title.slice(3);
 });
+
+// ===================================================================
+// 12d. TOKEN COMPARATOR (current token + up to 2 more, side by side)
+// Same data and rules as the dashboard: DexScreener market data, GoPlus
+// contract checks and the risk engine. The list is saved in this browser.
+// ===================================================================
+const CMP_KEY = 'flickCompare';
+const CMP_MAX = 2;            // extra tokens next to the current one
+const CMP_TTL = 2 * 60 * 1000; // re-fetch a column after 2 minutes
+let compareList = loadCompare();
+let compareData = {};         // key -> { status: 'loading' | 'ok' | 'error', t, st, at }
+
+function loadCompare() {
+  const v = safeStorage(() => JSON.parse(localStorage.getItem(CMP_KEY) || '[]'));
+  return Array.isArray(v) ? v.filter(e => e && typeof e.ca === 'string' && typeof e.chainId === 'string').slice(0, CMP_MAX) : [];
+}
+
+function saveCompare() {
+  safeStorage(() => localStorage.setItem(CMP_KEY, JSON.stringify(compareList)));
+}
+
+const isCurrent = e => currentToken.loaded && e.chainId === currentToken.chainId && sameAddress(e.ca, currentToken.ca);
+const compareExtras = () => compareList.filter(e => !isCurrent(e));
+const compareTabVisible = () => !!$('tabContent-compare') && !$('tabContent-compare').classList.contains('hidden');
+
+// Pools of a token by address or ticker (same rules as the main search)
+async function comparePools(query, chain = '') {
+  const q = normalizeQuery(query);
+  let pairs;
+  if (isAddress(q)) {
+    const d = await fetchJson(`${DEX_API}/tokens/${encodeURIComponent(q)}`);
+    pairs = (d.pairs || []).filter(p => sameAddress(p.baseToken?.address, q));
+  } else {
+    const d = await fetchJson(`${DEX_API}/search?q=${encodeURIComponent(q)}`);
+    const all = d.pairs || [];
+    const exact = all.filter(p => (p.baseToken?.symbol || '').toUpperCase() === q.toUpperCase());
+    pairs = exact.length ? exact : all;
+  }
+  return pickTokenPools(pairs, chain);
+}
+
+// Market + contract snapshot of one token, built like the dashboard's
+async function compareSnapshot(pools) {
+  const p = pools[0];
+  const t = blankToken();
+  Object.assign(t, {
+    symbol: p.baseToken?.symbol || 'TOKEN', name: p.baseToken?.name || '', ca: p.baseToken.address,
+    chainId: p.chainId, imageUrl: p.info?.imageUrl || '', loaded: true
+  });
+  applyMetrics(p, t);
+  let st = { status: 'unsupported', data: null };
+  if (t.chainId === 'solana' || GOPLUS_EVM[t.chainId]) {
+    try {
+      const d = await fetchGoPlus(t.chainId, t.ca);
+      const result = d?.result || {};
+      const raw = result[t.ca] || result[t.ca.toLowerCase()] || Object.values(result)[0];
+      st = raw && typeof raw === 'object' ? { status: 'ok', data: normalizeSecurity(raw, t.chainId === 'solana') } : { status: 'error', data: null };
+    } catch (e) {
+      st = { status: 'error', data: null };
+    }
+  }
+  // Solana: GoPlus rarely has holders, so read the top 10 from the chain
+  if (st.data?.isSol && st.data.top10 == null) {
+    try {
+      const supply = Number((await solRpc('getTokenSupply', [t.ca]))?.value?.uiAmountString) || 0;
+      const holders = await solanaTopHolders(t.ca, supply);
+      if (holders.length) st.data.top10 = holders.slice(0, 10).reduce((s, h) => s + h.pct, 0);
+    } catch (e) { /* stays N/A */ }
+  }
+  return { t, st };
+}
+
+async function loadCompareItem(e, pools) {
+  const key = tokenKey(e);
+  compareData[key] = { status: 'loading' };
+  renderCompare();
+  try {
+    const found = pools || await comparePools(e.ca, e.chainId);
+    if (!found.length) throw new Error('not found');
+    compareData[key] = { status: 'ok', at: Date.now(), ...(await compareSnapshot(found)) };
+  } catch (err) {
+    console.warn('Compare load failed:', err);
+    compareData[key] = { status: 'error' };
+  }
+  renderCompare();
+}
+
+function refreshCompare(force = false) {
+  compareExtras().forEach(e => {
+    const d = compareData[tokenKey(e)];
+    if (force || !d || (d.status === 'ok' && Date.now() - d.at > CMP_TTL) || d.status === 'error') loadCompareItem(e);
+  });
+  renderCompare();
+}
+
+async function addCompare(query, chain = '') {
+  const q = normalizeQuery(query);
+  if (!q) return;
+  if (!isValidQuery(q)) return showToast(tr('cmp_not_found'));
+  if (compareExtras().length >= CMP_MAX) return showToast(tr('cmp_max'));
+  const btn = $('cmpAddBtn');
+  if (btn) btn.disabled = true;
+  try {
+    const pools = await comparePools(q, chain);
+    if (!pools.length) return showToast(tr('cmp_not_found'));
+    const p = pools[0];
+    const e = { ca: p.baseToken.address, chainId: p.chainId, symbol: String(p.baseToken.symbol || '?').slice(0, 12) };
+    if (isCurrent(e) || compareList.some(x => tokenKey(x) === tokenKey(e))) return showToast(tr('cmp_same'));
+    compareList = [...compareExtras(), e].slice(-CMP_MAX);
+    saveCompare();
+    if ($('cmpInput')) $('cmpInput').value = '';
+    await loadCompareItem(e, pools);
+  } catch (err) {
+    console.warn('Compare add failed:', err);
+    showToast(tr('cmp_not_found'));
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function removeCompare(key) {
+  compareList = compareList.filter(e => tokenKey(e) !== key);
+  delete compareData[key];
+  saveCompare();
+  renderCompare();
+}
+
+// Rows: value getter, how to show it, and which direction is better
+const cmpBool = v => (v == null ? null : v ? 1 : 0);
+const CMP_ROWS = [
+  { section: 'cmp_market' },
+  { k: 'cmp_r_price', v: c => c.t.price || null, f: v => `$${formatPrice(v)}` },
+  { k: 'cmp_r_ch24', v: c => c.t.changes.h24, f: v => formatPct(v), color: v => (v >= 0 ? 'text-cyberGreen' : 'text-crimsonRisk') },
+  { k: 'cmp_r_liq', v: c => c.t.liquidity, f: formatUsd, better: 'high' },
+  { k: 'cmp_r_vol', v: c => c.t.volume, f: formatUsd, better: 'high' },
+  { k: 'cmp_r_fdv', v: c => c.t.fdv || null, f: formatUsd },
+  { k: 'cmp_r_age', v: c => ageDays(c.t), f: formatAge, better: 'high' },
+  { k: 'cmp_r_buys', v: c => (c.t.buys != null && c.t.sells != null && c.t.buys + c.t.sells > 0 ? (c.t.buys / (c.t.buys + c.t.sells)) * 100 : null), f: v => `${Math.round(v)}%` },
+  { k: 'cmp_r_health', v: c => c.t.score, f: v => `${v}/100`, better: 'high' },
+  { section: 'cmp_security' },
+  { k: 'cmp_r_risk', v: c => ({ low: 0, medium: 1, high: 2 })[c.verdict], f: v => tr(`rv_${['low', 'medium', 'high'][v]}`), better: 'low', color: v => ['text-cyberGreen', 'text-amberGlow', 'text-crimsonRisk'][v] },
+  { k: 'cmp_r_tax', v: c => (c.s && (c.s.buyTax != null || c.s.sellTax != null) ? Math.max(c.s.buyTax ?? 0, c.s.sellTax ?? 0) : null), f: (v, c) => `${c.s.buyTax == null ? '?' : pctTxt(c.s.buyTax)} / ${c.s.sellTax == null ? '?' : pctTxt(c.s.sellTax)}`, better: 'low' },
+  { k: 'cmp_r_honeypot', v: c => cmpBool(c.s && anyTrue(c.s.honeypot, c.s.cannotSell)), f: v => tr(v ? 'cmp_yes' : 'cmp_no'), better: 'low', color: v => (v ? 'text-crimsonRisk' : '') },
+  { k: 'cmp_r_mint', v: c => cmpBool(c.s?.mintable), f: v => tr(v ? 'cmp_yes' : 'cmp_no'), better: 'low' },
+  { k: 'cmp_r_freeze', v: c => cmpBool(c.s?.freezable), f: v => tr(v ? 'cmp_yes' : 'cmp_no'), better: 'low' },
+  { k: 'cmp_r_lp', v: c => c.s?.lpLocked ?? null, f: v => pctTxt(v), better: 'high' },
+  { k: 'cmp_r_top10', v: c => c.s?.top10 ?? null, f: v => pctTxt(v), better: 'low' },
+  { k: 'cmp_r_creator', v: c => c.s?.creator?.pct ?? null, f: v => pctTxt(v), better: 'low' },
+  { k: 'cmp_r_holders', v: c => c.s?.holderCount ?? null, f: v => formatCompact(v), better: 'high' }
+];
+
+function compareColumns() {
+  const cols = [];
+  if (currentToken.loaded) cols.push({ key: tokenKey(currentToken), current: true, status: 'ok', t: currentToken, st: security });
+  compareExtras().forEach(e => {
+    const d = compareData[tokenKey(e)] || { status: 'loading' };
+    cols.push({ key: tokenKey(e), entry: e, ...d });
+  });
+  cols.forEach(c => {
+    if (c.status !== 'ok') return;
+    c.s = c.st.status === 'ok' ? c.st.data : null;
+    c.checking = c.st.status === 'loading';
+    c.verdict = c.checking ? null : riskVerdict(riskFindings(c.t, c.st), c.st);
+  });
+  return cols;
+}
+
+function compareHead(c) {
+  const th = el('th', 'p-2 align-top text-left min-w-[104px]');
+  const sym = c.status === 'ok' ? c.t.symbol : c.entry.symbol;
+  const chain = c.status === 'ok' ? c.t.chainId : c.entry.chainId;
+  const top = el('div', 'flex items-start justify-between gap-1');
+  top.appendChild(el('p', 'text-xs font-bold text-white truncate', `$${String(sym).slice(0, 12)}`));
+  if (!c.current) {
+    const x = el('button', 'text-slate-500 hover:text-crimsonRisk leading-none text-sm', '✕');
+    x.type = 'button';
+    x.title = tr('cmp_remove');
+    x.setAttribute('aria-label', `${tr('cmp_remove')} $${sym}`);
+    x.onclick = () => removeCompare(c.key);
+    top.appendChild(x);
+  }
+  th.append(top, el('p', 'text-[10px] text-slate-400 font-normal truncate', chainName(chain)));
+  if (c.current) {
+    th.appendChild(el('span', 'inline-block mt-1 px-1.5 rounded bg-amber-500/15 text-amberGlow text-[10px] font-bold', tr('cmp_current')));
+  } else {
+    const open = el('button', 'mt-1 text-[10px] font-semibold text-amberCore hover:underline', tr('cmp_open'));
+    open.type = 'button';
+    open.onclick = () => openTokenFromAlert(c.entry.ca, c.entry.chainId);
+    th.appendChild(open);
+  }
+  return th;
+}
+
+function renderCompare() {
+  const box = $('compareBody');
+  if (!box) return;
+  const cols = compareColumns();
+  const extras = compareExtras();
+
+  // Quick add: watchlist + recent searches not already compared
+  const seen = new Set(cols.map(c => c.key));
+  const quick = [...watchlist, ...getRecent()]
+    .filter(e => e && e.ca && e.chainId && !seen.has(tokenKey(e)) && seen.add(tokenKey(e)))
+    .slice(0, 6);
+  const quickBox = $('cmpQuick');
+  if (quickBox) {
+    quickBox.classList.toggle('hidden', !quick.length || extras.length >= CMP_MAX);
+    quickBox.replaceChildren(el('span', 'text-slate-500', tr('cmp_quick')), ...quick.map(e => {
+      const b = el('button', 'px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-amberGlow transition-all', `$${e.symbol}`);
+      b.type = 'button';
+      b.title = `${chainName(e.chainId)} · ${e.ca}`;
+      b.onclick = () => addCompare(e.ca, e.chainId);
+      return b;
+    }));
+  }
+
+  if (!extras.length) {
+    box.replaceChildren(el('p', 'p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] text-slate-400 leading-relaxed', tr('cmp_empty')));
+    return;
+  }
+
+  const table = el('table', 'w-full text-xs border-collapse');
+  const headRow = el('tr', 'border-b border-white/10');
+  headRow.append(el('th', 'sticky left-0 z-10 bg-[#0a0e17] p-2 min-w-[96px]'), ...cols.map(compareHead));
+  const thead = el('thead');
+  thead.appendChild(headRow);
+  const tbody = el('tbody', 'divide-y divide-white/5');
+
+  CMP_ROWS.forEach(row => {
+    const tr_ = el('tr');
+    if (row.section) {
+      const td = el('td', 'pt-3 pb-1 px-2 text-[10px] font-bold uppercase tracking-wider text-slate-500', tr(row.section));
+      td.colSpan = cols.length + 1;
+      tr_.appendChild(td);
+      return tbody.appendChild(tr_);
+    }
+    const vals = cols.map(c => (c.status === 'ok' && !(row.k === 'cmp_r_risk' && c.checking) ? row.v(c) : null));
+    const known = vals.filter(v => v != null && Number.isFinite(v));
+    let best = null;
+    if (row.better && known.length >= 2 && new Set(known).size > 1) best = row.better === 'high' ? Math.max(...known) : Math.min(...known);
+    tr_.appendChild(el('th', 'sticky left-0 z-10 bg-[#0a0e17] p-2 text-left text-[11px] font-semibold text-slate-400', tr(row.k)));
+    cols.forEach((c, i) => {
+      const v = vals[i];
+      let text, cls = 'text-slate-200';
+      if (c.status === 'loading') { text = '…'; cls = 'text-slate-500 animate-pulse'; }
+      else if (c.status === 'error') { text = '—'; cls = 'text-slate-500'; }
+      else if (row.k === 'cmp_r_risk' && c.checking) { text = '…'; cls = 'text-slate-500 animate-pulse'; }
+      else if (v == null || !Number.isFinite(v)) { text = 'N/A'; cls = 'text-slate-500'; }
+      else { text = row.f(v, c); if (row.color) cls = row.color(v) || cls; }
+      const isBest = best != null && v === best;
+      if (isBest) cls = 'text-cyberGreen font-bold';
+      tr_.appendChild(el('td', `p-2 font-mono whitespace-nowrap ${cls}`, isBest ? `${text} ✓` : text));
+    });
+    tbody.appendChild(tr_);
+  });
+  table.append(thead, tbody);
+
+  const wrap = el('div', 'overflow-x-auto rounded-xl border border-white/5');
+  wrap.appendChild(table);
+  const parts = [wrap];
+
+  const errors = cols.filter(c => c.status === 'error');
+  if (errors.length) {
+    const p = el('p', 'text-[11px] text-slate-400', `${tr('cmp_error')}: ${errors.map(c => `$${c.entry.symbol}`).join(', ')} `);
+    const retry = el('button', 'text-amberCore hover:underline', tr('trending_retry'));
+    retry.type = 'button';
+    retry.onclick = () => errors.forEach(c => loadCompareItem(c.entry));
+    p.appendChild(retry);
+    parts.unshift(p);
+  }
+
+  // Summary: lowest risk, then best health score
+  const ready = cols.filter(c => c.status === 'ok' && c.verdict);
+  if (ready.length >= 2 && ready.length === cols.length) {
+    const rank = { low: 0, medium: 1, high: 2 };
+    const top = [...ready].sort((a, b) => rank[a.verdict] - rank[b.verdict] || b.t.score - a.t.score)[0];
+    parts.unshift(el('p', 'p-3 rounded-xl bg-white/5 border border-white/10 text-xs text-slate-200 leading-relaxed',
+      tr('cmp_best', { s: `$${top.t.symbol}`, risk: tr(`rv_${top.verdict}`), score: top.t.score })));
+  }
+  box.replaceChildren(...parts);
+}
 
 // ===================================================================
 // 12c. TELEGRAM ALERTS (optional; needs the worker in /worker)
