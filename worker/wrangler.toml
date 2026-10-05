@@ -3,6 +3,8 @@
 name = "flick-alerts"
 main = "src/index.js"
 compatibility_date = "2024-09-23"
+workers_dev = true
+preview_urls = false
 
 # Check prices and risks every 5 minutes
 [triggers]
@@ -11,7 +13,7 @@ crons = ["*/5 * * * *"]
 [[d1_databases]]
 binding = "DB"
 database_name = "flick-alerts"
-database_id = "REPLACE_WITH_YOUR_DATABASE_ID"
+database_id = "e0148837-4f11-485c-825c-e4fa4e688011"
 
 [vars]
 SITE_URL = "https://flick-app.pages.dev"
