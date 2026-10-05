@@ -1,0 +1,22 @@
+# Flick Super Intelligence · Telegram alerts worker
+# Setup guide: worker/README.md
+name = "flick-alerts"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# Check prices and risks every 5 minutes
+[triggers]
+crons = ["*/5 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "flick-alerts"
+database_id = "REPLACE_WITH_YOUR_DATABASE_ID"
+
+[vars]
+SITE_URL = "https://flick-app.pages.dev"
+ALLOWED_ORIGINS = "https://flick-app.pages.dev"
+
+# Secrets (never put them in this file):
+#   npx wrangler secret put TELEGRAM_BOT_TOKEN
+#   npx wrangler secret put TELEGRAM_WEBHOOK_SECRET

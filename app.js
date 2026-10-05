@@ -213,7 +213,19 @@ const TRANSLATIONS = {
     launch_empty: "No new launch passed the filter right now. Try again in a few minutes.",
     launch_error: "Couldn't load new launches.",
     launch_note: "Tokens launched in the last 72h on DexScreener, checked automatically (liquidity, age, activity and GoPlus contract checks). High-risk ones are hidden. Passing the filter doesn't make a token safe: new launches are always risky.",
-    t_unverified: "⚠️ Contract not verified"
+    t_unverified: "⚠️ Contract not verified",
+    tg_title: "Telegram alerts",
+    tg_desc: "Get these alerts on Telegram, even with Flick closed.",
+    tg_connect: "Connect Telegram",
+    tg_open: "Open Telegram",
+    tg_cancel: "Cancel",
+    tg_pending: "Waiting for you to tap “Start” in the Telegram bot…",
+    tg_connected_title: "Telegram connected",
+    tg_connected_desc: "You'll get alerts for these tokens on Telegram even with Flick closed (checked every 5 minutes). Commands in the bot: /list · /stop",
+    tg_disconnect: "Disconnect",
+    tg_privacy: "To alert you with Flick closed, your watched tokens (addresses and alert settings only, no personal data) are stored on Flick's server. Disconnect anytime to delete them.",
+    tg_connected_toast: "Telegram connected! You'll get alerts there too.",
+    tg_error: "Couldn't reach the alerts server. Try again."
   },
   zh: {
     mainnet_active: "实时 DEX 数据",
@@ -411,7 +423,19 @@ const TRANSLATIONS = {
     launch_empty: "目前没有新代币通过过滤。请几分钟后再试。",
     launch_error: "无法加载新上线代币。",
     launch_note: "DexScreener 上近 72 小时上线的代币，自动检测（流动性、年龄、活跃度和 GoPlus 合约检测），高风险的已隐藏。通过过滤不代表安全：新币始终有风险。",
-    t_unverified: "⚠️ 合约未验证"
+    t_unverified: "⚠️ 合约未验证",
+    tg_title: "Telegram 提醒",
+    tg_desc: "即使关闭 Flick，也能在 Telegram 上收到这些提醒。",
+    tg_connect: "连接 Telegram",
+    tg_open: "打开 Telegram",
+    tg_cancel: "取消",
+    tg_pending: "请在 Telegram 机器人中点击“开始”…",
+    tg_connected_title: "Telegram 已连接",
+    tg_connected_desc: "即使关闭 Flick，你也会在 Telegram 上收到这些代币的提醒（每 5 分钟检查一次）。机器人命令：/list · /stop",
+    tg_disconnect: "断开",
+    tg_privacy: "为了在 Flick 关闭时提醒你，你关注的代币（仅地址和提醒设置，无个人数据）会保存在 Flick 服务器上。随时断开即可删除。",
+    tg_connected_toast: "Telegram 已连接！你也会在那里收到提醒。",
+    tg_error: "无法连接提醒服务器，请重试。"
   },
   es: {
     mainnet_active: "Datos DEX en vivo",
@@ -609,7 +633,19 @@ const TRANSLATIONS = {
     launch_empty: "Ningún lanzamiento nuevo pasó el filtro por ahora. Probá de nuevo en unos minutos.",
     launch_error: "No se pudieron cargar los lanzamientos nuevos.",
     launch_note: "Tokens lanzados en las últimas 72h en DexScreener, revisados automáticamente (liquidez, antigüedad, actividad y chequeos de contrato de GoPlus). Los de riesgo alto se ocultan. Pasar el filtro no hace seguro a un token: los lanzamientos nuevos siempre son riesgosos.",
-    t_unverified: "⚠️ Contrato sin verificar"
+    t_unverified: "⚠️ Contrato sin verificar",
+    tg_title: "Alertas por Telegram",
+    tg_desc: "Recibí estas alertas en Telegram, aunque tengas Flick cerrado.",
+    tg_connect: "Conectar Telegram",
+    tg_open: "Abrir Telegram",
+    tg_cancel: "Cancelar",
+    tg_pending: "Esperando que toques “Iniciar” en el bot de Telegram…",
+    tg_connected_title: "Telegram conectado",
+    tg_connected_desc: "Vas a recibir las alertas de estos tokens en Telegram aunque cierres Flick (se revisan cada 5 minutos). Comandos del bot: /list · /stop",
+    tg_disconnect: "Desconectar",
+    tg_privacy: "Para avisarte con Flick cerrado, tus tokens seguidos (solo direcciones y configuración de alertas, sin datos personales) se guardan en el servidor de Flick. Desconectate cuando quieras para borrarlos.",
+    tg_connected_toast: "¡Telegram conectado! También vas a recibir las alertas ahí.",
+    tg_error: "No se pudo conectar con el servidor de alertas. Probá de nuevo."
   }
 };
 
@@ -652,6 +688,7 @@ const ICONS = {
   "copy": '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
   "radio": '<circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>',
   "arrow-left": '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+  "send": '<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>',
   "list": '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>'
 };
 
@@ -718,6 +755,8 @@ function changeLanguage(lang) {
   renderLaunches();
   renderFeedTabs();
   renderSimulator();
+  renderTelegramCard();
+  if (tgLinked) scheduleTgSync();
 }
 
 // ===================================================================
@@ -2454,6 +2493,7 @@ function toggleWatch() {
   saveWatchlist();
   renderWatchButton();
   renderWatchlist();
+  scheduleTgSync();
 }
 
 function removeWatch(key) {
@@ -2461,6 +2501,7 @@ function removeWatch(key) {
   saveWatchlist();
   renderWatchButton();
   renderWatchlist();
+  scheduleTgSync();
 }
 
 function setWatchAlert(key, pct) {
@@ -2469,6 +2510,7 @@ function setWatchAlert(key, pct) {
   w.alertPct = ALERT_STEPS.includes(pct) ? pct : 10;
   w.refPrice = watchPrices[key]?.price || w.refPrice; // measure the next move from now
   saveWatchlist();
+  scheduleTgSync();
   if (w.alertPct && 'Notification' in window && Notification.permission === 'default') renderNotifyControl(true);
 }
 
@@ -2624,6 +2666,7 @@ const riskAlertsOn = () => safeStorage(() => localStorage.getItem('flickRiskAler
 function setRiskAlerts(on) {
   safeStorage(() => localStorage.setItem('flickRiskAlerts', on ? 'on' : 'off'));
   renderWatchlist();
+  scheduleTgSync();
 }
 
 async function checkRiskSignals(w, pair, own) {
@@ -2688,6 +2731,157 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ===================================================================
+// 12c. TELEGRAM ALERTS (optional; needs the worker in /worker)
+// Enabled when index.html has the "flick-alerts-api" and "flick-telegram-bot" meta tags.
+// The browser keeps a random token; the bot links it to the user's chat on /start.
+// ===================================================================
+const TG_API = (document.querySelector('meta[name="flick-alerts-api"]')?.content || '').trim().replace(/\/+$/, '');
+const TG_BOT = (document.querySelector('meta[name="flick-telegram-bot"]')?.content || '').trim().replace(/^@/, '');
+const tgEnabled = () => /^https:\/\//.test(TG_API) && /^[A-Za-z0-9_]{5,64}$/.test(TG_BOT);
+let tgToken = safeStorage(() => localStorage.getItem('flickTgToken')) || '';
+let tgLinked = safeStorage(() => localStorage.getItem('flickTgLinked')) === '1';
+let tgSyncTimer = null;
+let tgPollTimer = null;
+
+function newTgToken() {
+  const bytes = new Uint8Array(24);
+  crypto.getRandomValues(bytes);
+  return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); // 32 chars
+}
+
+function tgPayload() {
+  return {
+    token: tgToken,
+    lang: currentLang,
+    riskAlerts: riskAlertsOn(),
+    items: watchlist.map(w => ({
+      ca: w.ca, chainId: w.chainId, symbol: w.symbol, pairAddress: w.pairAddress,
+      alertPct: w.alertPct ?? 10, refPrice: watchPrices[watchKey(w)]?.price || w.refPrice || null
+    }))
+  };
+}
+
+function setTgLinked(linked) {
+  tgLinked = linked;
+  safeStorage(() => localStorage.setItem('flickTgLinked', linked ? '1' : '0'));
+  renderTelegramCard();
+}
+
+async function tgSync() {
+  if (!tgEnabled() || !tgToken) return null;
+  try {
+    const res = await fetch(`${TG_API}/api/sync`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(tgPayload()) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const d = await res.json();
+    setTgLinked(!!d.linked);
+    return d;
+  } catch (err) {
+    console.warn('Telegram sync failed:', err);
+    return null;
+  }
+}
+
+// Called whenever the watchlist or its settings change
+function scheduleTgSync() {
+  if (!tgEnabled() || !tgToken) return;
+  clearTimeout(tgSyncTimer);
+  tgSyncTimer = setTimeout(tgSync, 800);
+}
+
+async function tgCheckStatus() {
+  if (!tgEnabled() || !tgToken) return false;
+  try {
+    const res = await fetch(`${TG_API}/api/status?token=${encodeURIComponent(tgToken)}`);
+    const d = await res.json();
+    if (d.linked && !tgLinked) showToast(tr('tg_connected_toast'));
+    setTgLinked(!!d.linked);
+    return !!d.linked;
+  } catch (err) {
+    return tgLinked;
+  }
+}
+
+// After opening Telegram, check every 3 s (for up to 3 minutes) whether the user tapped "Start"
+function pollTgStatus() {
+  clearInterval(tgPollTimer);
+  const until = Date.now() + 180e3;
+  tgPollTimer = setInterval(async () => {
+    if (Date.now() > until || (await tgCheckStatus())) clearInterval(tgPollTimer);
+  }, 3000);
+}
+
+async function connectTelegram() {
+  if (!tgEnabled()) return;
+  if (!tgToken) {
+    tgToken = newTgToken();
+    safeStorage(() => localStorage.setItem('flickTgToken', tgToken));
+  }
+  const win = window.open('about:blank', '_blank'); // opened right away so popup blockers allow it
+  const d = await tgSync();
+  if (!d) {
+    if (win) win.close();
+    showToast(tr('tg_error'));
+    return;
+  }
+  const link = `https://t.me/${TG_BOT}?start=${tgToken}`;
+  if (win) win.location.href = link;
+  else location.href = link;
+  renderTelegramCard();
+  pollTgStatus();
+}
+
+async function disconnectTelegram() {
+  if (!tgToken) return;
+  try {
+    await fetch(`${TG_API}/api/unlink`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ token: tgToken }) });
+  } catch (err) { /* the server forgets unconfirmed links after a day anyway */ }
+  clearInterval(tgPollTimer);
+  tgToken = '';
+  safeStorage(() => localStorage.removeItem('flickTgToken'));
+  setTgLinked(false);
+}
+
+function renderTelegramCard() {
+  const box = $('tgCard');
+  if (!box) return;
+  box.classList.toggle('hidden', !tgEnabled());
+  if (!tgEnabled()) return;
+  const head = el('div', 'flex items-center gap-2');
+  const badge = el('span', 'w-7 h-7 rounded-lg bg-sky-500/15 text-sky-400 flex items-center justify-center shrink-0');
+  badge.appendChild(icon('send', 'w-4 h-4'));
+  const btn = (label, cls, onclick) => {
+    const b = el('button', `px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${cls}`, label);
+    b.type = 'button';
+    b.onclick = onclick;
+    return b;
+  };
+  const actions = el('div', 'flex flex-wrap gap-2');
+
+  if (tgLinked) {
+    head.append(badge, el('p', 'text-sm font-bold text-cyberGreen', tr('tg_connected_title')));
+    actions.append(btn(tr('tg_disconnect'), 'bg-white/5 border-white/10 text-slate-300 hover:text-crimsonRisk', disconnectTelegram));
+    box.replaceChildren(head, el('p', 'text-[11px] text-slate-400 leading-relaxed', tr('tg_connected_desc')), actions);
+  } else if (tgToken) {
+    head.append(badge, el('p', 'text-sm font-bold text-white', tr('tg_title')));
+    const open = el('a', 'px-3 py-2 rounded-xl text-xs font-semibold border bg-sky-500/15 border-sky-500/40 text-sky-300 hover:bg-sky-500/25 transition-all', tr('tg_open'));
+    open.href = `https://t.me/${TG_BOT}?start=${tgToken}`;
+    open.target = '_blank';
+    open.rel = 'noopener noreferrer';
+    open.onclick = () => pollTgStatus();
+    actions.append(open, btn(tr('tg_cancel'), 'bg-white/5 border-white/10 text-slate-300', disconnectTelegram));
+    box.replaceChildren(head, el('p', 'text-[11px] text-amberGlow leading-relaxed animate-pulse', tr('tg_pending')), actions);
+  } else {
+    head.append(badge, el('p', 'text-sm font-bold text-white', tr('tg_title')));
+    actions.append(btn(tr('tg_connect'), 'bg-sky-500/15 border-sky-500/40 text-sky-300 hover:bg-sky-500/25', connectTelegram));
+    box.replaceChildren(head, el('p', 'text-[11px] text-slate-300 leading-relaxed', tr('tg_desc')), actions, el('p', 'text-[11px] text-slate-400 leading-relaxed', tr('tg_privacy')));
+  }
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && tgToken && !tgLinked) tgCheckStatus(); // back from the Telegram app
+});
+
+// ===================================================================
 // 12b. INSTALLABLE APP (PWA): service worker + install button
 // ===================================================================
 let installPrompt = null;
@@ -2743,6 +2937,7 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   renderFeedTabs();
   if (feed === 'launches') loadLaunches();
   if (isIOS() && !isStandalone()) showInstallButton(true);
+  if (tgEnabled() && tgToken) tgSync(); // refresh the server copy and the "connected" state
   const params = new URLSearchParams(location.search);
   const ca = params.get('ca');
   if (ca) {
