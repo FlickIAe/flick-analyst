@@ -292,11 +292,149 @@ const TRANSLATIONS = {
     chip_holders: "📊 持仓风险",
     chip_liquidity: "💧 流动性深度",
     chip_price: "📈 技术走势"
+  },
+  es: {
+    mainnet_active: "Datos DEX en vivo",
+    open_app: "Abrir app →",
+    open_terminal: "Abrir terminal →",
+    badge_landing: "📡 DATOS DEX EN VIVO Y SEÑALES DE RIESGO DE CONTRATOS",
+    hero_title: 'Navegá los mercados Web3 <br><span class="bg-gradient-to-r from-amberCore via-amberGlow to-white bg-clip-text text-transparent">Nunca seas la liquidez de salida</span>',
+    hero_desc: "Gráficos DEX en tiempo real, puntuación de salud del mercado, chequeos de contrato y distribución de holders para traders.",
+    ca_placeholder: "Pegá la dirección del contrato (CA) o el ticker...",
+    analyze_btn: "Analizar token",
+    recent_title: "Recientes:",
+    audit_score_title: "Salud del mercado",
+    audit_score_desc: "Evalúa liquidez, volumen, antigüedad del par, balance compra/venta y redes con datos DEX en vivo, más chequeos de contrato de GoPlus.",
+    dex_stream_title: "DEX en vivo",
+    dex_stream_desc: "Gráficos en tiempo real de pools en Raydium, Uniswap, PancakeSwap y más.",
+    copilot_title: "Reportes rápidos",
+    copilot_desc: "Reportes instantáneos de seguridad, holders, liquidez y tendencia de cualquier token.",
+    live_price: "Precio en vivo",
+    pool_liquidity: "Liquidez del pool",
+    volume_24h: "Volumen 24h",
+    fdv: "FDV",
+    security_score: "Salud del mercado",
+    stream_dex: "Gráfico en tiempo real de DexScreener",
+    tab_audit: "🛡️ Auditoría",
+    tab_ai: "🤖 Reportes",
+    tab_holders: "📊 Holders",
+    swap_access: "Acceso rápido a swap",
+    swap_desc: "Redirección directa con la dirección del contrato precargada.",
+    ai_placeholder: "Preguntá sobre seguridad, holders, liquidez o tendencia...",
+    send: "Enviar",
+    back_landing: "Portada",
+    back_title: "Volver a la portada",
+    copy_ca: "Copiar dirección del contrato",
+    footer_copyright: "© 2026 Flick Analyst. Plataforma de inteligencia Web3. No es asesoramiento financiero.",
+    live: "EN VIVO",
+    updated_ago: "actualizado hace {s}s",
+    scanning_title: "ANALIZANDO DATOS DEL TOKEN...",
+    scan_step_1: "Validando la entrada...",
+    scan_step_2: "Buscando pares en DexScreener...",
+    scan_step_3: "Eligiendo el pool con más liquidez...",
+    scan_step_4: "Calculando la salud del mercado...",
+    scan_step_5: "¡Análisis completado!",
+    not_found: "No se encontró el token en DexScreener.",
+    api_error: "No se pudo conectar con DexScreener. Probá de nuevo.",
+    invalid_input: "Ingresá una dirección de contrato o un ticker válido.",
+    not_verified: "No verificado",
+    none: "Ninguno",
+    checking: "Verificando…",
+    waiting: "Esperando datos…",
+    verify: "Verificar on-chain ↗",
+    copied: "¡Reporte copiado al portapapeles!",
+    copy_failed: "No se pudo copiar al portapapeles.",
+    ca_copied: "¡Dirección del contrato copiada!",
+    links: "{n} enlaces",
+    pools_title: "Pools de liquidez DEX",
+    pools_count: "{n} pools",
+    no_pools: "No hay pools cargados.",
+    pool_active: "ACTIVO",
+    pool_switch: "Mostrar este pool en el gráfico",
+    share_btn: "📤 Compartir análisis",
+
+    health_good_title: "Salud del mercado: BUENA",
+    health_good_sub: "Liquidez y actividad saludables.",
+    health_mid_title: "Salud del mercado: MODERADA",
+    health_mid_sub: "Hay algunas señales débiles. Revisá los detalles abajo.",
+    health_bad_title: "Salud del mercado: PRECAUCIÓN",
+    health_bad_sub: "Liquidez baja, par muy nuevo o actividad inusual.",
+    contract_bad_title: "Riesgo del contrato: ALTO",
+    contract_bad_sub: "GoPlus detectó problemas críticos (honeypot, restricciones de venta o impuestos extremos).",
+    contract_unverified_note: "Chequeos de contrato no disponibles: verificá on-chain antes de operar.",
+    contract_warn_note: "GoPlus detectó algunos riesgos en el contrato; mirá abajo.",
+
+    breakdown_title: "Desglose de la puntuación",
+    bd_liq: "Liquidez",
+    bd_vol: "Volumen / Liquidez",
+    bd_age: "Antigüedad del par",
+    bd_bal: "Balance compra / venta",
+
+    sec_market: "Señales de mercado · DexScreener",
+    sec_contract: "Chequeos de contrato · GoPlus",
+    m_txns: "Compras / Ventas 24h",
+    m_age: "Antigüedad del par",
+    m_socials: "Redes / Info",
+    m_tax: "Impuesto compra / venta",
+    m_honeypot: "Honeypot / Venta",
+    m_mint: "Permiso de mint",
+    m_freeze: "Congelar / Lista negra",
+    m_proxy: "Proxy / Modificable",
+    m_lp: "LP bloqueado / quemado",
+    b_balanced: "EQUILIBRADO",
+    b_skewed: "DESBALANCEADO",
+    b_very_new: "MUY NUEVO",
+    b_new: "NUEVO",
+    b_ok: "OK",
+    b_none: "NINGUNO",
+    b_safe: "SEGURO",
+    b_risk: "RIESGO",
+    b_high: "ALTO",
+    b_locked: "BLOQUEADO",
+    b_partial: "PARCIAL",
+    b_unlocked: "SIN BLOQUEAR",
+    v_enabled: "Activado",
+    v_disabled: "Desactivado",
+    v_detected: "Detectado",
+    v_not_detected: "No detectado",
+    v_honeypot: "Honeypot / no se puede vender",
+    v_sellable: "Se puede vender",
+    v_transfer_fee: "Comisión de transferencia",
+
+    security_summary_title: "Resumen de mercado y contrato",
+    s_liquidity: "Liquidez",
+    s_volliq: "Volumen / Liquidez",
+    s_top10: "Top 10 holders",
+    s_contract: "Chequeos de contrato",
+    risk_ok: "sin alertas críticas",
+    risk_warn: "algunas alertas de riesgo",
+    risk_bad: "riesgo crítico",
+    contract_src_err: "GoPlus no responde",
+    contract_src_unsupported: "red no soportada",
+
+    top10_ratio_label: "Porcentaje del supply en el top 10",
+    holder_count: "Holders",
+    holders_na: "No hay datos de holders para este token. Usá \"Verificar on-chain\" en la pestaña Auditoría.",
+    holders_loading: "Cargando holders desde GoPlus…",
+    holders_usd_note: "Valor USD ≈ % del supply × FDV",
+    tag_contract: "Contrato",
+    tag_locked: "🔒 Bloqueado",
+    th_rank: "#",
+    th_address: "Billetera",
+    th_supply: "% Supply",
+    th_val: "≈ USD",
+    th_tag: "Etiqueta",
+
+    chat_intro: "🤖 Elegí un reporte rápido arriba o preguntá sobre seguridad, holders, liquidez o tendencia.",
+    chip_safety: "🛡️ Seguridad",
+    chip_holders: "📊 Riesgo de holders",
+    chip_liquidity: "💧 Profundidad de liquidez",
+    chip_price: "📈 Tendencia técnica"
   }
 };
 
 let currentLang = 'en';
-const L = (en, zh) => (currentLang === 'zh' ? zh : en);
+const L = (en, zh, es) => (currentLang === 'zh' ? zh : currentLang === 'es' ? (es ?? en) : en);
 
 function tr(key, vars) {
   let s = TRANSLATIONS[currentLang]?.[key] ?? TRANSLATIONS.en[key] ?? key;
@@ -341,7 +479,7 @@ function changeLanguage(lang) {
   if (!TRANSLATIONS[lang]) lang = 'en';
   currentLang = lang;
   safeStorage(() => localStorage.setItem('flickLang', lang));
-  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.documentElement.lang = { zh: 'zh-CN', es: 'es' }[lang] || 'en';
   ['langSelectLanding', 'langSelectDashboard'].forEach(id => {
     const s = $(id);
     if (s) s.value = lang;
@@ -747,21 +885,41 @@ const toNum = v => { const n = parseFloat(v); return Number.isFinite(n) ? n : nu
 // true if any is true, false if all known values are false, null if nothing is known
 const anyTrue = (...vals) => (vals.includes(true) ? true : vals.includes(false) ? false : null);
 
+// Same-origin proxy (functions/api/goplus.js on Cloudflare Pages), used when the browser can't call GoPlus directly
+const GOPLUS_PROXY = '/api/goplus';
+let goplusViaProxy = false; // remembered once the direct call has failed
+
+async function fetchGoPlus(chainId, ca) {
+  const chain = chainId === 'solana' ? 'solana' : GOPLUS_EVM[chainId];
+  const direct = chain === 'solana'
+    ? `${GOPLUS_API}/solana/token_security?contract_addresses=${encodeURIComponent(ca)}`
+    : `${GOPLUS_API}/token_security/${chain}?contract_addresses=${encodeURIComponent(ca)}`;
+  const proxy = `${GOPLUS_PROXY}?chain=${encodeURIComponent(chain)}&address=${encodeURIComponent(ca)}`;
+  const canProxy = location.protocol.startsWith('http');
+  if (goplusViaProxy && canProxy) return fetchJson(proxy, { timeout: 12000 });
+  try {
+    return await fetchJson(direct, { timeout: 12000 });
+  } catch (err) {
+    if (!canProxy) throw err;
+    const d = await fetchJson(proxy, { timeout: 12000 });
+    goplusViaProxy = true;
+    return d;
+  }
+}
+
 async function fetchSecurity() {
   const t = currentToken;
   const key = tokenKey(t);
-  let url = '';
-  if (t.chainId === 'solana') url = `${GOPLUS_API}/solana/token_security?contract_addresses=${encodeURIComponent(t.ca)}`;
-  else if (GOPLUS_EVM[t.chainId]) url = `${GOPLUS_API}/token_security/${GOPLUS_EVM[t.chainId]}?contract_addresses=${encodeURIComponent(t.ca)}`;
+  const supported = t.chainId === 'solana' || !!GOPLUS_EVM[t.chainId];
 
-  security = { key, status: url ? 'loading' : 'unsupported', data: null };
+  security = { key, status: supported ? 'loading' : 'unsupported', data: null };
   renderAuditTab();
   renderHoldersTable();
-  if (!url) return;
+  if (!supported) return;
 
   const ca = t.ca, isSol = t.chainId === 'solana';
   try {
-    const d = await fetchJson(url, { timeout: 12000 });
+    const d = await fetchGoPlus(t.chainId, ca);
     if (security.key !== key) return; // token changed meanwhile
     const result = d?.result || {};
     const raw = result[ca] || result[ca.toLowerCase()] || Object.values(result)[0];
@@ -1064,14 +1222,14 @@ function renderAiWelcome() {
   const card = el('div', 'p-3.5 rounded-xl bg-slate-900/90 border border-electricCyan/30 text-slate-200 space-y-1.5');
   const stats = el('p', 'text-[11px] text-slate-300');
   stats.append(
-    `${L('Market Health Score', '市场健康评分')}: `, el('strong', '', `${t.score}/100`),
-    ` · ${L('Liquidity', '流动性')}: `, el('strong', '', formatUsd(t.liquidity)),
-    ` · ${L('24h Volume', '24小时交易量')}: `, el('strong', '', formatUsd(t.volume))
+    `${L('Market Health Score', '市场健康评分', 'Puntuación de salud del mercado')}: `, el('strong', '', `${t.score}/100`),
+    ` · ${L('Liquidity', '流动性', 'Liquidez')}: `, el('strong', '', formatUsd(t.liquidity)),
+    ` · ${L('24h Volume', '24小时交易量', 'Volumen 24h')}: `, el('strong', '', formatUsd(t.volume))
   );
   card.append(
     el('p', 'font-bold text-electricCyan', `🤖 $${t.symbol} · ${chainName(t.chainId)}`),
     stats,
-    el('p', 'text-[10px] text-slate-500', L('Reports use public DEX data and GoPlus checks. Not financial advice.', '报告基于公开 DEX 数据与 GoPlus 检测，不构成投资建议。'))
+    el('p', 'text-[10px] text-slate-500', L('Reports use public DEX data and GoPlus checks. Not financial advice.', '报告基于公开 DEX 数据与 GoPlus 检测，不构成投资建议。', 'Los reportes usan datos públicos de DEX y chequeos de GoPlus. No es asesoramiento financiero.'))
   );
   chatBox.replaceChildren(card);
 }
@@ -1081,54 +1239,54 @@ function reportText(type) {
   const days = ageDays(t);
   const ratio = (t.liquidity ? t.volume / t.liquidity : 0).toFixed(2);
   const sec = security.status === 'ok' ? security.data : null;
-  const yn = v => (v == null ? 'N/A' : v ? L('YES ⚠️', '是 ⚠️') : L('no ✓', '否 ✓'));
+  const yn = v => (v == null ? 'N/A' : v ? L('YES ⚠️', '是 ⚠️', 'SÍ ⚠️') : L('no ✓', '否 ✓', 'no ✓'));
   switch (type) {
     case 'safety': {
       const lines = [
-        L(`🛡️ Safety signals for ${s}`, `🛡️ ${s} 安全信号`),
-        `• ${L('Market Health Score', '市场健康评分')}: ${t.score}/100`,
-        `• ${L('Pair age', '交易对年龄')}: ${formatAge(days)}`
+        L(`🛡️ Safety signals for ${s}`, `🛡️ ${s} 安全信号`, `🛡️ Señales de seguridad de ${s}`),
+        `• ${L('Market Health Score', '市场健康评分', 'Puntuación de salud del mercado')}: ${t.score}/100`,
+        `• ${L('Pair age', '交易对年龄', 'Antigüedad del par')}: ${formatAge(days)}`
       ];
       if (sec) {
         const tax = v => (v == null ? '?' : `${+v.toFixed(1)}%`);
         lines.push(
-          `• ${L('Honeypot / cannot sell', '蜜罐 / 无法卖出')}: ${yn(anyTrue(sec.honeypot, sec.cannotSell))}`,
-          sec.isSol ? `• ${L('Transfer fee', '转账手续费')}: ${yn(sec.transferFee)}` : `• ${L('Buy / Sell tax', '买 / 卖税')}: ${tax(sec.buyTax)} / ${tax(sec.sellTax)}`,
-          `• ${L('Mint authority', '增发权限')}: ${yn(sec.mintable)}`,
-          `• ${L('Freeze / blacklist', '冻结 / 黑名单')}: ${yn(sec.freezable)}`,
-          `• ${L('Proxy / mutable', '代理 / 可修改')}: ${yn(sec.mutable)}`,
-          `• ${L('Contract risk', '合约风险')}: ${tr(`risk_${contractRisk(sec)}`)} (GoPlus)`
+          `• ${L('Honeypot / cannot sell', '蜜罐 / 无法卖出', 'Honeypot / no se puede vender')}: ${yn(anyTrue(sec.honeypot, sec.cannotSell))}`,
+          sec.isSol ? `• ${L('Transfer fee', '转账手续费', 'Comisión de transferencia')}: ${yn(sec.transferFee)}` : `• ${L('Buy / Sell tax', '买 / 卖税', 'Impuesto compra / venta')}: ${tax(sec.buyTax)} / ${tax(sec.sellTax)}`,
+          `• ${L('Mint authority', '增发权限', 'Permiso de mint')}: ${yn(sec.mintable)}`,
+          `• ${L('Freeze / blacklist', '冻结 / 黑名单', 'Congelar / lista negra')}: ${yn(sec.freezable)}`,
+          `• ${L('Proxy / mutable', '代理 / 可修改', 'Proxy / modificable')}: ${yn(sec.mutable)}`,
+          `• ${L('Contract risk', '合约风险', 'Riesgo del contrato')}: ${tr(`risk_${contractRisk(sec)}`)} (GoPlus)`
         );
       } else {
-        lines.push(`• ${L('Honeypot, taxes, mint, ownership', '蜜罐、税率、铸币、所有权')}: ${L('NOT verified. Use "Verify on-chain".', '未验证，请使用“链上验证”。')}`);
+        lines.push(`• ${L('Honeypot, taxes, mint, ownership', '蜜罐、税率、铸币、所有权', 'Honeypot, impuestos, mint, propiedad')}: ${L('NOT verified. Use "Verify on-chain".', '未验证，请使用“链上验证”。', 'NO verificado. Usá "Verificar on-chain".')}`);
       }
       return lines.join('\n');
     }
     case 'holders': {
       if (!sec || !sec.holders.length) return `👥 ${tr('holders_na')}`;
       return [
-        L(`👥 Holder distribution for ${s}`, `👥 ${s} 持币分布`),
+        L(`👥 Holder distribution for ${s}`, `👥 ${s} 持币分布`, `👥 Distribución de holders de ${s}`),
         `• ${tr('top10_ratio_label')}: ${sec.top10.toFixed(1)}%`,
         sec.holderCount != null ? `• ${tr('holder_count')}: ${formatCompact(sec.holderCount)}` : null,
         ...sec.holders.slice(0, 3).map((h, i) => `• #${i + 1} ${shortAddr(h.address)} — ${h.pct.toFixed(2)}%${h.tag ? ` (${h.tag})` : ''}`),
-        L('Note: top wallets are often LPs, exchanges or burn addresses.', '注意：头部地址常为流动池、交易所或销毁地址。')
+        L('Note: top wallets are often LPs, exchanges or burn addresses.', '注意：头部地址常为流动池、交易所或销毁地址。', 'Nota: las billeteras principales suelen ser pools de liquidez, exchanges o direcciones de quema.')
       ].filter(Boolean).join('\n');
     }
     case 'liquidity': return [
-      L(`💧 Liquidity for ${s}`, `💧 ${s} 流动性`),
-      `• ${L('Active pool', '当前池子')}: ${t.dexId || 'DEX'} ${t.symbol}/${t.quoteSymbol} — ${formatUsd(t.liquidity)}`,
-      `• ${L('Pools found', '池子数量')}: ${currentPairs.length} (${formatUsd(currentPairs.reduce((a, p) => a + (p.liquidity?.usd || 0), 0))} ${L('total', '合计')})`,
+      L(`💧 Liquidity for ${s}`, `💧 ${s} 流动性`, `💧 Liquidez de ${s}`),
+      `• ${L('Active pool', '当前池子', 'Pool activo')}: ${t.dexId || 'DEX'} ${t.symbol}/${t.quoteSymbol} — ${formatUsd(t.liquidity)}`,
+      `• ${L('Pools found', '池子数量', 'Pools encontrados')}: ${currentPairs.length} (${formatUsd(currentPairs.reduce((a, p) => a + (p.liquidity?.usd || 0), 0))} ${L('total', '合计', 'en total')})`,
       `• FDV: ${t.fdv ? formatUsd(t.fdv) : '—'}`,
-      `• ${L('Volume / Liquidity', '交易量 / 流动性')}: ${ratio}x`
+      `• ${L('Volume / Liquidity', '交易量 / 流动性', 'Volumen / Liquidez')}: ${ratio}x`
     ].join('\n');
     case 'trend': return [
-      L(`📈 Trend for ${s}`, `📈 ${s} 走势`),
+      L(`📈 Trend for ${s}`, `📈 ${s} 走势`, `📈 Tendencia de ${s}`),
       `• 5m: ${formatPct(t.changes.m5)} · 1h: ${formatPct(t.changes.h1)} · 6h: ${formatPct(t.changes.h6)} · 24h: ${formatPct(t.changes.h24)}`,
-      `• ${L('Price', '价格')}: $${formatPrice(t.price)}`,
-      `• ${L('24h volume', '24h 交易量')}: ${formatUsd(t.volume)}`,
-      t.buys != null ? `• ${L('Buys / Sells 24h', '24h 买 / 卖')}: ${formatCompact(t.buys)} / ${formatCompact(t.sells)}` : null
+      `• ${L('Price', '价格', 'Precio')}: $${formatPrice(t.price)}`,
+      `• ${L('24h volume', '24h 交易量', 'Volumen 24h')}: ${formatUsd(t.volume)}`,
+      t.buys != null ? `• ${L('Buys / Sells 24h', '24h 买 / 卖', 'Compras / Ventas 24h')}: ${formatCompact(t.buys)} / ${formatCompact(t.sells)}` : null
     ].filter(Boolean).join('\n');
-    default: return L('Try asking about: safety, holders, liquidity or trend.', '可尝试询问：安全、持币、流动性或走势。');
+    default: return L('Try asking about: safety, holders, liquidity or trend.', '可尝试询问：安全、持币、流动性或走势。', 'Probá preguntar sobre: seguridad, holders, liquidez o tendencia.');
   }
 }
 
@@ -1155,10 +1313,10 @@ function sendCopilotQuery() {
   input.value = '';
   addMsg(text, true);
   const q = text.toLowerCase();
-  const type = /safe|honey|rug|scam|risk|tax|mint|freeze|audit|安全|蜜罐|风险|税|审计/.test(q) ? 'safety'
-    : /holder|whale|concentra|distribut|持币|巨鲸|集中|分布/.test(q) ? 'holders'
+  const type = /safe|honey|rug|scam|risk|tax|mint|freeze|audit|segur|riesgo|estafa|impuesto|auditor|安全|蜜罐|风险|税|审计/.test(q) ? 'safety'
+    : /holder|whale|ballena|concentra|distribu|持币|巨鲸|集中|分布/.test(q) ? 'holders'
     : /liq|pool|\blp\b|流动|池/.test(q) ? 'liquidity'
-    : /price|trend|pump|dump|chart|走势|价格|涨|跌/.test(q) ? 'trend' : 'help';
+    : /price|trend|pump|dump|chart|precio|tendencia|grafic|gráfic|sube|baja|走势|价格|涨|跌/.test(q) ? 'trend' : 'help';
   addMsg(reportText(type), false);
 }
 
@@ -1450,7 +1608,8 @@ if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 // ===================================================================
 (function init() {
   const saved = safeStorage(() => localStorage.getItem('flickLang'));
-  changeLanguage(saved || ((navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'));
+  const nav = (navigator.language || '').toLowerCase();
+  changeLanguage(saved || (nav.startsWith('zh') ? 'zh' : nav.startsWith('es') ? 'es' : 'en'));
   const params = new URLSearchParams(location.search);
   const ca = params.get('ca');
   if (ca) {

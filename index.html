@@ -6,7 +6,8 @@
   <title>Flick Analyst — On-Chain Intelligence Terminal</title>
   <meta name="description" content="Real-time DEX charts, market-health scoring, GoPlus contract checks and holder distribution for any token.">
   <meta name="theme-color" content="#030508">
-  <link rel="icon" type="image/png" href="flick-logo.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
   <!-- Tailwind CSS CDN (fine for a static site; use the Tailwind CLI for a production build) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -146,7 +147,7 @@
       <div class="flex items-center gap-3">
         <!-- Logo Container -->
         <div class="w-10 h-10 rounded-xl bg-surface border border-amberCore/30 flex items-center justify-center p-2 shadow-lg shadow-amberCore/10">
-          <img src="flick-logo.png" alt="Flick Logo" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23F59E0B\'><path d=\'M13 2L3 14h9l-1 8 10-12h-9l1-8z\'/></svg>'" />
+          <img src="flick-logo.webp" width="40" height="40" alt="Flick Logo" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23F59E0B\'><path d=\'M13 2L3 14h9l-1 8 10-12h-9l1-8z\'/></svg>'" />
         </div>
         <!-- Brand Name -->
         <span class="text-xl font-bold tracking-wider text-white">Flick Super Intelligence</span>
@@ -157,6 +158,7 @@
         <div class="relative inline-block">
           <select id="langSelectLanding" onchange="changeLanguage(this.value)" aria-label="Language" class="bg-white/5 hover:bg-white/10 border border-white/15 text-white font-mono text-xs px-3 py-1.5 rounded-xl transition-all focus:outline-none cursor-pointer">
             <option value="en" class="bg-slate-900 text-white">English (EN)</option>
+            <option value="es" class="bg-slate-900 text-white">Español (ES)</option>
             <option value="zh" class="bg-slate-900 text-white">简体中文 (ZH)</option>
           </select>
         </div>
@@ -280,6 +282,7 @@
         <!-- LANGUAGE SELECTOR TERMINAL -->
         <select id="langSelectDashboard" onchange="changeLanguage(this.value)" aria-label="Language" class="bg-white/5 hover:bg-white/10 border border-white/15 text-white font-mono text-xs px-2.5 py-1.5 rounded-xl transition-all focus:outline-none cursor-pointer">
           <option value="en" class="bg-slate-900 text-white">EN</option>
+          <option value="es" class="bg-slate-900 text-white">ES</option>
           <option value="zh" class="bg-slate-900 text-white">简体中文</option>
         </select>
       </div>
