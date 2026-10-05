@@ -16,6 +16,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Flick">
 
+  <!-- Telegram alerts (optional): URL of the worker in /worker and the bot username, without @.
+       Leave empty to hide the "Connect Telegram" option. Setup guide: worker/README.md -->
+  <meta name="flick-alerts-api" content="">
+  <meta name="flick-telegram-bot" content="">
+
   <!-- Link preview (WhatsApp, Telegram, X, Discord, Facebook...) -->
   <link rel="canonical" href="https://flick-app.pages.dev/">
   <meta property="og:type" content="website">
@@ -667,6 +672,8 @@
               <input type="checkbox" id="riskAlertToggle" checked onchange="setRiskAlerts(this.checked)" class="mt-0.5 accent-amber-500" />
               <span class="text-xs text-slate-300 leading-snug" data-i18n="ra_toggle">Risk alerts: liquidity drain, heavy selling and worse contract checks</span>
             </label>
+            <!-- Telegram alerts (filled by app.js; hidden until the worker is configured) -->
+            <div id="tgCard" class="hidden p-3 rounded-xl bg-sky-500/5 border border-sky-500/20 space-y-2"></div>
             <div id="watchlistBody" class="space-y-2"></div>
             <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="watch_note">Prices refresh every minute while Flick is open, even in a background tab. Your list is saved only in this browser.</p>
           </div>
