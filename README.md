@@ -11,7 +11,7 @@
 - 🛡️ **Contract Checks (GoPlus):** Buy/sell tax, honeypot / sell restrictions, mint authority, freeze/blacklist, proxy/mutable code and LP lock. Shows "Not verified" when a check is unavailable.
 - 📊 **Top Holders:** Top-10 supply concentration, holder count, approximate USD value and explorer links.
 - 📈 **Live Charts & Pools:** Embedded DexScreener chart, clickable list of the token's pools and live price polling every 12 s.
-- 🤖 **Quick Reports:** Safety, holders, liquidity and multi-timeframe trend reports built from the loaded data.
+- 🤖 **Smart Assistant (free, no AI service):** Ask in your own words ("is it safe?", "who holds the most?", "should I buy?") in English, Spanish or Chinese. A rule-based risk engine combines market and contract signals into a risk checklist with an overall LOW / MEDIUM / HIGH verdict, all computed in the browser.
 - 🌐 **Languages:** English, Español and 简体中文 (`EN`, `ES`, `ZH`), auto-detected from the browser.
 - ⚡ **Extras:** Recent searches, shareable deep links (`?ca=…&chain=…`), copy-CA button, `/` keyboard shortcut to search.
 

@@ -551,6 +551,7 @@
 
             <!-- QUICK PROMPT CHIPS -->
             <div class="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-white/5 text-[10px] scrollbar-none">
+              <button type="button" onclick="quickCopilotQuery('checklist')" class="shrink-0 px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amberGlow transition-all font-mono" data-i18n="chip_checklist">⚖️ Risk Checklist</button>
               <button type="button" onclick="quickCopilotQuery('safety')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_safety">🛡️ Safety Check</button>
               <button type="button" onclick="quickCopilotQuery('holders')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_holders">📊 Holders Risk</button>
               <button type="button" onclick="quickCopilotQuery('liquidity')" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all font-mono" data-i18n="chip_liquidity">💧 Liquidity Depth</button>
@@ -560,7 +561,7 @@
             <!-- CHAT BOX CONTAINER -->
             <div id="copilotChatBox" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs my-2" aria-live="polite">
               <div class="p-3 bg-slate-900/80 rounded-xl border border-amber-500/20 text-xs font-mono text-slate-200 leading-relaxed" data-i18n="chat_intro">
-                🤖 Pick a quick report above or ask about safety, holders, liquidity or trend.
+                🤖 Ask about this token in your own words (e.g. "is it safe?", "who holds the most?", "should I buy?") or use the buttons above. Answers are built instantly from live data.
               </div>
             </div>
 
