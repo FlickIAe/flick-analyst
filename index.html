@@ -206,6 +206,17 @@
         <div id="recentSearches" class="hidden flex flex-wrap items-center justify-center gap-1.5 text-[11px] font-mono"></div>
       </div>
 
+      <!-- TRENDING TOKENS (filled by app.js from DexScreener boosts) -->
+      <section class="w-full text-left space-y-2.5" aria-labelledby="trendingTitle">
+        <div class="flex items-center justify-between gap-3">
+          <h2 id="trendingTitle" class="text-sm font-bold text-white font-display" data-i18n="trending_title">🔥 Trending on DexScreener</h2>
+          <button type="button" onclick="loadTrending(true)" class="text-[11px] font-mono text-slate-400 hover:text-amberGlow transition-all" data-i18n="trending_refresh">Refresh</button>
+        </div>
+        <div id="trendingStatus"></div>
+        <div id="trendingGrid" class="grid grid-cols-2 md:grid-cols-4 gap-2.5"></div>
+        <p class="text-[10px] text-slate-500 leading-relaxed" data-i18n="trending_note">Most boosted tokens on DexScreener (boosts are paid promotions), sorted by real 24h volume. Not a recommendation: open one and check its risk checklist before trading.</p>
+      </section>
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-4 text-left">
         <div class="glass-panel glass-card-hover p-4 rounded-2xl space-y-2 border border-white/5 animate-float" style="animation-delay: 0s;">
           <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amberCore font-bold text-base">🛡️</div>

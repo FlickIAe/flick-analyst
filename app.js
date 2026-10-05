@@ -175,7 +175,18 @@ const TRANSLATIONS = {
     notify_blocked: "Notifications are blocked in your browser settings. Alerts will show inside the page.",
     notify_unsupported: "This browser doesn't support notifications. Alerts will show inside the page.",
     alert_up: "📈 {s} is up {pct} → {price}",
-    alert_down: "📉 {s} is down {pct} → {price}"
+    alert_down: "📉 {s} is down {pct} → {price}",
+    trending_title: "🔥 Trending on DexScreener",
+    trending_note: "Most boosted tokens on DexScreener (boosts are paid promotions), sorted by real 24h volume. Not a recommendation: open one and check its risk checklist before trading.",
+    trending_loading: "Loading trending tokens…",
+    trending_error: "Couldn't load trending tokens.",
+    trending_retry: "Retry",
+    trending_refresh: "Refresh",
+    t_vol: "Vol 24h",
+    t_liq: "Liq",
+    t_new: "⚠️ <24h old",
+    t_lowliq: "⚠️ Low liquidity",
+    t_open: "Analyze this token"
   },
   zh: {
     mainnet_active: "实时 DEX 数据",
@@ -335,7 +346,18 @@ const TRANSLATIONS = {
     notify_blocked: "浏览器设置已阻止通知。提醒将显示在页面内。",
     notify_unsupported: "此浏览器不支持通知。提醒将显示在页面内。",
     alert_up: "📈 {s} 上涨 {pct} → {price}",
-    alert_down: "📉 {s} 下跌 {pct} → {price}"
+    alert_down: "📉 {s} 下跌 {pct} → {price}",
+    trending_title: "🔥 DexScreener 热门",
+    trending_note: "DexScreener 上被推广（Boost，即付费推广）最多的代币，按真实 24 小时交易量排序。不构成推荐：交易前请打开代币查看风险清单。",
+    trending_loading: "正在加载热门代币…",
+    trending_error: "无法加载热门代币。",
+    trending_retry: "重试",
+    trending_refresh: "刷新",
+    t_vol: "24h 量",
+    t_liq: "流动性",
+    t_new: "⚠️ 不到24小时",
+    t_lowliq: "⚠️ 流动性低",
+    t_open: "分析该代币"
   },
   es: {
     mainnet_active: "Datos DEX en vivo",
@@ -495,7 +517,18 @@ const TRANSLATIONS = {
     notify_blocked: "Las notificaciones están bloqueadas en tu navegador. Las alertas se van a mostrar dentro de la página.",
     notify_unsupported: "Este navegador no soporta notificaciones. Las alertas se van a mostrar dentro de la página.",
     alert_up: "📈 {s} subió {pct} → {price}",
-    alert_down: "📉 {s} bajó {pct} → {price}"
+    alert_down: "📉 {s} bajó {pct} → {price}",
+    trending_title: "🔥 En tendencia en DexScreener",
+    trending_note: "Los tokens más boosteados en DexScreener (los boosts son promociones pagas), ordenados por volumen real de 24h. No es una recomendación: abrí uno y revisá su checklist de riesgo antes de operar.",
+    trending_loading: "Cargando tokens en tendencia…",
+    trending_error: "No se pudieron cargar los tokens en tendencia.",
+    trending_retry: "Reintentar",
+    trending_refresh: "Actualizar",
+    t_vol: "Vol 24h",
+    t_liq: "Liq",
+    t_new: "⚠️ <24h de vida",
+    t_lowliq: "⚠️ Poca liquidez",
+    t_open: "Analizar este token"
   }
 };
 
@@ -570,6 +603,7 @@ function changeLanguage(lang) {
   renderLastUpdated();
   renderWatchButton();
   renderWatchlist();
+  renderTrending();
 }
 
 // ===================================================================
@@ -1884,6 +1918,138 @@ if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 }
 
 // ===================================================================
+// 11b. TRENDING TOKENS (landing page)
+// DexScreener has no public "trending" ranking, so this uses its most boosted
+// tokens (paid promotions), enriched with real pair data and sorted by 24h volume.
+// ===================================================================
+const TRENDING_CACHE_KEY = 'flickTrending';
+const TRENDING_TTL = 5 * 60 * 1000;
+const TRENDING_SHOW = 8;
+let trending = { status: 'idle', items: [] }; // idle | loading | ok | error
+
+async function loadTrending(force = false) {
+  if (trending.status === 'loading') return;
+  if (!force) {
+    const cached = safeStorage(() => JSON.parse(sessionStorage.getItem(TRENDING_CACHE_KEY) || 'null'));
+    if (cached && Array.isArray(cached.items) && Date.now() - cached.at < TRENDING_TTL) {
+      trending = { status: 'ok', items: cached.items };
+      return renderTrending();
+    }
+  }
+  trending = { status: 'loading', items: trending.items };
+  renderTrending();
+  try {
+    const boosts = await fetchJson('https://api.dexscreener.com/token-boosts/top/v1', { timeout: 10000 });
+    const seen = new Set();
+    const candidates = (Array.isArray(boosts) ? boosts : [])
+      .filter(b => b && typeof b.tokenAddress === 'string' && typeof b.chainId === 'string')
+      .filter(b => {
+        const k = `${b.chainId}:${b.tokenAddress}`;
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      })
+      .slice(0, 14);
+    const items = [];
+    for (let i = 0; i < candidates.length; i += 4) { // 4 requests at a time
+      const batch = await Promise.all(candidates.slice(i, i + 4).map(b => trendingItem(b).catch(() => null)));
+      items.push(...batch.filter(Boolean));
+    }
+    items.sort((a, b) => b.vol - a.vol);
+    trending = { status: items.length ? 'ok' : 'error', items: items.slice(0, TRENDING_SHOW) };
+    if (items.length) safeStorage(() => sessionStorage.setItem(TRENDING_CACHE_KEY, JSON.stringify({ at: Date.now(), items: trending.items })));
+  } catch (err) {
+    console.warn('Trending load failed:', err);
+    trending = { status: 'error', items: [] };
+  }
+  renderTrending();
+}
+
+async function trendingItem(boost) {
+  const d = await fetchJson(`${DEX_API}/tokens/${encodeURIComponent(boost.tokenAddress)}`, { timeout: 10000 });
+  const own = (d.pairs || [])
+    .filter(p => p.chainId === boost.chainId && sameAddress(p.baseToken?.address, boost.tokenAddress))
+    .sort(byLiquidity);
+  if (!own.length) return null;
+  const p = own[0];
+  const img = [p.info?.imageUrl, boost.icon].find(u => typeof u === 'string' && u.startsWith('https://')) || '';
+  return {
+    ca: p.baseToken.address, chainId: p.chainId,
+    symbol: String(p.baseToken.symbol || '?').slice(0, 12), name: String(p.baseToken.name || '').slice(0, 40),
+    price: parseFloat(p.priceUsd) || 0, ch24: Number(p.priceChange?.h24),
+    vol: own.reduce((a, x) => a + (x.volume?.h24 || 0), 0),
+    liq: own.reduce((a, x) => a + (x.liquidity?.usd || 0), 0),
+    ageDays: p.pairCreatedAt ? (Date.now() - p.pairCreatedAt) / 864e5 : null,
+    img
+  };
+}
+
+function openTrending(item) {
+  $('landingCaInput').value = item.ca;
+  runScanSequence(item.ca, { chain: item.chainId, onDone: ok => { if (ok && !isDashboardVisible()) enterApp(); } });
+}
+
+function renderTrending() {
+  const grid = $('trendingGrid'), status = $('trendingStatus');
+  if (!grid || !status) return;
+  if (trending.status === 'loading' && !trending.items.length) {
+    grid.replaceChildren();
+    status.replaceChildren(el('p', 'text-[11px] text-slate-500 font-mono animate-pulse', tr('trending_loading')));
+    return;
+  }
+  if (trending.status === 'error') {
+    grid.replaceChildren();
+    const retry = el('button', 'ml-2 text-amberCore hover:underline', tr('trending_retry'));
+    retry.type = 'button';
+    retry.onclick = () => loadTrending(true);
+    const msg = el('p', 'text-[11px] text-slate-500 font-mono', tr('trending_error'));
+    msg.appendChild(retry);
+    status.replaceChildren(msg);
+    return;
+  }
+  status.replaceChildren();
+  grid.replaceChildren(...trending.items.map(item => {
+    const card = el('button', 'glass-panel glass-card-hover p-3 rounded-2xl border border-white/5 text-left space-y-1.5 min-w-0');
+    card.type = 'button';
+    card.title = `${tr('t_open')}: ${item.name || item.symbol}`;
+    card.onclick = () => openTrending(item);
+
+    const head = el('div', 'flex items-center gap-2 min-w-0');
+    const logo = el('div', 'w-7 h-7 rounded-lg overflow-hidden bg-amber-500/20 flex items-center justify-center text-xs font-bold text-white shrink-0', Array.from(item.symbol)[0] || '?');
+    if (item.img) {
+      const img = new Image();
+      img.alt = '';
+      img.loading = 'lazy';
+      img.className = 'w-full h-full object-cover';
+      img.onerror = () => img.remove();
+      img.src = item.img;
+      logo.replaceChildren(img);
+    }
+    const names = el('div', 'min-w-0');
+    names.append(
+      el('p', 'text-xs font-bold text-white truncate', `$${item.symbol}`),
+      el('p', 'text-[10px] text-slate-500 font-mono truncate', chainName(item.chainId))
+    );
+    head.append(logo, names);
+
+    const known = Number.isFinite(item.ch24);
+    const priceRow = el('div', 'flex items-baseline justify-between gap-2 font-mono');
+    priceRow.append(
+      el('span', 'text-[11px] text-slate-200 truncate', `$${formatPrice(item.price)}`),
+      el('span', `text-[11px] font-semibold ${known ? (item.ch24 >= 0 ? 'text-cyberGreen' : 'text-crimsonRisk') : 'text-slate-400'}`, formatPct(item.ch24))
+    );
+    const stats = el('p', 'text-[10px] text-slate-400 font-mono truncate', `${tr('t_vol')} ${formatUsd(item.vol)} · ${tr('t_liq')} ${formatUsd(item.liq)}`);
+    card.append(head, priceRow, stats);
+
+    const flags = [];
+    if (item.liq < 20000) flags.push(tr('t_lowliq'));
+    if (item.ageDays != null && item.ageDays < 1) flags.push(tr('t_new'));
+    if (flags.length) card.appendChild(el('p', 'text-[10px] text-amberGlow font-mono truncate', flags.join(' · ')));
+    return card;
+  }));
+}
+
+// ===================================================================
 // 12. WATCHLIST & PRICE ALERTS (localStorage; checked every minute while the page is open)
 // ===================================================================
 const WATCH_KEY = 'flickWatchlist';
@@ -2090,6 +2256,7 @@ document.addEventListener('visibilitychange', () => {
   const nav = (navigator.language || '').toLowerCase();
   changeLanguage(saved || (nav.startsWith('zh') ? 'zh' : nav.startsWith('es') ? 'es' : 'en'));
   if (watchlist.length) setTimeout(checkWatchlist, 2000);
+  loadTrending();
   const params = new URLSearchParams(location.search);
   const ca = params.get('ca');
   if (ca) {
