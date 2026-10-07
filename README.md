@@ -36,6 +36,7 @@
 - **Frontend:** HTML5, Tailwind CSS (CDN), vanilla JavaScript (ES2020+)
 - **APIs:**
   - [DexScreener API](https://docs.dexscreener.com/) — market data and chart embeds
+  - [GeckoTerminal API](https://www.geckoterminal.com/dex-api) — automatic backup for market data, trending pools, new pools and charts whenever DexScreener returns nothing (free, no key, ~30 requests/min, so the app caches and rate-limits its calls)
   - [GoPlus Security API](https://gopluslabs.io/) — contract security and holders
 - **Deployment:** Cloudflare Pages, with a Pages Function (`functions/api/goplus.js`) that proxies GoPlus when the browser can't call it directly
 
