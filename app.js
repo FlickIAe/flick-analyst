@@ -1176,6 +1176,39 @@ async function fetchJson(url, { signal, timeout = 10000 } = {}) {
   }
 }
 
+// Pools of a token by contract address. DexScreener's current endpoint is
+// /tokens/v1/{chain}/{address}; the older /latest/dex/tokens/{address} (all
+// chains at once) is still asked too, in case it answers. Without a known chain,
+// Solana-style addresses go to "solana" and 0x addresses to every EVM chain.
+// Throws only when every request failed (network/API error, not "not found").
+const DEX_V1 = 'https://api.dexscreener.com/tokens/v1';
+const DEX_EVM_CHAINS = ['ethereum', 'bsc', 'base', 'arbitrum', 'polygon', 'optimism', 'avalanche'];
+const pairsOf = d => (Array.isArray(d) ? d : Array.isArray(d?.pairs) ? d.pairs : []);
+
+async function fetchTokenPairs(ca, { chain = '', signal, timeout = 10000 } = {}) {
+  const urls = [];
+  const v1 = c => `${DEX_V1}/${encodeURIComponent(c)}/${encodeURIComponent(ca)}`;
+  if (chain) urls.push(v1(chain));
+  else if (EVM_RE.test(ca)) urls.push(...DEX_EVM_CHAINS.map(v1));
+  else urls.push(v1('solana'));
+  urls.push(`${DEX_API}/tokens/${encodeURIComponent(ca)}`);
+
+  let lastError = null, answered = 0;
+  const lists = await Promise.all(urls.map(u => fetchJson(u, { signal, timeout })
+    .then(d => { answered++; return pairsOf(d); })
+    .catch(err => { if (err.name === 'AbortError' || signal?.aborted) throw err; lastError = err; return []; })));
+  if (!answered && lastError) throw lastError;
+  const seen = new Set();
+  return lists.flat().filter(p => {
+    if (!p?.baseToken?.address || !sameAddress(p.baseToken.address, ca)) return false;
+    if (chain && p.chainId !== chain) return false;
+    const k = `${p.chainId}:${p.pairAddress}`;
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
 // Groups pairs by token (chain + base address) and returns the pools of the most liquid token
 function pickTokenPools(pairs, preferChain) {
   const groups = new Map();
@@ -1209,9 +1242,8 @@ async function executeTokenSearch(query, { chain = '', remember = false } = {}) 
   try {
     let pairs;
     if (addr) {
-      const d = await fetchJson(`${DEX_API}/tokens/${encodeURIComponent(q)}`, { signal: controller.signal });
       // only pairs where the searched token is the BASE token (never show the quote token instead)
-      pairs = (d.pairs || []).filter(p => sameAddress(p.baseToken?.address, q));
+      pairs = await fetchTokenPairs(q, { chain, signal: controller.signal });
     } else {
       const d = await fetchJson(`${DEX_API}/search?q=${encodeURIComponent(q)}`, { signal: controller.signal });
       const all = d.pairs || [];
@@ -2510,9 +2542,9 @@ async function refreshPriceLive() {
   pollInFlight = true;
   const key = tokenKey(t);
   try {
-    const data = await fetchJson(`${DEX_API}/tokens/${encodeURIComponent(t.ca)}`, { timeout: 8000 });
+    const pairs = await fetchTokenPairs(t.ca, { chain: t.chainId, timeout: 8000 });
     if (tokenKey(currentToken) !== key) return; // user switched token while waiting
-    const own = (data.pairs || []).filter(p => p.chainId === t.chainId && sameAddress(p.baseToken?.address, t.ca)).sort(byLiquidity);
+    const own = pairs.sort(byLiquidity);
     if (own.length) { currentPairs = own; renderMultiPairs(); }
     const pair = own.find(p => p.pairAddress === currentToken.pairAddress);
     if (!pair) return;
@@ -2802,10 +2834,7 @@ async function loadTrending(force = false) {
 }
 
 async function trendingItem(boost) {
-  const d = await fetchJson(`${DEX_API}/tokens/${encodeURIComponent(boost.tokenAddress)}`, { timeout: 10000 });
-  const own = (d.pairs || [])
-    .filter(p => p.chainId === boost.chainId && sameAddress(p.baseToken?.address, boost.tokenAddress))
-    .sort(byLiquidity);
+  const own = (await fetchTokenPairs(boost.tokenAddress, { chain: boost.chainId, timeout: 10000 })).sort(byLiquidity);
   if (!own.length) return null;
   const p = own[0];
   const img = [p.info?.imageUrl, boost.icon].find(u => typeof u === 'string' && u.startsWith('https://')) || '';
@@ -3579,8 +3608,7 @@ function openTokenFromAlert(ca, chain) {
 }
 
 async function refreshWatchItem(w) {
-  const d = await fetchJson(`${DEX_API}/tokens/${encodeURIComponent(w.ca)}`, { timeout: 10000 });
-  const own = (d.pairs || []).filter(p => p.chainId === w.chainId && sameAddress(p.baseToken?.address, w.ca));
+  const own = await fetchTokenPairs(w.ca, { chain: w.chainId, timeout: 10000 });
   if (!own.length) return;
   const pair = own.find(p => p.pairAddress === w.pairAddress) || own.sort(byLiquidity)[0];
   const price = parseFloat(pair.priceUsd);
@@ -3703,8 +3731,7 @@ async function comparePools(query, chain = '') {
   const q = normalizeQuery(query);
   let pairs;
   if (isAddress(q)) {
-    const d = await fetchJson(`${DEX_API}/tokens/${encodeURIComponent(q)}`);
-    pairs = (d.pairs || []).filter(p => sameAddress(p.baseToken?.address, q));
+    pairs = await fetchTokenPairs(q, { chain });
   } else {
     const d = await fetchJson(`${DEX_API}/search?q=${encodeURIComponent(q)}`);
     const all = d.pairs || [];
