@@ -242,6 +242,7 @@ const TRANSLATIONS = {
     alert_up: "📈 {s} is up {pct} → {price}",
     alert_down: "📉 {s} is down {pct} → {price}",
     trending_title: "Trending on DexScreener",
+    src_gecko_trending: "Source: GeckoTerminal trending pools (DexScreener isn't answering right now). Not a recommendation: open one and check its risk checklist before trading.",
     trending_note: "Most boosted tokens on DexScreener (boosts are paid promotions), sorted by real 24h volume. Not a recommendation: open one and check its risk checklist before trading.",
     trending_loading: "Loading trending tokens…",
     trending_error: "Couldn't load trending tokens.",
@@ -547,6 +548,7 @@ const TRANSLATIONS = {
     alert_up: "📈 {s} 上涨 {pct} → {price}",
     alert_down: "📉 {s} 下跌 {pct} → {price}",
     trending_title: "DexScreener 热门",
+    src_gecko_trending: "来源：GeckoTerminal 热门池（DexScreener 暂时无响应）。不构成推荐：交易前请打开代币查看风险清单。",
     trending_note: "DexScreener 上被推广（Boost，即付费推广）最多的代币，按真实 24 小时交易量排序。不构成推荐：交易前请打开代币查看风险清单。",
     trending_loading: "正在加载热门代币…",
     trending_error: "无法加载热门代币。",
@@ -852,6 +854,7 @@ const TRANSLATIONS = {
     alert_up: "📈 {s} subió {pct} → {price}",
     alert_down: "📉 {s} bajó {pct} → {price}",
     trending_title: "En tendencia en DexScreener",
+    src_gecko_trending: "Fuente: pools en tendencia de GeckoTerminal (DexScreener no está respondiendo ahora). No es una recomendación: abrí uno y revisá su checklist de riesgo antes de operar.",
     trending_note: "Los tokens más boosteados en DexScreener (los boosts son promociones pagas), ordenados por volumen real de 24h. No es una recomendación: abrí uno y revisá su checklist de riesgo antes de operar.",
     trending_loading: "Cargando tokens en tendencia…",
     trending_error: "No se pudieron cargar los tokens en tendencia.",
@@ -1185,7 +1188,7 @@ const DEX_V1 = 'https://api.dexscreener.com/tokens/v1';
 const DEX_EVM_CHAINS = ['ethereum', 'bsc', 'base', 'arbitrum', 'polygon', 'optimism', 'avalanche'];
 const pairsOf = d => (Array.isArray(d) ? d : Array.isArray(d?.pairs) ? d.pairs : []);
 
-async function fetchTokenPairs(ca, { chain = '', signal, timeout = 10000 } = {}) {
+async function fetchTokenPairs(ca, { chain = '', signal, timeout = 10000, gecko = true } = {}) {
   const urls = [];
   const v1 = c => `${DEX_V1}/${encodeURIComponent(c)}/${encodeURIComponent(ca)}`;
   if (chain) urls.push(v1(chain));
@@ -1197,9 +1200,8 @@ async function fetchTokenPairs(ca, { chain = '', signal, timeout = 10000 } = {})
   const lists = await Promise.all(urls.map(u => fetchJson(u, { signal, timeout })
     .then(d => { answered++; return pairsOf(d); })
     .catch(err => { if (err.name === 'AbortError' || signal?.aborted) throw err; lastError = err; return []; })));
-  if (!answered && lastError) throw lastError;
   const seen = new Set();
-  return lists.flat().filter(p => {
+  const found = lists.flat().filter(p => {
     if (!p?.baseToken?.address || !sameAddress(p.baseToken.address, ca)) return false;
     if (chain && p.chainId !== chain) return false;
     const k = `${p.chainId}:${p.pairAddress}`;
@@ -1207,6 +1209,124 @@ async function fetchTokenPairs(ca, { chain = '', signal, timeout = 10000 } = {})
     seen.add(k);
     return true;
   });
+  if (found.length || !gecko) {
+    if (!found.length && !answered && lastError) throw lastError;
+    return found;
+  }
+  // DexScreener has nothing (or is down): ask GeckoTerminal
+  try {
+    return await geckoTokenPairs(ca, { chain, signal, timeout });
+  } catch (err) {
+    if (err.name === 'AbortError' || signal?.aborted) throw err;
+    console.warn('GeckoTerminal lookup failed:', err);
+    throw err;
+  }
+}
+
+// ===================================================================
+// 4b. GECKOTERMINAL (backup market data, free, no key)
+// Used when DexScreener returns nothing. Its pools are converted to the same
+// shape as DexScreener pairs, so the rest of the app doesn't change.
+// Free limit is ~30 requests per minute: responses are cached for 20 s and
+// requests are capped locally so the app never gets blocked.
+// ===================================================================
+const GT_API = 'https://api.geckoterminal.com/api/v2';
+const GT_NET = { ethereum: 'eth', bsc: 'bsc', base: 'base', arbitrum: 'arbitrum', polygon: 'polygon_pos', optimism: 'optimism', avalanche: 'avax', solana: 'solana' };
+const GT_CHAIN = Object.fromEntries(Object.entries(GT_NET).map(([k, v]) => [v, k]));
+const GT_INCLUDE = 'include=base_token,quote_token,dex';
+const GT_TTL = 20000;
+const GT_MAX_PER_MIN = 26;
+const gtCache = new Map();
+let gtCalls = [];
+
+async function gtFetch(path, { signal, timeout = 12000 } = {}) {
+  const url = GT_API + path;
+  const hit = gtCache.get(url);
+  if (hit && Date.now() - hit.at < GT_TTL) return hit.data;
+  const now = Date.now();
+  gtCalls = gtCalls.filter(t => now - t < 60000);
+  if (gtCalls.length >= GT_MAX_PER_MIN) throw new Error('GeckoTerminal: too many requests, try again in a minute');
+  gtCalls.push(now);
+  const data = await fetchJson(url, { signal, timeout });
+  gtCache.set(url, { at: Date.now(), data });
+  if (gtCache.size > 150) gtCache.delete(gtCache.keys().next().value);
+  return data;
+}
+
+// GeckoTerminal pools → DexScreener-like pairs
+function gtPairs(d) {
+  const inc = new Map((Array.isArray(d?.included) ? d.included : []).map(x => [x.id, x.attributes || {}]));
+  const num = v => (v == null || v === '' || !Number.isFinite(Number(v)) ? null : Number(v));
+  return (Array.isArray(d?.data) ? d.data : []).filter(p => p?.attributes?.address).map(p => {
+    const a = p.attributes, rel = p.relationships || {};
+    const id = String(p.id || '');
+    const net = id.endsWith(`_${a.address}`) ? id.slice(0, -(a.address.length + 1)) : id.split('_')[0];
+    const tokenAddr = rid => (rid && rid.startsWith(`${net}_`) ? rid.slice(net.length + 1) : '');
+    const bt = inc.get(rel.base_token?.data?.id) || {};
+    const qt = inc.get(rel.quote_token?.data?.id) || {};
+    const [nb = '', nq = ''] = String(a.name || '').split(' / ');
+    const tx = k => (a.transactions?.[k] ? { buys: a.transactions[k].buys ?? 0, sells: a.transactions[k].sells ?? 0 } : undefined);
+    const pc = a.price_change_percentage || {}, vol = a.volume_usd || {};
+    const img = typeof bt.image_url === 'string' && bt.image_url.startsWith('https://') && !/missing/i.test(bt.image_url) ? bt.image_url : '';
+    return {
+      chainId: GT_CHAIN[net] || net,
+      dexId: rel.dex?.data?.id || '',
+      url: `https://www.geckoterminal.com/${net}/pools/${a.address}`,
+      pairAddress: a.address,
+      baseToken: { address: bt.address || tokenAddr(rel.base_token?.data?.id), symbol: bt.symbol || nb.trim() || '?', name: bt.name || nb.trim() },
+      quoteToken: { address: qt.address || tokenAddr(rel.quote_token?.data?.id), symbol: qt.symbol || nq.trim().split(' ')[0] || 'USD' },
+      priceUsd: a.base_token_price_usd,
+      priceChange: { m5: num(pc.m5), h1: num(pc.h1), h6: num(pc.h6), h24: num(pc.h24) },
+      liquidity: { usd: num(a.reserve_in_usd) || 0 },
+      volume: { m5: num(vol.m5), h1: num(vol.h1), h6: num(vol.h6), h24: num(vol.h24) || 0 },
+      txns: { m5: tx('m5'), h1: tx('h1'), h6: tx('h6'), h24: tx('h24') },
+      fdv: num(a.fdv_usd) || 0,
+      marketCap: num(a.market_cap_usd) || 0,
+      pairCreatedAt: Date.parse(a.pool_created_at) || null,
+      info: { imageUrl: img }, // GeckoTerminal pools don't list websites/socials (see gtTokenInfo)
+      source: 'gecko',
+      gtNetwork: net
+    };
+  });
+}
+
+async function geckoTokenPairs(ca, { chain = '', signal, timeout } = {}) {
+  const addr = EVM_RE.test(ca) ? ca.toLowerCase() : ca;
+  let d;
+  try {
+    if (chain) {
+      if (!GT_NET[chain]) return [];
+      d = await gtFetch(`/networks/${GT_NET[chain]}/tokens/${encodeURIComponent(addr)}/pools?${GT_INCLUDE}&page=1`, { signal, timeout });
+    } else {
+      d = await gtFetch(`/search/pools?query=${encodeURIComponent(addr)}&${GT_INCLUDE}&page=1`, { signal, timeout });
+    }
+  } catch (err) {
+    if (/HTTP 404/.test(err.message)) return []; // GeckoTerminal doesn't know this token
+    throw err;
+  }
+  return gtPairs(d).filter(p => sameAddress(p.baseToken.address, ca) && (!chain || p.chainId === chain));
+}
+
+async function geckoSearch(q, { signal } = {}) {
+  return gtPairs(await gtFetch(`/search/pools?query=${encodeURIComponent(q)}&${GT_INCLUDE}&page=1`, { signal }));
+}
+
+// Ticker search on GeckoTerminal: exact symbol matches first
+async function geckoTickerPairs(q, { signal } = {}) {
+  const all = await geckoSearch(q, { signal });
+  const exact = all.filter(p => (p.baseToken?.symbol || '').toUpperCase() === q.toUpperCase());
+  return exact.length ? exact : all;
+}
+
+// Websites and socials of a token (only for the token on screen)
+async function gtTokenInfo(pair) {
+  try {
+    const d = await gtFetch(`/networks/${pair.gtNetwork}/tokens/${encodeURIComponent(pair.baseToken.address)}/info`);
+    const a = d?.data?.attributes || {};
+    const socials = [a.twitter_handle, a.telegram_handle, a.discord_url].filter(Boolean);
+    pair.info = { ...pair.info, websites: Array.isArray(a.websites) ? a.websites : [], socials };
+    if (!pair.info.imageUrl && typeof a.image_url === 'string' && a.image_url.startsWith('https://') && !/missing/i.test(a.image_url)) pair.info.imageUrl = a.image_url;
+  } catch (e) { /* socials stay unknown */ }
 }
 
 // Groups pairs by token (chain + base address) and returns the pools of the most liquid token
@@ -1245,15 +1365,18 @@ async function executeTokenSearch(query, { chain = '', remember = false } = {}) 
       // only pairs where the searched token is the BASE token (never show the quote token instead)
       pairs = await fetchTokenPairs(q, { chain, signal: controller.signal });
     } else {
-      const d = await fetchJson(`${DEX_API}/search?q=${encodeURIComponent(q)}`, { signal: controller.signal });
+      const d = await fetchJson(`${DEX_API}/search?q=${encodeURIComponent(q)}`, { signal: controller.signal }).catch(err => { if (err.name === 'AbortError') throw err; return {}; });
       const all = d.pairs || [];
       const sym = q.toUpperCase();
       const exact = all.filter(p => (p.baseToken?.symbol || '').toUpperCase() === sym);
       pairs = exact.length ? exact : all;
+      if (!pairs.length) pairs = await geckoTickerPairs(q, { signal: controller.signal });
     }
     if (controller !== searchController) return 'aborted'; // superseded by a newer search
     const pools = pickTokenPools(pairs, chain);
     if (!pools.length) return 'not_found';
+    if (pools[0].source === 'gecko') await gtTokenInfo(pools[0]);
+    if (controller !== searchController) return 'aborted';
     currentPairs = pools;
     selectPair(pools[0]);
     if (remember) addRecent(currentToken);
@@ -1282,7 +1405,7 @@ function computeHealthScore(t) {
     const r = t.buys / (t.buys + t.sells);
     bal = r < 0.25 || r > 0.75 ? 40 : 100;
   }
-  const soc = t.socials ? 100 : 0;
+  const soc = t.socials == null ? 50 : t.socials ? 100 : 0;
   const score = Math.round(liq * 0.35 + vol * 0.2 + age * 0.25 + bal * 0.1 + soc * 0.1);
   return { score: Math.max(0, Math.min(100, score)), parts: { liq, vol, age, bal } };
 }
@@ -1304,7 +1427,15 @@ function applyMetrics(pair, t = currentToken) {
   t.vols = { m5: num(pair.volume?.m5), h1: num(pair.volume?.h1), h6: num(pair.volume?.h6), h24: num(pair.volume?.h24) };
   t.tx = { h1: pair.txns?.h1 || null, h6: pair.txns?.h6 || null };
   t.pairCreatedAt = pair.pairCreatedAt || null;
-  t.socials = (pair.info?.websites?.length || 0) + (pair.info?.socials?.length || 0);
+  const socialsKnown = pair.source !== 'gecko' || Array.isArray(pair.info?.websites);
+  if (socialsKnown) {
+    t.socials = (pair.info?.websites?.length || 0) + (pair.info?.socials?.length || 0);
+    t.socialsKnown = true;
+  } else if (!(t.socialsKnown && sameAddress(t.ca, pair.baseToken?.address))) {
+    t.socials = null; // unknown: GeckoTerminal pools don't list them
+  }
+  t.source = pair.source === 'gecko' ? 'gecko' : 'dexscreener';
+  t.gtNetwork = pair.gtNetwork || '';
   t.updatedAt = Date.now();
   const h = computeHealthScore(t);
   t.score = h.score;
@@ -1321,7 +1452,8 @@ function selectPair(pair) {
   t.chainId = pair.chainId || '';
   t.dexId = pair.dexId || '';
   t.pairAddress = pair.pairAddress;
-  t.pairUrl = String(pair.url || '').startsWith('https://dexscreener.com/') ? pair.url : '';
+  t.pairUrl = /^https:\/\/(dexscreener\.com|www\.geckoterminal\.com)\//.test(String(pair.url || '')) ? pair.url : '';
+  if (!sameToken) t.socialsKnown = false;
   t.imageUrl = pair.info?.imageUrl || '';
   applyMetrics(pair);
   t.loaded = true;
@@ -1355,7 +1487,7 @@ function swapLinks(t) {
   if (t.chainId === 'solana') return [['Raydium', `https://raydium.io/swap/?inputMint=sol&outputMint=${ca}`], ['Jupiter', `https://jup.ag/swap/SOL-${ca}`]];
   if (UNI_CHAIN[t.chainId]) return [['Uniswap', `https://app.uniswap.org/swap?chain=${UNI_CHAIN[t.chainId]}&outputCurrency=${ca}`]];
   if (t.chainId === 'bsc') return [['PancakeSwap', `https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${ca}`]];
-  return t.pairUrl ? [['DexScreener', t.pairUrl]] : [];
+  return t.pairUrl ? [[t.source === 'gecko' ? 'GeckoTerminal' : 'DexScreener', t.pairUrl]] : [];
 }
 
 function verifyLink(t) {
@@ -1405,7 +1537,9 @@ function updateUI(full = true) {
   } else fallback();
 
   const frame = $('dexFrame');
-  const src = `https://dexscreener.com/${encodeURIComponent(t.chainId)}/${encodeURIComponent(t.pairAddress)}?embed=1&theme=dark&trades=0&info=0`;
+  const src = t.source === 'gecko' && t.gtNetwork
+    ? `https://www.geckoterminal.com/${encodeURIComponent(t.gtNetwork)}/pools/${encodeURIComponent(t.pairAddress)}?embed=1&info=0&swaps=0&light_chart=0`
+    : `https://dexscreener.com/${encodeURIComponent(t.chainId)}/${encodeURIComponent(t.pairAddress)}?embed=1&theme=dark&trades=0&info=0`;
   if (frame.dataset.src !== src) { frame.dataset.src = src; frame.src = src; }
 
   const links = swapLinks(t);
@@ -2097,7 +2231,8 @@ function renderAuditTab() {
   if (days == null) setCell('mAge', 'N/A', 'N/A', 'na');
   else setCell('mAge', formatAge(days), tr(days < 1 ? 'b_very_new' : days < 7 ? 'b_new' : 'b_ok'), days < 1 ? 'bad' : days < 7 ? 'warn' : 'ok');
   // Socials / info
-  setCell('mSocials', t.socials ? tr('links', { n: t.socials }) : tr('none'), tr(t.socials ? 'b_ok' : 'b_none'), t.socials ? 'ok' : 'warn');
+  if (t.socials == null) setCell('mSocials', 'N/A', 'N/A', 'na');
+  else setCell('mSocials', t.socials ? tr('links', { n: t.socials }) : tr('none'), tr(t.socials ? 'b_ok' : 'b_none'), t.socials ? 'ok' : 'warn');
 
   renderContractCells();
 
@@ -2239,7 +2374,7 @@ function riskFindings(t = currentToken, st = security) {
   if (ch != null && ch <= -30) add('warn', 'trend', L(`The price fell ${formatPct(ch)} in 24h.`, `价格24小时内下跌 ${formatPct(ch)}。`, `El precio cayó ${formatPct(ch)} en 24h.`));
   else if (ch != null && ch >= 100) add('warn', 'trend', L(`The price rose ${formatPct(ch)} in 24h: very volatile.`, `价格24小时内上涨 ${formatPct(ch)}：波动极大。`, `El precio subió ${formatPct(ch)} en 24h: muy volátil.`));
 
-  if (!t.socials) add('warn', 'info', L('No website or social links are listed.', '未列出官网或社交媒体链接。', 'No tiene sitio web ni redes sociales listadas.'));
+  if (t.socials === 0) add('warn', 'info', L('No website or social links are listed.', '未列出官网或社交媒体链接。', 'No tiene sitio web ni redes sociales listadas.'));
 
   return out.sort((a, b) => SEV_ORDER[a.lv] - SEV_ORDER[b.lv]);
 }
@@ -2800,12 +2935,13 @@ async function loadTrending(force = false) {
   if (!force) {
     const cached = safeStorage(() => JSON.parse(sessionStorage.getItem(TRENDING_CACHE_KEY) || 'null'));
     if (cached && Array.isArray(cached.items) && Date.now() - cached.at < TRENDING_TTL) {
-      trending = { status: 'ok', items: cached.items };
+      trending = { status: 'ok', items: cached.items, source: cached.source || 'dexscreener' };
       return renderTrending();
     }
   }
   trending = { status: 'loading', items: trending.items };
   renderTrending();
+  let items = [], source = 'dexscreener';
   try {
     const boosts = await fetchJson('https://api.dexscreener.com/token-boosts/top/v1', { timeout: 10000 });
     const seen = new Set();
@@ -2818,23 +2954,30 @@ async function loadTrending(force = false) {
         return true;
       })
       .slice(0, 14);
-    const items = [];
     for (let i = 0; i < candidates.length; i += 4) { // 4 requests at a time
       const batch = await Promise.all(candidates.slice(i, i + 4).map(b => trendingItem(b).catch(() => null)));
       items.push(...batch.filter(Boolean));
     }
-    items.sort((a, b) => b.vol - a.vol);
-    trending = { status: items.length ? 'ok' : 'error', items: items.slice(0, TRENDING_SHOW) };
-    if (items.length) safeStorage(() => sessionStorage.setItem(TRENDING_CACHE_KEY, JSON.stringify({ at: Date.now(), items: trending.items })));
   } catch (err) {
-    console.warn('Trending load failed:', err);
-    trending = { status: 'error', items: [] };
+    console.warn('Trending (DexScreener) failed:', err);
   }
+  // DexScreener gave nothing: GeckoTerminal's trending pools (1 request)
+  if (!items.length) {
+    try {
+      items = geckoTrendingItems(gtPairs(await gtFetch(`/networks/trending_pools?${GT_INCLUDE}&page=1`)));
+      source = 'gecko';
+    } catch (err) {
+      console.warn('Trending (GeckoTerminal) failed:', err);
+    }
+  }
+  items.sort((a, b) => b.vol - a.vol);
+  trending = { status: items.length ? 'ok' : 'error', items: items.slice(0, TRENDING_SHOW), source };
+  if (items.length) safeStorage(() => sessionStorage.setItem(TRENDING_CACHE_KEY, JSON.stringify({ at: Date.now(), items: trending.items, source })));
   renderTrending();
 }
 
 async function trendingItem(boost) {
-  const own = (await fetchTokenPairs(boost.tokenAddress, { chain: boost.chainId, timeout: 10000 })).sort(byLiquidity);
+  const own = (await fetchTokenPairs(boost.tokenAddress, { chain: boost.chainId, timeout: 10000, gecko: false })).sort(byLiquidity);
   if (!own.length) return null;
   const p = own[0];
   const img = [p.info?.imageUrl, boost.icon].find(u => typeof u === 'string' && u.startsWith('https://')) || '';
@@ -2847,6 +2990,32 @@ async function trendingItem(boost) {
     ageDays: p.pairCreatedAt ? (Date.now() - p.pairCreatedAt) / 864e5 : null,
     img
   };
+}
+
+// One card per token from GeckoTerminal pools (all of its pools in the list are summed).
+// Base coins and stablecoins (WETH, SOL, USDC…) are skipped: they aren't "trending tokens".
+const GT_SKIP_SYMBOLS = /^(W?ETH|W?SOL|W?BNB|W?AVAX|W?MATIC|W?POL|USDC(\.E)?|USDT|DAI|BUSD|FDUSD|USDE|PYUSD|WBTC|CBBTC)$/i;
+function geckoTrendingItems(pairs) {
+  const groups = new Map();
+  pairs.forEach(p => {
+    if (!p.baseToken.address || GT_SKIP_SYMBOLS.test(p.baseToken.symbol || '')) return;
+    const k = `${p.chainId}:${p.baseToken.address.toLowerCase()}`;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(p);
+  });
+  return [...groups.values()].map(own => {
+    own.sort(byLiquidity);
+    const p = own[0];
+    return {
+      ca: p.baseToken.address, chainId: p.chainId,
+      symbol: String(p.baseToken.symbol || '?').slice(0, 12), name: String(p.baseToken.name || '').slice(0, 40),
+      price: parseFloat(p.priceUsd) || 0, ch24: Number(p.priceChange?.h24),
+      vol: own.reduce((a, x) => a + (x.volume?.h24 || 0), 0),
+      liq: own.reduce((a, x) => a + (x.liquidity?.usd || 0), 0),
+      ageDays: p.pairCreatedAt ? (Date.now() - p.pairCreatedAt) / 864e5 : null,
+      img: p.info?.imageUrl || ''
+    };
+  });
 }
 
 function openTrending(item) {
@@ -2872,7 +3041,7 @@ function renderTrending() {
     status.replaceChildren(msg);
     return;
   }
-  status.replaceChildren();
+  status.replaceChildren(...(trending.source === 'gecko' ? [el('p', 'text-[11px] text-slate-400', tr('src_gecko_trending'))] : []));
   grid.replaceChildren(...trending.items.map(item => feedCard(item)));
 }
 
@@ -2992,7 +3161,7 @@ function launchItem(profile, pairs) {
     pairCreatedAt: created,
     buys: p.txns?.h24?.buys ?? null, sells: p.txns?.h24?.sells ?? null,
     changes: { h24: Number.isFinite(Number(p.priceChange?.h24)) ? Number(p.priceChange.h24) : null },
-    socials: (p.info?.websites?.length || 0) + (p.info?.socials?.length || 0)
+    socials: p.source === 'gecko' && !Array.isArray(p.info?.websites) ? null : (p.info?.websites?.length || 0) + (p.info?.socials?.length || 0)
   };
   return {
     ca: p.baseToken.address, chainId: p.chainId,
@@ -3055,9 +3224,8 @@ async function loadLaunches(force = false) {
       'https://api.dexscreener.com/token-profiles/latest/v1',
       'https://api.dexscreener.com/token-boosts/latest/v1'
     ].map(u => fetchJson(u, { timeout: 10000 }).catch(() => null)));
-    if (lists.every(l => !Array.isArray(l))) throw new Error('DexScreener lists unavailable');
     const seen = new Set();
-    const candidates = lists.flatMap(l => (Array.isArray(l) ? l : []))
+    let candidates = lists.flatMap(l => (Array.isArray(l) ? l : []))
       .filter(p => p && typeof p.tokenAddress === 'string' && typeof p.chainId === 'string')
       .filter(p => {
         const k = `${p.chainId}:${p.chainId === 'solana' ? p.tokenAddress : p.tokenAddress.toLowerCase()}`;
@@ -3066,7 +3234,16 @@ async function loadLaunches(force = false) {
         return true;
       })
       .slice(0, LAUNCH_CANDIDATES);
-    const pairs = await launchPairs(candidates);
+    let pairs = candidates.length ? await launchPairs(candidates) : [];
+    if (!pairs.length) {
+      // DexScreener gave nothing: newest pools on GeckoTerminal (2 requests)
+      const pages = await Promise.all([1, 2].map(n => gtFetch(`/networks/new_pools?${GT_INCLUDE}&page=${n}`).then(gtPairs).catch(() => [])));
+      pairs = pages.flat();
+      if (!pairs.length) throw new Error('No launch data from DexScreener or GeckoTerminal');
+      const seenGt = new Set();
+      candidates = pairs.filter(p => p.baseToken.address && !seenGt.has(`${p.chainId}:${p.baseToken.address}`) && seenGt.add(`${p.chainId}:${p.baseToken.address}`))
+        .map(p => ({ chainId: p.chainId, tokenAddress: p.baseToken.address, icon: '' }));
+    }
     let items = candidates.map(c => launchItem(c, pairs)).filter(Boolean);
     // Contract checks only for the most active ones (keeps GoPlus calls low)
     items = items.sort((a, b) => b.vol - a.vol).slice(0, LAUNCH_CHECKED);
@@ -3733,10 +3910,11 @@ async function comparePools(query, chain = '') {
   if (isAddress(q)) {
     pairs = await fetchTokenPairs(q, { chain });
   } else {
-    const d = await fetchJson(`${DEX_API}/search?q=${encodeURIComponent(q)}`);
+    const d = await fetchJson(`${DEX_API}/search?q=${encodeURIComponent(q)}`).catch(() => ({}));
     const all = d.pairs || [];
     const exact = all.filter(p => (p.baseToken?.symbol || '').toUpperCase() === q.toUpperCase());
     pairs = exact.length ? exact : all;
+    if (!pairs.length) pairs = await geckoTickerPairs(q);
   }
   return pickTokenPools(pairs, chain);
 }

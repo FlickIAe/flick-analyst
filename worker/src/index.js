@@ -16,6 +16,7 @@
 
 const DEFAULTS = {
   DEX_API: 'https://api.dexscreener.com',
+  GT_API: 'https://api.geckoterminal.com/api/v2',
   GOPLUS_API: 'https://api.gopluslabs.io/api/v1',
   TELEGRAM_API: 'https://api.telegram.org',
   SITE_URL: 'https://flick-app.pages.dev'
@@ -31,6 +32,9 @@ const ALERT_STEPS = [0, 5, 10, 20, 50];
 const MAX_WATCHES = 20;
 const GOPLUS_EVM = { ethereum: 1, bsc: 56, base: 8453, arbitrum: 42161, polygon: 137, optimism: 10, avalanche: 43114 };
 const SUBREQUEST_BUDGET = 45; // the free plan allows 50 outgoing requests per invocation
+// GeckoTerminal is the backup when DexScreener returns nothing (free: ~30 requests/minute)
+const GT_NET = { ethereum: 'eth', bsc: 'bsc', base: 'base', arbitrum: 'arbitrum', polygon: 'polygon_pos', optimism: 'optimism', avalanche: 'avax', solana: 'solana' };
+const GT_PER_RUN = 10;
 const GOPLUS_PER_RUN = 5;
 const RISK_RANK = { ok: 0, warn: 1, bad: 2 };
 const MIN = 60e3;
@@ -342,6 +346,25 @@ function contractRisk(raw, isSol) {
   return 'ok';
 }
 
+// GeckoTerminal pools → the DexScreener pair fields the checks use
+function geckoPairs(d, net, chain) {
+  const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
+  return (Array.isArray(d?.data) ? d.data : []).filter(p => p?.attributes?.address).map(p => {
+    const a = p.attributes;
+    const baseId = String(p.relationships?.base_token?.data?.id || '');
+    const h1 = a.transactions?.h1;
+    return {
+      chainId: chain,
+      pairAddress: a.address,
+      baseToken: { address: baseId.startsWith(`${net}_`) ? baseId.slice(net.length + 1) : '' },
+      priceUsd: a.base_token_price_usd,
+      liquidity: { usd: num(a.reserve_in_usd) },
+      txns: { h1: h1 ? { buys: h1.buys || 0, sells: h1.sells || 0 } : undefined }
+    };
+  });
+}
+const sameAddr = (a, b) => !!a && !!b && (EVM_RE.test(a) || EVM_RE.test(b) ? a.toLowerCase() === b.toLowerCase() : a === b);
+
 // ------------------------------------------------------------------ scheduled checks
 async function runChecks(env) {
   const now = Date.now();
@@ -380,6 +403,27 @@ async function runChecks(env) {
         }
       } catch (err) {
         console.warn('DexScreener batch failed:', chain, err.message);
+      }
+    }
+  }
+
+  // 1b. Tokens DexScreener had nothing for: GeckoTerminal, one request per token,
+  //     a rotating slice of GT_PER_RUN per run
+  const missing = [...new Map(rows.filter(r => GT_NET[r.chain] && !market.has(keyOf(r.chain, r.ca)))
+    .map(r => [keyOf(r.chain, r.ca), r])).values()];
+  if (missing.length) {
+    const start = (Math.floor(now / (5 * MIN)) * GT_PER_RUN) % missing.length;
+    const slice = [...missing.slice(start), ...missing.slice(0, start)].slice(0, GT_PER_RUN);
+    for (const r of slice) {
+      if (budget <= 12) break;
+      budget--;
+      try {
+        const net = GT_NET[r.chain];
+        const d = await getJson(`${cfg(env, 'GT_API')}/networks/${net}/tokens/${encodeURIComponent(r.ca)}/pools?page=1`);
+        const pairs = geckoPairs(d, net, r.chain).filter(p => sameAddr(p.baseToken.address, r.ca));
+        if (pairs.length) market.set(keyOf(r.chain, r.ca), pairs);
+      } catch (err) {
+        console.warn('GeckoTerminal lookup failed:', r.symbol, err.message);
       }
     }
   }
